@@ -15,8 +15,23 @@ bun install              # Install dependencies
 bun dev                  # Start dev server at localhost:4321
 bun build                # Build production site to ./dist/
 bun preview              # Preview production build locally
+bun run deploy           # Build and deploy to Cloudflare Pages
 bun astro ...            # Run Astro CLI commands (e.g., bun astro add, bun astro check)
 ```
+
+## Deployment
+
+This site deploys to **Cloudflare Pages** as a static site:
+- Build command: `bun run build`
+- Output directory: `dist`
+- Deploy: `bun run deploy` (requires Wrangler CLI and Cloudflare auth)
+- Custom domain: `wip.tommytran.me`
+
+### Setting up custom domain:
+1. Deploy the site first: `bun run deploy`
+2. In Cloudflare dashboard: Pages > portfoliov2 > Custom domains
+3. Add `wip.tommytran.me` and follow DNS setup instructions
+4. Or via CLI: `wrangler pages domain add wip.tommytran.me --project-name=portfoliov2`
 
 ## Architecture
 

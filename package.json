@@ -6,7 +6,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "deploy": "bun run build && npx wrangler pages deploy dist"
   },
   "dependencies": {
     "@types/three": "^0.181.0",
