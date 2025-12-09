@@ -1,24 +1,25 @@
-# Nestjs specific
-/dist
-/node_modules
-/build
-/tmp
+# build output
+dist/
+# generated types
+.astro/
 
-# Logs
-logs
-*.log
+# dependencies
+node_modules/
+
+# logs
 npm-debug.log*
-pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-lerna-debug.log*
+pnpm-debug.log*
 
-# dotenv environment variable files
+
+# environment variables
 .env
-.env.development
-.env.test
 .env.production
 
-# temp directory
-.temp
-.tmp
+# macOS-specific files
+.DS_Store
+
+# jetbrains setting folder
+.idea/
+.vscode/
