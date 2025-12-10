@@ -1,33 +1,66 @@
 ---
-// This component loads the 3D island on the client side
+// This component lazy-loads the 3D island when it becomes visible
 ---
 
-<div id="island-3d-container" class="island-container"></div>
+<div id="island-3d-container" class="island-container">
+  <div class="loading-placeholder">
+    <p>Loading Tommy's 3D model...</p>
+  </div>
+</div>
 
 <script>
   import { Island3D } from './Island3D';
 
-  // Initialize the 3D scene when the component is mounted
   const container = document.getElementById('island-3d-container');
 
   if (container) {
     let island3D: Island3D | null = null;
+    let isInitialized = false;
 
-    // Wait for the container to be properly sized
+    // Initialize the 3D scene
     const initScene = () => {
+      if (isInitialized) return;
+      isInitialized = true;
+
+      // Remove loading placeholder
+      const placeholder = container.querySelector('.loading-placeholder');
+      if (placeholder) {
+        placeholder.remove();
+      }
+
       if (container.clientWidth > 0 && container.clientHeight > 0) {
+        // console.log('🏝️ Initializing 3D Island (lazy loaded)');
         island3D = new Island3D(container);
       }
     };
 
-    // Initialize after a short delay to ensure layout is ready
-    setTimeout(initScene, 100);
+    // Use Intersection Observer to load only when visible
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            // Component is visible, initialize the scene
+            initScene();
+            // Stop observing after initialization
+            observer.disconnect();
+          }
+        });
+      },
+      {
+        // Start loading slightly before it comes into view
+        rootMargin: '50px',
+        threshold: 0.1,
+      }
+    );
+
+    observer.observe(container);
 
     // Cleanup on navigation
     document.addEventListener('astro:before-swap', () => {
       if (island3D) {
         island3D.dispose();
       }
+      observer.disconnect();
     });
   }
 </script>
@@ -40,6 +73,7 @@
     overflow: hidden;
     background: transparent;
     cursor: grab;
+    position: relative;
   }
 
   .island-container:active {
@@ -52,9 +86,35 @@
     height: 100%;
   }
 
+  .loading-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gradient-subtle);
+    border: 2px dashed var(--gray-800);
+    border-radius: 1.5rem;
+  }
+
+  .loading-placeholder p {
+    color: var(--gray-400);
+    font-size: var(--text-md);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+  }
+
   @media (min-width: 50em) {
     .island-container {
       height: 500px;
+      border-radius: 4.5rem;
+    }
+
+    .loading-placeholder {
       border-radius: 4.5rem;
     }
   }
