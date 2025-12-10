@@ -1,0 +1,25 @@
+---
+import Hero from '../components/Hero.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Uses" description="Tools and setup I use">
+	<div class="stack gap-20">
+		<main class="wrapper stack gap-8">
+			<Hero
+				title="Uses"
+				tagline="Tools, software, and gear I use daily."
+				align="start"
+			/>
+			<p style="text-align: center; color: var(--gray-400);">
+				Setup details coming soon...
+			</p>
+		</main>
+	</div>
+</BaseLayout>
+
+<style>
+	.wrapper {
+		padding-block: 2rem;
+	}
+</style>
