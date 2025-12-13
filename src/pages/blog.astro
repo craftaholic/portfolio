@@ -1,8 +1,15 @@
 ---
+import { getCollection } from 'astro:content';
 import Hero from '../components/Hero.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageContainer from '../components/PageContainer.astro';
 import Placeholder from '../components/Placeholder.astro';
+import Grid from '../components/Grid.astro';
+import PortfolioPreview from '../components/PortfolioPreview.astro';
+
+const posts = (await getCollection('blog'))
+	.filter(post => !post.data.draft)
+	.sort((a, b) => b.data.pubDatetime.valueOf() - a.data.pubDatetime.valueOf());
 ---
 
 <BaseLayout title="Blog" description="My blog posts">
@@ -12,6 +19,16 @@ import Placeholder from '../components/Placeholder.astro';
 			tagline="Thoughts, ideas, and learnings."
 			align="start"
 		/>
-		<Placeholder>Blog posts coming soon...</Placeholder>
+		{posts.length === 0 ? (
+			<Placeholder>No blog posts yet.</Placeholder>
+		) : (
+			<Grid variant="offset">
+				{posts.map((post) => (
+					<li>
+						<PortfolioPreview project={post} />
+					</li>
+				))}
+			</Grid>
+		)}
 	</PageContainer>
 </BaseLayout>

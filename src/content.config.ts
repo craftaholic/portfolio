@@ -14,4 +14,19 @@ export const collections = {
 			img_alt: z.string().optional(),
 		}),
 	}),
+	blog: defineCollection({
+		// Load Markdown files from local blog directory
+		loader: glob({ base: './src/content/blog', pattern: '**/*.md' }),
+		schema: z.object({
+			author: z.string().optional(),
+			pubDatetime: z.coerce.date(),
+			modDatetime: z.coerce.date().optional().nullable(),
+			title: z.string(),
+			featured: z.boolean().optional(),
+			draft: z.boolean().optional(),
+			tags: z.array(z.string()).default(['others']),
+			description: z.string(),
+			canonicalURL: z.string().optional(),
+		}),
+	}),
 };

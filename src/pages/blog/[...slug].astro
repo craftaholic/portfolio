@@ -1,0 +1,236 @@
+---
+import { type CollectionEntry, getCollection, render } from 'astro:content';
+
+import Icon from '../../components/Icon.astro';
+import Pill from '../../components/Pill.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageContainer from '../../components/PageContainer.astro';
+
+interface Props {
+	entry: CollectionEntry<'blog'>;
+}
+
+export async function getStaticPaths() {
+	const blog = await getCollection('blog', ({ data }) => !data.draft);
+	return blog.map((entry) => ({
+		params: { slug: entry.id },
+		props: { entry },
+	}));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<BaseLayout title={entry.data.title} description={entry.data.description}>
+	<PageContainer>
+		<a class="back-link" href="/blog/">
+			<Icon icon="arrow-left" /> Blog
+		</a>
+
+		<header class="header">
+			<h1 class="title">{entry.data.title}</h1>
+			<p class="description">{entry.data.description}</p>
+			<div class="tags">
+				{entry.data.tags.map((t) => <Pill>{t}</Pill>)}
+			</div>
+		</header>
+
+		<div class="content">
+			<Content />
+		</div>
+	</PageContainer>
+</BaseLayout>
+
+<style is:global>
+	/* Override PageContainer for wider blog content */
+	.page-container {
+		max-width: 65rem !important;
+	}
+
+	.back-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		color: var(--accent-regular);
+		text-decoration: none;
+		margin-bottom: 2rem;
+		transition: color var(--theme-transition);
+	}
+
+	.back-link:hover {
+		color: var(--accent-light);
+	}
+
+	.header {
+		margin-bottom: 3rem;
+		padding-bottom: 2rem;
+		border-bottom: 1px solid var(--gray-800);
+	}
+
+	.title {
+		font-size: var(--text-2xl);
+		color: var(--gray-0);
+		margin-bottom: 1rem;
+	}
+
+	.description {
+		font-size: var(--text-md);
+		color: var(--gray-300);
+		margin-bottom: 1.5rem;
+		line-height: 1.6;
+	}
+
+	.tags {
+		display: flex;
+		gap: 0.5rem;
+		flex-wrap: wrap;
+	}
+
+	.content {
+		line-height: 1.8;
+	}
+
+	.content h2 {
+		font-size: 1.15rem !important;
+		color: var(--gray-0);
+		margin-top: 1.5rem;
+		margin-bottom: 0.5rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+
+	.content h3 {
+		font-size: 1.09rem !important;
+		color: var(--gray-0);
+		margin-top: 1rem;
+		margin-bottom: 0.5rem;
+		font-weight: 600;
+	}
+
+	.content h4 {
+		font-size: 1.04rem !important;
+		color: var(--gray-0);
+		margin-top: 1rem;
+		margin-bottom: 0.5rem;
+		font-weight: 600;
+	}
+
+	.content h5 {
+		font-size: 1rem !important;
+		color: var(--gray-0);
+		margin-top: 0.75rem;
+		margin-bottom: 0.5rem;
+		font-weight: 600;
+	}
+
+	.content h6 {
+		font-size: 1rem !important;
+		color: var(--gray-200);
+		margin-top: 0.75rem;
+		margin-bottom: 0.5rem;
+		font-weight: 600;
+	}
+
+	.content p {
+		color: var(--gray-200);
+		margin-bottom: 1rem;
+	}
+
+	.content ul,
+	.content ol {
+		margin-bottom: 1rem;
+		padding-left: 1.5rem;
+		color: var(--gray-200);
+	}
+
+	.content li {
+		margin-bottom: 0.5rem;
+	}
+
+	.content strong {
+		color: var(--gray-0);
+		font-weight: 600;
+	}
+
+	.content a {
+		color: var(--accent-regular);
+		text-decoration: underline;
+		text-underline-offset: 0.25em;
+		transition: color var(--theme-transition);
+	}
+
+	.content a:hover {
+		color: var(--accent-light);
+	}
+
+	.content table {
+		width: 100%;
+		border-collapse: collapse;
+		margin: 1.5rem 0;
+		overflow-x: auto;
+		display: block;
+	}
+
+	.content th,
+	.content td {
+		border: 1px solid var(--gray-800);
+		padding: 0.75rem 1rem;
+		text-align: left;
+	}
+
+	.content th {
+		background-color: var(--gray-900);
+		color: var(--gray-0);
+		font-weight: 600;
+	}
+
+	.content tr:nth-child(even) {
+		background-color: var(--gray-950);
+	}
+
+	.content code {
+		background-color: var(--gray-900);
+		color: var(--accent-regular);
+		padding: 0.2rem 0.4rem;
+		border-radius: 0.25rem;
+		font-size: 0.9em;
+	}
+
+	.content pre {
+		background-color: var(--gray-900);
+		padding: 1rem;
+		border-radius: 0.5rem;
+		overflow-x: auto;
+		margin: 1rem 0;
+	}
+
+	.content pre code {
+		background-color: transparent;
+		padding: 0;
+		color: var(--gray-200);
+	}
+
+	@media (min-width: 50em) {
+		.title {
+			font-size: var(--text-3xl);
+		}
+
+		.description {
+			font-size: var(--text-lg);
+		}
+
+		.content h2 {
+			font-size: 1.29rem !important;
+		}
+
+		.content h3 {
+			font-size: 1.21rem !important;
+		}
+
+		.content h4 {
+			font-size: 1.15rem !important;
+		}
+	}
+</style>
