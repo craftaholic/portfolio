@@ -1,0 +1,23 @@
+---
+// Wrapper for biography paragraphs with proper indentation and styling
+---
+
+<div class="bio-section">
+	<slot />
+</div>
+
+<style>
+	.bio-section {
+		text-indent: 1rem;
+	}
+
+	.bio-section :global(p) {
+		margin-bottom: 1rem;
+		line-height: 1.8;
+		color: var(--gray-200);
+		text-align: justify;
+		hyphens: auto;
+		word-spacing: -0.05em;
+		text-justify: inter-word;
+	}
+</style>

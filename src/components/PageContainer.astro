@@ -1,0 +1,21 @@
+---
+// Main container for all pages with consistent max-width and padding
+---
+
+<div class="page-container">
+	<slot />
+</div>
+
+<style>
+	.page-container {
+		max-width: 42rem;
+		margin: 0 auto;
+		padding: 2rem 1rem;
+	}
+
+	@media (min-width: 50em) {
+		.page-container {
+			padding: 3rem 2rem;
+		}
+	}
+</style>

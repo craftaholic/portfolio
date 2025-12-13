@@ -1,0 +1,47 @@
+---
+interface Link {
+	href: string;
+	label: string;
+}
+
+interface Props {
+	links: Link[];
+}
+
+const { links } = Astro.props;
+---
+
+<div class="links-list">
+	{links.map(link => (
+		<a href={link.href} class="link-item" target="_blank" rel="noopener noreferrer">
+			{link.label}
+		</a>
+	))}
+</div>
+
+<style>
+	.links-list {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		padding-left: 1rem;
+	}
+
+	.link-item {
+		color: var(--accent-regular);
+		text-decoration: none;
+		transition: color var(--theme-transition);
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.link-item::before {
+		content: '▸';
+		color: var(--accent-light);
+	}
+
+	.link-item:hover {
+		color: var(--accent-light);
+	}
+</style>

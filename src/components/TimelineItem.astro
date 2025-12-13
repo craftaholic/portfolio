@@ -1,0 +1,32 @@
+---
+interface Props {
+	year: string;
+	text: string;
+}
+
+const { year, text } = Astro.props;
+---
+
+<div class="timeline-item">
+	<span class="timeline-year">{year}</span>
+	<span class="timeline-text">{text}</span>
+</div>
+
+<style>
+	.timeline-item {
+		display: flex;
+		gap: 1rem;
+	}
+
+	.timeline-year {
+		font-weight: 700;
+		color: var(--gray-0);
+		min-width: 3.5rem;
+		flex-shrink: 0;
+	}
+
+	.timeline-text {
+		color: var(--gray-200);
+		line-height: 1.6;
+	}
+</style>
