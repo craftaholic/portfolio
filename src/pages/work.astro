@@ -2,6 +2,9 @@
 import { getCollection } from 'astro:content';
 import Hero from '../components/Hero.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Placeholder from '../components/Placeholder.astro';
+import PortfolioPreview from '../components/PortfolioPreview.astro';
+import Grid from '../components/Grid.astro';
 
 const projects = (await getCollection('work')).sort(
 	(a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf(),
@@ -9,20 +12,26 @@ const projects = (await getCollection('work')).sort(
 ---
 
 <BaseLayout
-	title="Work"
-	description="My portfolio projects"
+	title="Work Experience"
+	description="My professional work experience and client projects"
 >
 	<div class="stack gap-20">
-		<main class="wrapper stack gap-8">
+		<main class="wrapper padding-block stack gap-8">
 			<Hero
-				title="Work"
-				tagline="Portfolio projects will appear here."
+				title="Work Experience"
+				tagline="Professional experience across platform engineering, DevOps, and cloud infrastructure."
 				align="start"
 			/>
-			{projects.length === 0 && (
-				<p style="text-align: center; color: var(--gray-400);">
-					No projects yet. Add markdown files to src/content/work/
-				</p>
+			{projects.length === 0 ? (
+				<Placeholder>No projects yet. Add markdown files to src/content/work/</Placeholder>
+			) : (
+				<Grid variant="offset">
+					{projects.map((project) => (
+						<li>
+							<PortfolioPreview project={project} />
+						</li>
+					))}
+				</Grid>
 			)}
 		</main>
 	</div>
