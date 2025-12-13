@@ -62,40 +62,105 @@ This site deploys to **Cloudflare Pages** as a static site:
 
 ## Architecture
 
+### Project Structure
+
+```
+src/
+├── assets/               # Images and static assets
+│   ├── images/          # Blog and project images
+│   └── socialIcons.ts   # Social media icon definitions
+├── components/          # Reusable Astro components
+│   ├── layout/         # Page structure components
+│   ├── ui/             # Reusable UI elements
+│   ├── sections/       # Page section components
+│   ├── three/          # 3D graphics components
+│   └── blog/           # Blog-specific components
+├── content/            # Content collections (Markdown)
+│   ├── blog/           # Blog posts
+│   └── work/           # Work experience entries
+├── layouts/            # Page layouts
+├── pages/              # Route pages (pure composition, no CSS)
+├── styles/             # Global CSS only
+├── utils/              # Utility functions
+├── config.ts           # Site-wide constants and configuration
+└── content.config.ts   # Content collection schemas
+```
+
 ### Content Collections
 
-Portfolio projects are managed through Astro's content collections system:
-- **Location**: `src/content/work/*.md`
-- **Schema** (defined in `src/content.config.ts`):
-  - `title`, `description`, `publishDate`
-  - `tags` (array), `img`, `img_alt`
-- Uses Astro's glob loader to automatically discover markdown files
-- Projects are queried using `getCollection('work')`
+Content is managed through Astro's content collections system:
+
+**Work Collection** (`src/content/work/*.md`):
+- Schema: `title`, `description`, `publishDate`, `tags`, `img`, `img_alt`
+- Auto-sorted by publish date (descending)
+- Queried using `getCollection('work')`
+
+**Blog Collection** (`src/content/blog/**/*.md`):
+- Schema: `title`, `description`, `pubDatetime`, `modDatetime`, `tags`, `author`, `draft`, `featured`
+- Filters out drafts in production
+- Auto-sorted by modified/publish date (descending)
+- Queried using `getCollection('blog')`
 
 ### Component System
 
-The codebase uses a modular component architecture:
+Components are organized by purpose into subfolders:
 
-**Layout Components:**
-- **BaseLayout.astro**: Main wrapper for all pages, manages theme switching (dark mode default)
-- **PageContainer.astro**: Consistent max-width container with responsive padding (2rem mobile, 3rem desktop)
+**Layout Components** (`src/components/layout/`):
+- **Nav.astro**: Main navigation with theme toggle
+- **Footer.astro**: Site footer with social links
+- **PageContainer.astro**: Consistent max-width container (42rem for portfolio, 65rem for blog)
+- **MainHead.astro**: HTML head with meta tags and font loading
 
-**Section Components:**
-- **Section.astro**: Reusable section wrapper with optional title and underline styling
-- **BioSection.astro**: Biography paragraphs with indentation and justified text
-- **Timeline.astro**: Container for timeline entries
-- **TimelineItem.astro**: Individual timeline entries (year + description)
-
-**UI Components:**
-- **Hero.astro**: Hero section with greeting text and image slot
-- **SimpleText.astro**: Text with consistent styling and indentation
+**UI Components** (`src/components/ui/`):
+- **Icon.astro**: SVG icon component with path definitions
+- **Pill.astro**: Tag/badge UI element
+- **ThemeToggle.astro**: Dark/light mode switcher
+- **Grid.astro**: Responsive grid layout
 - **LinksList.astro**: List of links with arrow indicators
-- **Placeholder.astro**: "Coming soon" placeholder text
-- **WorkDetailLayout.astro**: Layout for individual work/project detail pages
+- **SimpleText.astro**: Text with consistent styling
 
-**3D Graphics:**
-- **Island3DScene.astro**: Three.js 3D island component (loads immediately, no lazy loading)
-- **Island3D.ts**: Three.js scene implementation with low-poly island and controls
+**Section Components** (`src/components/sections/`):
+- **Hero.astro**: Hero section (supports greeting or title/tagline patterns)
+- **Section.astro**: Reusable section wrapper with optional title
+- **BioSection.astro**: Biography paragraphs with indentation
+- **Timeline.astro**: Container for timeline entries
+- **TimelineItem.astro**: Individual timeline items (year + text)
+- **Skills.astro**: Skills showcase section
+- **CallToAction.astro**: CTA section
+- **ContactCTA.astro**: Contact call-to-action
+
+**Three.js Components** (`src/components/three/`):
+- **Island3DScene.astro**: 3D island wrapper component
+- **Island3D.ts**: Three.js scene implementation with low-poly island
+
+**Blog Components** (`src/components/blog/`):
+- **PortfolioPreview.astro**: Card preview for work/blog items
+- **WorkDetailLayout.astro**: Layout wrapper for work details
+- **Placeholder.astro**: "Coming soon" placeholder text
+
+### Utility Functions
+
+**Location**: `src/utils/`
+
+- **slugify.ts**: Convert strings to URL-safe slugs
+- **getSortedPosts.ts**: Sort blog posts by date
+- **getUniqueTags.ts**: Extract unique tags from posts
+- **getPostsByTag.ts**: Filter posts by tag
+- **dateFormat.ts**: Date formatting utilities
+
+### Configuration
+
+**Site Config** (`src/config.ts`):
+```typescript
+export const SITE = {
+  website: 'https://wip.tommytran.me',
+  author: 'Tommy Tran',
+  postPerPage: 5,
+  socialLinks: [...],
+}
+
+export const NAV_LINKS = [...]
+```
 
 ### Styling
 
@@ -125,12 +190,30 @@ The 3D island is integrated into the homepage Hero section:
 
 All pages are pure component composition with ZERO CSS:
 
-- **`src/pages/index.astro`**: Homepage with Hero, Work, Bio, I ♥, and On the web sections
-- **`src/pages/work.astro`**: Full portfolio listing
-- **`src/pages/blog.astro`**: Blog page (placeholder)
+- **`src/pages/index.astro`**: Homepage with Hero (3D island), Bio timeline, Skills, Social links
+- **`src/pages/work.astro`**: Work experience listing with grid
+- **`src/pages/work/[...slug].astro`**: Individual work experience detail pages
+- **`src/pages/blog.astro`**: Blog posts listing with grid
+- **`src/pages/blog/[...slug].astro`**: Individual blog post pages (wider container, progress bar)
 - **`src/pages/awards.astro`**: Awards page (placeholder)
 - **`src/pages/uses.astro`**: Uses/setup page (placeholder)
-- **`src/pages/work/[...slug].astro`**: Dynamic routes for individual project pages
+- **`src/pages/404.astro`**: Custom 404 error page
+
+### Blog Features
+
+**Implemented:**
+- Blog post listing with draft filtering
+- Individual blog post pages with progress bar
+- Wider content container (65rem vs 42rem) for better readability
+- Table styling with horizontal scroll
+- Code block styling
+- Content from external blog repository integrated locally
+
+**Utilities for future features:**
+- `getSortedPosts()` - Sort posts by date
+- `getUniqueTags()` - Extract all unique tags
+- `getPostsByTag()` - Filter posts by tag
+- `slugify()` - URL-safe slug generation
 
 ## Development Notes
 
@@ -162,11 +245,17 @@ import Section from '../components/Section.astro';
 ### Creating New Components
 
 When extracting a new component:
-1. Create in `src/components/` with descriptive name
+1. Create in appropriate `src/components/` subfolder:
+   - `layout/` for page structure
+   - `ui/` for reusable UI elements
+   - `sections/` for page sections
+   - `three/` for 3D graphics
+   - `blog/` for blog-specific components
 2. Define TypeScript interface for props (if needed)
 3. Include all styling in component's `<style>` block
 4. Use global CSS custom properties for colors, fonts, spacing
 5. Make it reusable - avoid hardcoding content
+6. Update imports in files using the component
 
 ### Adding New Portfolio Projects
 
