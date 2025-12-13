@@ -1,19 +1,32 @@
 ---
 interface Props {
-	greeting: string;
+	greeting?: string;
+	title?: string;
+	tagline?: string;
+	align?: 'start' | 'center';
 }
 
-const { greeting } = Astro.props;
+const { greeting, title, tagline, align = 'center' } = Astro.props;
 ---
 
-<div class="hero">
-	<div class="profile-image">
-		<slot name="image" />
+{greeting ? (
+	<div class="hero">
+		<div class="profile-image">
+			<slot name="image" />
+		</div>
+		<div class="hero-text">
+			<h1 class="greeting">{greeting}</h1>
+		</div>
 	</div>
-	<div class="hero-text">
-		<h1 class="greeting">{greeting}</h1>
+) : (
+	<div class:list={['hero-simple stack gap-4', align]}>
+		<div class="stack gap-2">
+			<h1 class="title">{title}</h1>
+			{tagline && <p class="tagline">{tagline}</p>}
+		</div>
+		<slot />
 	</div>
-</div>
+)}
 
 <style>
 	.hero {
@@ -39,6 +52,23 @@ const { greeting } = Astro.props;
 		max-width: 90%;
 	}
 
+	/* Simple hero (title/tagline pattern) */
+	.hero-simple {
+		font-size: var(--text-lg);
+		text-align: center;
+	}
+
+	.title,
+	.tagline {
+		max-width: 37ch;
+		margin-inline: auto;
+	}
+
+	.title {
+		font-size: var(--text-3xl);
+		color: var(--gray-0);
+	}
+
 	@media (min-width: 50em) {
 		.profile-image {
 			max-width: 400px;
@@ -47,6 +77,23 @@ const { greeting } = Astro.props;
 		.greeting {
 			font-size: var(--text-md);
 			max-width: 80%;
+		}
+
+		.hero-simple {
+			font-size: var(--text-xl);
+		}
+
+		.start {
+			text-align: start;
+		}
+
+		.start .title,
+		.start .tagline {
+			margin-inline: unset;
+		}
+
+		.title {
+			font-size: var(--text-5xl);
 		}
 	}
 </style>
