@@ -1,11 +1,11 @@
 ---
 import { getCollection } from 'astro:content';
-import Hero from '../components/Hero.astro';
+import Hero from '../components/sections/Hero.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import PageContainer from '../components/PageContainer.astro';
-import Placeholder from '../components/Placeholder.astro';
-import PortfolioPreview from '../components/PortfolioPreview.astro';
-import Grid from '../components/Grid.astro';
+import PageContainer from '../components/layout/PageContainer.astro';
+import Placeholder from '../components/blog/Placeholder.astro';
+import PortfolioPreview from '../components/blog/PortfolioPreview.astro';
+import Grid from '../components/ui/Grid.astro';
 
 const projects = (await getCollection('work')).sort(
 	(a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf(),
