@@ -1,0 +1,106 @@
+---
+// Layout for individual work/project detail pages
+interface Props {
+	showBackLink?: boolean;
+}
+
+const { showBackLink = false } = Astro.props;
+---
+
+<div class="work-detail">
+	<slot />
+</div>
+
+<style is:global>
+	.work-detail header {
+		padding-bottom: 2.5rem;
+		border-bottom: 1px solid var(--gray-800);
+	}
+
+	.work-detail .back-link {
+		display: none;
+	}
+
+	.work-detail .details {
+		display: flex;
+		flex-direction: column;
+		padding: 0.5rem;
+		gap: 1.5rem;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.work-detail .tags {
+		display: flex;
+		gap: 0.5rem;
+	}
+
+	.work-detail .description {
+		font-size: var(--text-lg);
+		max-width: 54ch;
+	}
+
+	.work-detail .content {
+		max-width: 65ch;
+		margin-inline: auto;
+	}
+
+	.work-detail .content > * + * {
+		margin-top: 1rem;
+	}
+
+	.work-detail .content h1,
+	.work-detail .content h2,
+	.work-detail .content h3,
+	.work-detail .content h4,
+	.work-detail .content h5 {
+		margin: 1.5rem 0;
+	}
+
+	.work-detail .content img {
+		border-radius: 1.5rem;
+		box-shadow: var(--shadow-sm);
+		background: var(--gradient-subtle);
+		border: 1px solid var(--gray-800);
+	}
+
+	.work-detail .content blockquote {
+		font-size: var(--text-lg);
+		font-family: var(--font-brand);
+		font-weight: 600;
+		line-height: 1.1;
+		padding-inline-start: 1.5rem;
+		border-inline-start: 0.25rem solid var(--accent-dark);
+		color: var(--gray-0);
+	}
+
+	.work-detail .back-link,
+	.work-detail .content a {
+		text-decoration: 1px solid underline transparent;
+		text-underline-offset: 0.25em;
+		transition: text-decoration-color var(--theme-transition);
+	}
+
+	.work-detail .back-link:hover,
+	.work-detail .back-link:focus,
+	.work-detail .content a:hover,
+	.work-detail .content a:focus {
+		text-decoration-color: currentColor;
+	}
+
+	@media (min-width: 50em) {
+		.work-detail .back-link {
+			display: block;
+			align-self: flex-start;
+		}
+
+		.work-detail .details {
+			flex-direction: row;
+			gap: 2.5rem;
+		}
+
+		.work-detail .content blockquote {
+			font-size: var(--text-2xl);
+		}
+	}
+</style>

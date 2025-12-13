@@ -205,6 +205,10 @@ h5 {
 	padding-inline: 1.5rem;
 }
 
+.wrapper.padding-block {
+	padding-block: 2rem;
+}
+
 .stack {
 	display: flex;
 	flex-direction: column;

@@ -1,25 +1,18 @@
 ---
 import Hero from '../components/Hero.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Placeholder from '../components/Placeholder.astro';
 ---
 
 <BaseLayout title="Awards" description="Awards and achievements">
 	<div class="stack gap-20">
-		<main class="wrapper stack gap-8">
+		<main class="wrapper padding-block stack gap-8">
 			<Hero
 				title="Awards"
 				tagline="Recognition and achievements."
 				align="start"
 			/>
-			<p style="text-align: center; color: var(--gray-400);">
-				Awards will be listed here...
-			</p>
+			<Placeholder>Awards will be listed here...</Placeholder>
 		</main>
 	</div>
 </BaseLayout>
-
-<style>
-	.wrapper {
-		padding-block: 2rem;
-	}
-</style>

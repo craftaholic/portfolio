@@ -1,25 +1,18 @@
 ---
 import Hero from '../components/Hero.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Placeholder from '../components/Placeholder.astro';
 ---
 
 <BaseLayout title="Blog" description="My blog posts">
 	<div class="stack gap-20">
-		<main class="wrapper stack gap-8">
+		<main class="wrapper padding-block stack gap-8">
 			<Hero
 				title="Blog"
 				tagline="Thoughts, ideas, and learnings."
 				align="start"
 			/>
-			<p style="text-align: center; color: var(--gray-400);">
-				Blog posts coming soon...
-			</p>
+			<Placeholder>Blog posts coming soon...</Placeholder>
 		</main>
 	</div>
 </BaseLayout>
-
-<style>
-	.wrapper {
-		padding-block: 2rem;
-	}
-</style>
