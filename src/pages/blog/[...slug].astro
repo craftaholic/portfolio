@@ -23,6 +23,11 @@ const { Content } = await render(entry);
 ---
 
 <BaseLayout title={entry.data.title} description={entry.data.description}>
+	<!-- Progress Bar -->
+	<div class="progress-container">
+		<div class="progress-bar" id="progress-bar"></div>
+	</div>
+
 	<PageContainer>
 		<a class="back-link" href="/blog/">
 			<Icon icon="arrow-left" /> Blog
@@ -42,7 +47,49 @@ const { Content } = await render(entry);
 	</PageContainer>
 </BaseLayout>
 
+<script>
+	function updateProgressBar() {
+		const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+		const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+		const scrolled = (winScroll / height) * 100;
+		const progressBar = document.getElementById('progress-bar');
+		if (progressBar) {
+			progressBar.style.width = scrolled + '%';
+		}
+	}
+
+	// Update on scroll
+	document.addEventListener('scroll', updateProgressBar);
+
+	// Update on page load
+	updateProgressBar();
+
+	// Re-attach listener on page navigation (Astro View Transitions)
+	document.addEventListener('astro:after-swap', () => {
+		updateProgressBar();
+		document.addEventListener('scroll', updateProgressBar);
+	});
+</script>
+
 <style is:global>
+	/* Progress Bar */
+	.progress-container {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: 4px;
+		background-color: var(--gray-900);
+		z-index: 9999;
+	}
+
+	.progress-bar {
+		height: 100%;
+		width: 0%;
+		background-color: var(--accent-regular);
+		transition: width 0.1s ease-out;
+	}
+
 	/* Override PageContainer for wider blog content */
 	.page-container {
 		max-width: 65rem !important;
