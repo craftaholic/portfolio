@@ -1,18 +1,17 @@
 ---
 import Hero from '../components/Hero.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PageContainer from '../components/PageContainer.astro';
 import Placeholder from '../components/Placeholder.astro';
 ---
 
 <BaseLayout title="Blog" description="My blog posts">
-	<div class="stack gap-20">
-		<main class="wrapper padding-block stack gap-8">
-			<Hero
-				title="Blog"
-				tagline="Thoughts, ideas, and learnings."
-				align="start"
-			/>
-			<Placeholder>Blog posts coming soon...</Placeholder>
-		</main>
-	</div>
+	<PageContainer>
+		<Hero
+			title="Blog"
+			tagline="Thoughts, ideas, and learnings."
+			align="start"
+		/>
+		<Placeholder>Blog posts coming soon...</Placeholder>
+	</PageContainer>
 </BaseLayout>
