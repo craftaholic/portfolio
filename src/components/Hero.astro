@@ -65,8 +65,13 @@ const { greeting, title, tagline, align = 'center' } = Astro.props;
 	}
 
 	.title {
-		font-size: var(--text-3xl);
+		font-size: var(--text-xl);
 		color: var(--gray-0);
+	}
+
+	.tagline {
+		font-size: var(--text-base);
+		color: var(--gray-300);
 	}
 
 	@media (min-width: 50em) {
@@ -93,7 +98,11 @@ const { greeting, title, tagline, align = 'center' } = Astro.props;
 		}
 
 		.title {
-			font-size: var(--text-5xl);
+			font-size: var(--text-2xl);
+		}
+
+		.tagline {
+			font-size: var(--text-md);
 		}
 	}
 </style>
