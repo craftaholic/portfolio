@@ -9,7 +9,7 @@ tags:
   - NestJS
   - Terraform
   - AWS
-img: /assets/stock-2.jpg
+img: /assets/work-placeholder.svg
 img_alt: Cloud infrastructure platform
 ---
 

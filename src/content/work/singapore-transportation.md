@@ -9,7 +9,7 @@ tags:
   - Tekton
   - ArgoCD
   - Observability
-img: /assets/stock-3.jpg
+img: /assets/work-placeholder.svg
 img_alt: Cloud infrastructure and Kubernetes
 ---
 

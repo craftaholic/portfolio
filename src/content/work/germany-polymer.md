@@ -9,7 +9,7 @@ tags:
   - TypeScript
   - AWS CDK
   - Automation
-img: /assets/stock-4.jpg
+img: /assets/work-placeholder.svg
 img_alt: DevOps automation and CI/CD
 ---
 

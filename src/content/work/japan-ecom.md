@@ -7,7 +7,7 @@ tags:
   - CloudFormation
   - ECS
   - CodePipeline
-img: /assets/stock-2.jpg
+img: /assets/work-placeholder.svg
 img_alt: AWS cloud infrastructure
 ---
 

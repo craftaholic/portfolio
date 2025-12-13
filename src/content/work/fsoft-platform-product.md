@@ -9,7 +9,7 @@ tags:
   - Terraform
   - AWS
   - Platform Engineering
-img: /assets/stock-1.jpg
+img: /assets/work-placeholder.svg
 img_alt: Platform engineering dashboard
 ---
 

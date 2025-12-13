@@ -8,7 +8,7 @@ tags:
   - Terraform
   - Jenkins
   - Cost Optimization
-img: /assets/stock-1.jpg
+img: /assets/work-placeholder.svg
 img_alt: Google Cloud Platform infrastructure
 ---
 
