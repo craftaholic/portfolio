@@ -18,8 +18,8 @@ interface Props {
 const { title, description, tags, backLink, wide = false } = Astro.props;
 ---
 
-<PageContainer>
-	<article class:list={['content-article', { wide }]}>
+<PageContainer wide={wide}>
+	<article class="content-article">
 		<a class="back-link" href={backLink.href}>
 			<Icon icon="arrow-left" /> {backLink.label}
 		</a>
@@ -39,11 +39,6 @@ const { title, description, tags, backLink, wide = false } = Astro.props;
 </PageContainer>
 
 <style>
-	.content-article.wide {
-		max-width: 65rem;
-		margin: 0 auto;
-	}
-
 	.back-link {
 		display: inline-flex;
 		align-items: center;

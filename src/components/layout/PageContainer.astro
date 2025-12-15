@@ -1,8 +1,15 @@
 ---
 // Main container for all pages with consistent max-width and padding
+
+interface Props {
+	/** Use wider container for content like blog posts */
+	wide?: boolean;
+}
+
+const { wide = false } = Astro.props;
 ---
 
-<div class="page-container">
+<div class:list={['page-container', { wide }]}>
 	<slot />
 </div>
 
@@ -11,6 +18,10 @@
 		max-width: 42rem;
 		margin: 0 auto;
 		padding: 0 1rem 2rem 1rem;
+	}
+
+	.page-container.wide {
+		max-width: 65rem;
 	}
 
 	@media (min-width: 50em) {
