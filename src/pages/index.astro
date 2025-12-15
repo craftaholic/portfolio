@@ -1,4 +1,5 @@
 ---
+import { SITE } from '../config';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Island3DScene from '../components/three/Island3DScene.astro';
 import Hero from '../components/sections/Hero.astro';
@@ -9,12 +10,6 @@ import Timeline from '../components/sections/Timeline.astro';
 import TimelineItem from '../components/sections/TimelineItem.astro';
 import SimpleText from '../components/ui/SimpleText.astro';
 import LinksList from '../components/ui/LinksList.astro';
-
-const socialLinks = [
-	{ href: 'https://github.com/craftaholic', label: 'GitHub' },
-	{ href: 'https://www.linkedin.com/in/tranthangportfolio/', label: 'LinkedIn' },
-	{ href: 'https://blog.tommytran.me', label: 'Blog' },
-];
 ---
 
 <BaseLayout>
@@ -66,7 +61,7 @@ const socialLinks = [
 		</Section>
 
 		<Section title="On the web">
-			<LinksList links={socialLinks} />
+			<LinksList links={[...SITE.socialLinks]} />
 		</Section>
 	</PageContainer>
 </BaseLayout>

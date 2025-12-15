@@ -1,20 +1,12 @@
 ---
+import { NAV_LINKS, SITE } from '../../config';
 import Icon from '../ui/Icon.astro';
 import type { iconPaths } from '../ui/IconPaths';
 import ThemeToggle from '../ui/ThemeToggle.astro';
 
-/** Main menu items */
-const textLinks: { label: string; href: string }[] = [
-	{ label: 'Home', href: '/' },
-	{ label: 'Work', href: '/work/' },
-	{ label: 'Blog', href: '/blog/' },
-	{ label: 'Awards', href: '/awards/' },
-	{ label: 'Uses', href: '/uses/' },
-];
-
-/** Icon links to social media — edit these with links to your profiles! */
+/** Icon links to social media */
 const iconLinks: { label: string; href: string; icon: keyof typeof iconPaths }[] = [
-	{ label: 'GitHub', href: 'https://github.com/craftaholic', icon: 'github-logo' },
+	{ label: 'GitHub', href: SITE.socialLinks[0].href, icon: 'github-logo' },
 ];
 
 /** Test if a link is pointing to the current page. */
@@ -44,7 +36,7 @@ const isCurrentPage = (href: string) => {
 	<noscript>
 		<ul class="nav-items">
 			{
-				textLinks.map(({ label, href }) => (
+				NAV_LINKS.map(({ label, href }) => (
 					<li>
 						<a aria-current={isCurrentPage(href) ? 'page' : null} class="link" href={href}>
 							{label}
@@ -71,7 +63,7 @@ const isCurrentPage = (href: string) => {
 	<div id="menu-content" hidden>
 		<ul class="nav-items">
 			{
-				textLinks.map(({ label, href }) => (
+				NAV_LINKS.map(({ label, href }) => (
 					<li>
 						<a aria-current={isCurrentPage(href) ? 'page' : null} class="link" href={href}>
 							{label}
