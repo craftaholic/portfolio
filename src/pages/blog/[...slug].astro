@@ -93,7 +93,9 @@ const { Content } = await render(entry);
 	/* Override PageContainer for wider blog content */
 	.page-container {
 		max-width: 65rem !important;
+		width: 100%;
 		padding: 0 1rem 2rem 1rem;
+		box-sizing: border-box;
 	}
 
 	@media (min-width: 50em) {
@@ -143,6 +145,15 @@ const { Content } = await render(entry);
 
 	.content {
 		line-height: 1.8;
+		overflow-wrap: break-word;
+		word-wrap: break-word;
+		word-break: break-word;
+		max-width: 100%;
+	}
+
+	.content * {
+		max-width: 100%;
+		box-sizing: border-box;
 	}
 
 	.content h2 {
@@ -223,9 +234,14 @@ const { Content } = await render(entry);
 		width: 100%;
 		border-collapse: collapse;
 		margin: 1.5rem 0;
-		overflow-x: auto;
-		display: block;
 		font-size: 0.875rem;
+	}
+
+	/* Wrapper for table to enable horizontal scroll without affecting page layout */
+	.content > :global(table) {
+		display: block;
+		overflow-x: auto;
+		max-width: 100%;
 	}
 
 	.content th,
