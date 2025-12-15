@@ -127,6 +127,7 @@ html,
 body {
 	min-height: 100%;
 	overflow-x: hidden;
+	min-width: 0;
 }
 
 body {
@@ -142,6 +143,7 @@ body {
 *::before {
 	box-sizing: border-box;
 	margin: 0;
+	min-width: 0;
 }
 
 img {
