@@ -93,6 +93,13 @@ const { Content } = await render(entry);
 	/* Override PageContainer for wider blog content */
 	.page-container {
 		max-width: 65rem !important;
+		padding: 0 1rem 2rem 1rem;
+	}
+
+	@media (min-width: 50em) {
+		.page-container {
+			padding: 0 2rem 3rem 2rem;
+		}
 	}
 
 	.back-link {
@@ -218,13 +225,15 @@ const { Content } = await render(entry);
 		margin: 1.5rem 0;
 		overflow-x: auto;
 		display: block;
+		font-size: 0.875rem;
 	}
 
 	.content th,
 	.content td {
 		border: 1px solid var(--gray-400);
-		padding: 0.75rem 1rem;
+		padding: 0.5rem 0.75rem;
 		text-align: left;
+		white-space: nowrap;
 	}
 
 	.content th {
@@ -257,6 +266,64 @@ const { Content } = await render(entry);
 		background-color: transparent;
 		padding: 0;
 		color: var(--gray-200);
+	}
+
+	.content img {
+		max-width: 100%;
+		height: auto;
+		border-radius: 0.5rem;
+		margin: 1.5rem 0;
+		display: block;
+	}
+
+	.content blockquote {
+		border-left: 4px solid var(--accent-regular);
+		padding-left: 1rem;
+		margin: 1.5rem 0;
+		color: var(--gray-300);
+		font-style: italic;
+	}
+
+	/* Mobile optimizations */
+	@media (max-width: 50em) {
+		.content {
+			font-size: 0.95rem;
+		}
+
+		.content h2 {
+			font-size: 1rem !important;
+			margin-top: 2rem;
+		}
+
+		.content h3 {
+			font-size: 0.95rem !important;
+		}
+
+		.content pre {
+			padding: 0.75rem;
+			font-size: 0.85rem;
+		}
+
+		.content table {
+			font-size: 0.8rem;
+		}
+
+		.content th,
+		.content td {
+			padding: 0.4rem 0.5rem;
+		}
+
+		.title {
+			font-size: var(--text-xl);
+		}
+
+		.description {
+			font-size: var(--text-base);
+		}
+
+		.tags {
+			gap: 0.35rem;
+		}
 	}
 
 	@media (min-width: 50em) {

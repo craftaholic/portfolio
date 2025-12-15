@@ -31,7 +31,7 @@ const { variant } = Astro.props;
 
 	@media (min-width: 50em) {
 		.grid {
-			grid-template-columns: 1fr 1fr;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
 			gap: 4rem;
 		}
 
@@ -59,7 +59,8 @@ const { variant } = Astro.props;
 		}
 
 		.grid.small > :global(*) {
-			flex-basis: 20rem;
+			flex: 1 1 20rem;
+			max-width: 100%;
 		}
 	}
 </style>
