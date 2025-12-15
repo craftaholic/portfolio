@@ -292,9 +292,9 @@ h5 {
 }
 
 ::view-transition-old(root) {
-	animation: 300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-down;
+	animation: 800ms cubic-bezier(0.4, 0, 0.2, 1) both slide-down;
 }
 
 ::view-transition-new(root) {
-	animation: 300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-up;
+	animation: 800ms cubic-bezier(0.4, 0, 0.2, 1) both slide-up;
 }
