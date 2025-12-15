@@ -1,29 +1,66 @@
 ---
-// This component loads the 3D island immediately
+/**
+ * 3D Island scene with loading indicator
+ * Shows a spinning loader while Three.js initializes
+ */
 ---
 
-<div id="island-3d-container" class="island-container"></div>
+<div id="island-3d-container" class="island-container">
+  <div id="island-loader" class="loader">
+    <div class="spinner"></div>
+    <span class="loader-text">Loading 3D scene...</span>
+  </div>
+</div>
 
 <script>
   import { Island3D } from './Island3D';
 
-  const container = document.getElementById('island-3d-container');
+  function initIsland3D() {
+    const container = document.getElementById('island-3d-container');
+    const loader = document.getElementById('island-loader');
 
-  if (container) {
+    if (!container) return null;
+
     let island3D: Island3D | null = null;
 
-    // Initialize the 3D scene immediately
+    // Initialize the 3D scene
     if (container.clientWidth > 0 && container.clientHeight > 0) {
-      island3D = new Island3D(container);
+      island3D = new Island3D(container, {
+        onLoad: () => {
+          // Hide loader when scene is ready
+          if (loader) {
+            loader.classList.add('hidden');
+          }
+        },
+      });
     }
 
-    // Cleanup on navigation
-    document.addEventListener('astro:before-swap', () => {
-      if (island3D) {
-        island3D.dispose();
-      }
-    });
+    return island3D;
   }
+
+  let island3D = initIsland3D();
+
+  // Cleanup on navigation
+  document.addEventListener('astro:before-swap', () => {
+    if (island3D) {
+      island3D.dispose();
+      island3D = null;
+    }
+  });
+
+  // Re-initialize after navigation back to home
+  document.addEventListener('astro:after-swap', () => {
+    const container = document.getElementById('island-3d-container');
+    const loader = document.getElementById('island-loader');
+
+    if (container && !island3D) {
+      // Reset loader visibility
+      if (loader) {
+        loader.classList.remove('hidden');
+      }
+      island3D = initIsland3D();
+    }
+  });
 </script>
 
 <style>
@@ -47,10 +84,58 @@
     height: 100%;
   }
 
+  .loader {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    background: var(--gray-900);
+    border-radius: inherit;
+    transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
+    z-index: 10;
+  }
+
+  .loader.hidden {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .spinner {
+    width: 48px;
+    height: 48px;
+    border: 3px solid var(--gray-700);
+    border-top-color: var(--accent-regular);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  .loader-text {
+    font-size: var(--text-sm);
+    color: var(--gray-400);
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
   @media (min-width: 50em) {
     .island-container {
       height: 500px;
       border-radius: 4.5rem;
+    }
+
+    .spinner {
+      width: 56px;
+      height: 56px;
+      border-width: 4px;
     }
   }
 </style>

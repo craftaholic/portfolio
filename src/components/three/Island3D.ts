@@ -1,5 +1,9 @@
 import * as THREE from 'three';
 
+export interface Island3DOptions {
+  onLoad?: () => void;
+}
+
 export class Island3D {
   private scene: THREE.Scene;
   private camera: THREE.PerspectiveCamera;
@@ -11,7 +15,7 @@ export class Island3D {
   private currentRotation = { x: 0.2, y: 0 };
   private animationFrameId: number | null = null;
 
-  constructor(container: HTMLElement) {
+  constructor(container: HTMLElement, options: Island3DOptions = {}) {
     // Scene setup
     this.scene = new THREE.Scene();
 
@@ -47,6 +51,13 @@ export class Island3D {
 
     // Handle resize
     window.addEventListener('resize', () => this.onResize(container));
+
+    // Call onLoad callback after first render
+    if (options.onLoad) {
+      requestAnimationFrame(() => {
+        options.onLoad!();
+      });
+    }
   }
 
   private createPlaceholderIsland(): THREE.Group {

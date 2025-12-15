@@ -41,7 +41,9 @@ const { title, description } = Astro.props;
 	<body>
 		<div class="stack backgrounds">
 			<Nav />
-			<slot />
+			<main class="main-content">
+				<slot />
+			</main>
 			<Footer />
 		</div>
 		<BackToTop />
@@ -53,9 +55,15 @@ const { title, description } = Astro.props;
 
 		<style>
 			.backgrounds {
-				min-height: 100%;
+				min-height: 100vh;
 				isolation: isolate;
 				background-color: var(--gray-999);
+				display: flex;
+				flex-direction: column;
+			}
+
+			.main-content {
+				flex: 1;
 			}
 		</style>
 	</body>
