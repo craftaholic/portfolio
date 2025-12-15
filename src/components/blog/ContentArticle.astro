@@ -1,5 +1,5 @@
 ---
-import Icon from '../ui/Icon.astro';
+import BackLink from '../ui/BackLink.astro';
 import Pill from '../ui/Pill.astro';
 import PageContainer from '../layout/PageContainer.astro';
 
@@ -20,9 +20,7 @@ const { title, description, tags, backLink, wide = false } = Astro.props;
 
 <PageContainer wide={wide}>
 	<article class="content-article">
-		<a class="back-link" href={backLink.href}>
-			<Icon icon="arrow-left" /> {backLink.label}
-		</a>
+		<BackLink href={backLink.href} label={backLink.label} />
 
 		<header class="header">
 			<h1 class="title">{title}</h1>
@@ -41,21 +39,8 @@ const { title, description, tags, backLink, wide = false } = Astro.props;
 </PageContainer>
 
 <style>
-	.back-link {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.5rem;
-		color: var(--accent-regular);
-		text-decoration: none;
-		margin-bottom: 2rem;
-		transition: color var(--theme-transition);
-	}
-
-	.back-link:hover {
-		color: var(--accent-light);
-	}
-
 	.header {
+		margin-top: 1rem;
 		margin-bottom: 3rem;
 		padding-bottom: 2rem;
 		border-bottom: 1px solid var(--gray-800);

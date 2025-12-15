@@ -10,6 +10,7 @@ import PageContainer from '../../../components/layout/PageContainer.astro';
 import Placeholder from '../../../components/blog/Placeholder.astro';
 import BlogList from '../../../components/blog/BlogList.astro';
 import TagsFilter from '../../../components/blog/TagsFilter.astro';
+import SearchBox from '../../../components/blog/SearchBox.astro';
 import Pagination from '../../../components/blog/Pagination.astro';
 
 export async function getStaticPaths() {
@@ -40,6 +41,7 @@ const { data: posts, totalPages } = getPagination(sortedPosts, currentPage);
       align="start"
     />
     <TagsFilter tags={tags} />
+    <SearchBox posts={sortedPosts} />
     {posts.length === 0 ? (
       <Placeholder>No blog posts yet.</Placeholder>
     ) : (
