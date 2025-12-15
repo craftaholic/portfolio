@@ -17,29 +17,41 @@ import Icon from './Icon.astro';
 </button>
 
 <script>
-  const button = document.getElementById('back-to-top');
-
-  const toggleVisibility = () => {
+  // Define toggleVisibility at module level so it persists across page swaps
+  function toggleVisibility() {
+    const btn = document.getElementById('back-to-top');
+    if (!btn) return;
     if (window.scrollY > 300) {
-      button?.classList.add('visible');
+      btn.classList.add('visible');
     } else {
-      button?.classList.remove('visible');
+      btn.classList.remove('visible');
     }
-  };
+  }
 
+  function handleClick() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function initBackToTop() {
+    const button = document.getElementById('back-to-top');
+    if (!button) return;
+
+    // Remove old click listener (if any) and add new one
+    button.removeEventListener('click', handleClick);
+    button.addEventListener('click', handleClick);
+
+    // Initial visibility check
+    toggleVisibility();
+  }
+
+  // Set up scroll listener once (persists across page swaps)
   window.addEventListener('scroll', toggleVisibility, { passive: true });
 
-  button?.addEventListener('click', () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
+  // Initialize on first load
+  initBackToTop();
 
-  // Handle View Transitions
-  document.addEventListener('astro:after-swap', () => {
-    toggleVisibility();
-  });
-
-  // Initial check
-  toggleVisibility();
+  // Re-initialize after View Transitions swap
+  document.addEventListener('astro:after-swap', initBackToTop);
 </script>
 
 <style>
