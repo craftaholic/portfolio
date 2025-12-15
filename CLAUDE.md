@@ -62,7 +62,7 @@ bun astro ...            # Run Astro CLI commands (e.g., bun astro add, bun astr
 This site deploys to **Cloudflare Pages** as a static site:
 - Build command: `bun run build`
 - Output directory: `dist`
-- Custom domain: `wip.tommytran.me`
+- Custom domain: `craftaholic.sh`
 - **Automatic deployment**: Pushes to `main` branch trigger automatic deployments to Cloudflare Pages
 
 ## Architecture
@@ -162,7 +162,7 @@ Components are organized by purpose into subfolders:
 **Site Config** (`src/config.ts`):
 ```typescript
 export const SITE = {
-  website: 'https://wip.tommytran.me',
+  website: 'https://craftaholic.sh',
   author: 'Tommy Tran',
   title: 'Tommy Tran',
   description: 'Senior Cloud/DevOps/Platform Engineer based in Vietnam',

@@ -1,5 +1,5 @@
 export const SITE = {
-  website: 'https://wip.tommytran.me',
+  website: 'https://craftaholic.sh',
   author: 'Tommy Tran',
   title: 'Tommy Tran',
   description: 'Senior Cloud/DevOps/Platform Engineer based in Vietnam',

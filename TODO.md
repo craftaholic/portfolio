@@ -51,6 +51,9 @@
 - [x] Add search functionality
 - [x] Add tag filtering
 - [x] Add related posts
+- [ ] Add suggest changes at the bottom
+- [ ] Add comment section
+- [ ] (Optional) Add how many views
 - [ ] Write first blog post
 
 ---
