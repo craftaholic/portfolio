@@ -1,0 +1,71 @@
+---
+import type { Tag } from '../../utils/getUniqueTags';
+import Pill from '../ui/Pill.astro';
+
+interface Props {
+  tags: Tag[];
+  /** Max tags to show before "more" link */
+  maxTags?: number;
+}
+
+const { tags, maxTags = 8 } = Astro.props;
+const visibleTags = tags.slice(0, maxTags);
+const hasMore = tags.length > maxTags;
+---
+
+<div class="tags-filter">
+  <span class="tags-label">Tags:</span>
+  <div class="tags-list">
+    {visibleTags.map(({ tag, tagName }) => (
+      <a href={`/blog/tags/${tag}`} class="tag-link">
+        <Pill>{tagName}</Pill>
+      </a>
+    ))}
+    {hasMore && (
+      <a href="/blog/tags" class="more-tags">+{tags.length - maxTags} more</a>
+    )}
+  </div>
+</div>
+
+<style>
+  .tags-filter {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--gray-800);
+  }
+
+  .tags-label {
+    font-size: var(--text-sm);
+    color: var(--gray-400);
+  }
+
+  .tags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .tag-link {
+    text-decoration: none;
+    transition: transform var(--theme-transition);
+  }
+
+  .tag-link:hover {
+    transform: translateY(-2px);
+  }
+
+  .more-tags {
+    font-size: var(--text-sm);
+    color: var(--accent-regular);
+    text-decoration: none;
+  }
+
+  .more-tags:hover {
+    color: var(--accent-light);
+  }
+</style>

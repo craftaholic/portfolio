@@ -1,0 +1,138 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { formatDateShort } from '../../utils/dateFormat';
+import Pill from '../ui/Pill.astro';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+  /** Show compact version without description */
+  compact?: boolean;
+}
+
+const { post, compact = false } = Astro.props;
+const { data, id } = post;
+const href = `/blog/${id}`;
+const date = data.modDatetime ?? data.pubDatetime;
+---
+
+<a class:list={['blog-card', { compact }]} href={href}>
+  <div class="card-content">
+    <div class="meta">
+      <time datetime={date.toISOString()}>{formatDateShort(date)}</time>
+      {data.featured && <span class="featured">Featured</span>}
+    </div>
+    <h3 class="title">{data.title}</h3>
+    {!compact && (
+      <p class="description">{data.description}</p>
+    )}
+    <div class="tags">
+      {data.tags.slice(0, 3).map((tag) => (
+        <Pill>{tag}</Pill>
+      ))}
+      {data.tags.length > 3 && (
+        <span class="more-tags">+{data.tags.length - 3}</span>
+      )}
+    </div>
+  </div>
+</a>
+
+<style>
+  .blog-card {
+    display: block;
+    padding: 1.5rem;
+    background: var(--gradient-subtle);
+    border: 1px solid var(--gray-800);
+    border-radius: 0.75rem;
+    text-decoration: none;
+    transition: transform var(--theme-transition), box-shadow var(--theme-transition);
+  }
+
+  .blog-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: var(--text-sm);
+    color: var(--gray-400);
+  }
+
+  .featured {
+    padding: 0.125rem 0.5rem;
+    background-color: var(--accent-regular);
+    color: var(--accent-text-over);
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .title {
+    font-size: var(--text-lg);
+    font-weight: 600;
+    color: var(--gray-0);
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  .description {
+    font-size: var(--text-sm);
+    color: var(--gray-300);
+    margin: 0;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .more-tags {
+    font-size: var(--text-sm);
+    color: var(--gray-400);
+  }
+
+  /* Compact variant */
+  .blog-card.compact {
+    padding: 1rem;
+  }
+
+  .blog-card.compact .title {
+    font-size: var(--text-base);
+  }
+
+  .blog-card.compact .tags {
+    display: none;
+  }
+
+  @media (min-width: 50em) {
+    .blog-card {
+      padding: 2rem;
+      border-radius: 1rem;
+    }
+
+    .title {
+      font-size: var(--text-xl);
+    }
+
+    .description {
+      font-size: var(--text-base);
+      -webkit-line-clamp: 3;
+    }
+  }
+</style>

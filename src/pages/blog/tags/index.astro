@@ -1,0 +1,51 @@
+---
+import { getCollection } from 'astro:content';
+import { getUniqueTags } from '../../../utils/getUniqueTags';
+import Hero from '../../../components/sections/Hero.astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PageContainer from '../../../components/layout/PageContainer.astro';
+import Pill from '../../../components/ui/Pill.astro';
+
+const allPosts = await getCollection('blog');
+const tags = getUniqueTags(allPosts);
+---
+
+<BaseLayout title="Tags" description="Browse blog posts by tag">
+  <PageContainer>
+    <Hero
+      title="Tags"
+      tagline={`Browse ${tags.length} tags`}
+      align="start"
+    />
+    <ul class="tags-list">
+      {tags.map(({ tag, tagName }) => (
+        <li>
+          <a href={`/blog/tags/${tag}`} class="tag-link">
+            <Pill>{tagName}</Pill>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </PageContainer>
+</BaseLayout>
+
+<style>
+  .tags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .tag-link {
+    text-decoration: none;
+    transition: transform var(--theme-transition);
+    display: block;
+  }
+
+  .tag-link:hover {
+    transform: translateY(-2px);
+  }
+</style>

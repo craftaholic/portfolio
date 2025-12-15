@@ -1,0 +1,43 @@
+---
+import { getCollection } from 'astro:content';
+import { getUniqueTags } from '../../../utils/getUniqueTags';
+import { getPostsByTag } from '../../../utils/getPostsByTag';
+import Hero from '../../../components/sections/Hero.astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PageContainer from '../../../components/layout/PageContainer.astro';
+import Placeholder from '../../../components/blog/Placeholder.astro';
+import BlogList from '../../../components/blog/BlogList.astro';
+import BackLink from '../../../components/ui/BackLink.astro';
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('blog');
+  const tags = getUniqueTags(allPosts);
+
+  return tags.map(({ tag, tagName }) => ({
+    params: { tag },
+    props: { tagName },
+  }));
+}
+
+const { tag } = Astro.params;
+const { tagName } = Astro.props;
+
+const allPosts = await getCollection('blog');
+const posts = getPostsByTag(allPosts, tag);
+---
+
+<BaseLayout title={`Posts tagged "${tagName}"`} description={`Blog posts tagged with ${tagName}`}>
+  <PageContainer>
+    <BackLink href="/blog/tags" label="All tags" />
+    <Hero
+      title={tagName}
+      tagline={`${posts.length} post${posts.length !== 1 ? 's' : ''} tagged`}
+      align="start"
+    />
+    {posts.length === 0 ? (
+      <Placeholder>No posts with this tag.</Placeholder>
+    ) : (
+      <BlogList posts={posts} />
+    )}
+  </PageContainer>
+</BaseLayout>

@@ -35,6 +35,8 @@ const { title, description, tags, backLink, wide = false } = Astro.props;
 		<div class="content">
 			<slot />
 		</div>
+
+		<slot name="after" />
 	</article>
 </PageContainer>
 

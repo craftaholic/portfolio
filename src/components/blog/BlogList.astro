@@ -1,0 +1,29 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import BlogCard from './BlogCard.astro';
+
+interface Props {
+  posts: CollectionEntry<'blog'>[];
+}
+
+const { posts } = Astro.props;
+---
+
+<ul class="posts-list">
+  {posts.map((post) => (
+    <li>
+      <BlogCard post={post} />
+    </li>
+  ))}
+</ul>
+
+<style>
+  .posts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+</style>

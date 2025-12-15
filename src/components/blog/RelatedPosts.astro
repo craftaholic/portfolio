@@ -1,0 +1,53 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import BlogCard from './BlogCard.astro';
+
+interface Props {
+  posts: CollectionEntry<'blog'>[];
+}
+
+const { posts } = Astro.props;
+---
+
+{posts.length > 0 && (
+  <aside class="related-posts">
+    <h2 class="related-title">Related Posts</h2>
+    <ul class="related-list">
+      {posts.map((post) => (
+        <li>
+          <BlogCard post={post} compact />
+        </li>
+      ))}
+    </ul>
+  </aside>
+)}
+
+<style>
+  .related-posts {
+    margin-top: 4rem;
+    padding-top: 3rem;
+    border-top: 1px solid var(--gray-800);
+  }
+
+  .related-title {
+    font-size: var(--text-lg);
+    color: var(--gray-0);
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .related-list {
+    display: grid;
+    gap: 1rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  @media (min-width: 50em) {
+    .related-list {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

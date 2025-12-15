@@ -1,15 +1,21 @@
 ---
 import { getCollection } from 'astro:content';
+import { getSortedPosts } from '../utils/getSortedPosts';
+import { getPagination } from '../utils/getPagination';
+import { getUniqueTags } from '../utils/getUniqueTags';
 import Hero from '../components/sections/Hero.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageContainer from '../components/layout/PageContainer.astro';
 import Placeholder from '../components/blog/Placeholder.astro';
-import Grid from '../components/ui/Grid.astro';
-import PortfolioPreview from '../components/blog/PortfolioPreview.astro';
+import BlogList from '../components/blog/BlogList.astro';
+import TagsFilter from '../components/blog/TagsFilter.astro';
+import SearchBox from '../components/blog/SearchBox.astro';
+import Pagination from '../components/blog/Pagination.astro';
 
-const posts = (await getCollection('blog'))
-	.filter(post => !post.data.draft)
-	.sort((a, b) => b.data.pubDatetime.valueOf() - a.data.pubDatetime.valueOf());
+const allPosts = await getCollection('blog');
+const sortedPosts = getSortedPosts(allPosts);
+const tags = getUniqueTags(allPosts);
+const { data: posts, totalPages } = getPagination(sortedPosts, 1);
 ---
 
 <BaseLayout title="Blog" description="My blog posts">
@@ -19,16 +25,13 @@ const posts = (await getCollection('blog'))
 			tagline="Thoughts, ideas, and learnings."
 			align="start"
 		/>
+		<SearchBox posts={sortedPosts} />
+		<TagsFilter tags={tags} />
 		{posts.length === 0 ? (
 			<Placeholder>No blog posts yet.</Placeholder>
 		) : (
-			<Grid variant="offset">
-				{posts.map((post) => (
-					<li>
-						<PortfolioPreview project={post} />
-					</li>
-				))}
-			</Grid>
+			<BlogList posts={posts} />
 		)}
+		<Pagination currentPage={1} totalPages={totalPages} />
 	</PageContainer>
 </BaseLayout>

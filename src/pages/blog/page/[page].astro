@@ -1,0 +1,50 @@
+---
+import { getCollection } from 'astro:content';
+import { SITE } from '../../../config';
+import { getSortedPosts } from '../../../utils/getSortedPosts';
+import { getPagination } from '../../../utils/getPagination';
+import { getUniqueTags } from '../../../utils/getUniqueTags';
+import Hero from '../../../components/sections/Hero.astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PageContainer from '../../../components/layout/PageContainer.astro';
+import Placeholder from '../../../components/blog/Placeholder.astro';
+import BlogList from '../../../components/blog/BlogList.astro';
+import TagsFilter from '../../../components/blog/TagsFilter.astro';
+import Pagination from '../../../components/blog/Pagination.astro';
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('blog');
+  const sortedPosts = getSortedPosts(allPosts);
+  const totalPages = Math.ceil(sortedPosts.length / SITE.postPerPage);
+
+  // Generate paths for page 2 onwards (page 1 is handled by /blog)
+  return Array.from({ length: totalPages - 1 }, (_, i) => ({
+    params: { page: String(i + 2) },
+  }));
+}
+
+const { page } = Astro.params;
+const currentPage = parseInt(page);
+
+const allPosts = await getCollection('blog');
+const sortedPosts = getSortedPosts(allPosts);
+const tags = getUniqueTags(allPosts);
+const { data: posts, totalPages } = getPagination(sortedPosts, currentPage);
+---
+
+<BaseLayout title={`Blog - Page ${currentPage}`} description="My blog posts">
+  <PageContainer>
+    <Hero
+      title="Blog"
+      tagline="Thoughts, ideas, and learnings."
+      align="start"
+    />
+    <TagsFilter tags={tags} />
+    {posts.length === 0 ? (
+      <Placeholder>No blog posts yet.</Placeholder>
+    ) : (
+      <BlogList posts={posts} />
+    )}
+    <Pagination currentPage={currentPage} totalPages={totalPages} />
+  </PageContainer>
+</BaseLayout>

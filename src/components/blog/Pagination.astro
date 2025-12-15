@@ -1,0 +1,169 @@
+---
+import Icon from '../ui/Icon.astro';
+
+interface Props {
+  currentPage: number;
+  totalPages: number;
+  basePath?: string;
+}
+
+const { currentPage, totalPages, basePath = '/blog' } = Astro.props;
+
+const hasPrevPage = currentPage > 1;
+const hasNextPage = currentPage < totalPages;
+
+const getPageUrl = (page: number) => {
+  if (page === 1) return basePath;
+  return `${basePath}/page/${page}`;
+};
+
+// Generate page numbers to show
+const getPageNumbers = () => {
+  const pages: (number | 'ellipsis')[] = [];
+  const showPages = 5; // Max pages to show
+
+  if (totalPages <= showPages) {
+    // Show all pages
+    for (let i = 1; i <= totalPages; i++) pages.push(i);
+  } else {
+    // Always show first page
+    pages.push(1);
+
+    if (currentPage > 3) pages.push('ellipsis');
+
+    // Show pages around current
+    const start = Math.max(2, currentPage - 1);
+    const end = Math.min(totalPages - 1, currentPage + 1);
+
+    for (let i = start; i <= end; i++) pages.push(i);
+
+    if (currentPage < totalPages - 2) pages.push('ellipsis');
+
+    // Always show last page
+    if (totalPages > 1) pages.push(totalPages);
+  }
+
+  return pages;
+};
+
+const pageNumbers = getPageNumbers();
+---
+
+{totalPages > 1 && (
+  <nav class="pagination" aria-label="Blog pagination">
+    <a
+      href={hasPrevPage ? getPageUrl(currentPage - 1) : undefined}
+      class:list={['nav-link', { disabled: !hasPrevPage }]}
+      aria-disabled={!hasPrevPage}
+    >
+      <Icon icon="arrow-left" size="1em" />
+      <span>Prev</span>
+    </a>
+
+    <div class="page-numbers">
+      {pageNumbers.map((page) =>
+        page === 'ellipsis' ? (
+          <span class="ellipsis">...</span>
+        ) : (
+          <a
+            href={getPageUrl(page)}
+            class:list={['page-link', { active: page === currentPage }]}
+            aria-current={page === currentPage ? 'page' : undefined}
+          >
+            {page}
+          </a>
+        )
+      )}
+    </div>
+
+    <a
+      href={hasNextPage ? getPageUrl(currentPage + 1) : undefined}
+      class:list={['nav-link', { disabled: !hasNextPage }]}
+      aria-disabled={!hasNextPage}
+    >
+      <span>Next</span>
+      <Icon icon="arrow-right" size="1em" />
+    </a>
+  </nav>
+)}
+
+<style>
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--gray-800);
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    color: var(--gray-300);
+    text-decoration: none;
+    border-radius: 0.5rem;
+    transition: color var(--theme-transition), background-color var(--theme-transition);
+  }
+
+  .nav-link:hover:not(.disabled) {
+    color: var(--gray-0);
+    background-color: var(--gray-800);
+  }
+
+  .nav-link.disabled {
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  .page-numbers {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .page-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.5rem;
+    height: 2.5rem;
+    padding: 0.5rem;
+    color: var(--gray-300);
+    text-decoration: none;
+    border-radius: 0.5rem;
+    transition: color var(--theme-transition), background-color var(--theme-transition);
+  }
+
+  .page-link:hover {
+    color: var(--gray-0);
+    background-color: var(--gray-800);
+  }
+
+  .page-link.active {
+    color: var(--accent-text-over);
+    background-color: var(--accent-regular);
+  }
+
+  .ellipsis {
+    color: var(--gray-500);
+    padding: 0 0.5rem;
+  }
+
+  @media (max-width: 50em) {
+    .page-numbers {
+      display: none;
+    }
+
+    .nav-link span {
+      display: none;
+    }
+
+    .nav-link {
+      padding: 0.75rem;
+    }
+  }
+</style>

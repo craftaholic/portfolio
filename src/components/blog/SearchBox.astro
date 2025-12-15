@@ -1,0 +1,266 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Icon from '../ui/Icon.astro';
+
+interface Props {
+  posts: CollectionEntry<'blog'>[];
+}
+
+const { posts } = Astro.props;
+
+// Prepare search data (only non-draft posts)
+const searchData = posts.map((post) => ({
+  id: post.id,
+  title: post.data.title,
+  description: post.data.description,
+  tags: post.data.tags,
+}));
+---
+
+<div class="search-container">
+  <div class="search-input-wrapper">
+    <Icon icon="magnifying-glass" size="1.25em" />
+    <input
+      type="search"
+      id="blog-search"
+      placeholder="Search posts..."
+      autocomplete="off"
+    />
+    <kbd class="search-shortcut">Ctrl+K</kbd>
+  </div>
+  <div id="search-results" class="search-results" hidden></div>
+</div>
+
+<script define:vars={{ searchData }}>
+  const searchInput = document.getElementById('blog-search');
+  const searchResults = document.getElementById('search-results');
+
+  // Search function
+  function searchPosts(query) {
+    if (!query || query.length < 2) return [];
+
+    const normalizedQuery = query.toLowerCase().trim();
+    const terms = normalizedQuery.split(/\s+/);
+
+    return searchData
+      .map((post) => {
+        let score = 0;
+        const titleLower = post.title.toLowerCase();
+        const descLower = post.description.toLowerCase();
+        const tagsLower = post.tags.map((t) => t.toLowerCase());
+
+        terms.forEach((term) => {
+          // Title matches (highest priority)
+          if (titleLower.includes(term)) score += 10;
+          if (titleLower.startsWith(term)) score += 5;
+
+          // Description matches
+          if (descLower.includes(term)) score += 3;
+
+          // Tag matches
+          if (tagsLower.some((t) => t.includes(term))) score += 5;
+        });
+
+        return { ...post, score };
+      })
+      .filter((post) => post.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 5);
+  }
+
+  // Render results
+  function renderResults(results, query) {
+    if (results.length === 0) {
+      searchResults.innerHTML = `<div class="no-results">No posts found for "${query}"</div>`;
+      return;
+    }
+
+    searchResults.innerHTML = results
+      .map(
+        (post) => `
+        <a href="/blog/${post.id}" class="search-result-item">
+          <span class="result-title">${highlightMatch(post.title, query)}</span>
+          <span class="result-description">${highlightMatch(truncate(post.description, 80), query)}</span>
+        </a>
+      `
+      )
+      .join('');
+  }
+
+  // Highlight matching text
+  function highlightMatch(text, query) {
+    const terms = query.toLowerCase().split(/\s+/);
+    let result = text;
+    terms.forEach((term) => {
+      if (term.length >= 2) {
+        const regex = new RegExp(`(${escapeRegex(term)})`, 'gi');
+        result = result.replace(regex, '<mark>$1</mark>');
+      }
+    });
+    return result;
+  }
+
+  function escapeRegex(str) {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  function truncate(str, len) {
+    return str.length > len ? str.slice(0, len) + '...' : str;
+  }
+
+  // Event handlers
+  let debounceTimer;
+  searchInput.addEventListener('input', (e) => {
+    clearTimeout(debounceTimer);
+    const query = e.target.value.trim();
+
+    if (query.length < 2) {
+      searchResults.hidden = true;
+      return;
+    }
+
+    debounceTimer = setTimeout(() => {
+      const results = searchPosts(query);
+      renderResults(results, query);
+      searchResults.hidden = false;
+    }, 150);
+  });
+
+  // Close results on click outside
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.search-container')) {
+      searchResults.hidden = true;
+    }
+  });
+
+  // Focus search on Ctrl+K
+  document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+      e.preventDefault();
+      searchInput.focus();
+    }
+    // Close on Escape
+    if (e.key === 'Escape') {
+      searchResults.hidden = true;
+      searchInput.blur();
+    }
+  });
+
+  // Handle View Transitions
+  document.addEventListener('astro:after-swap', () => {
+    searchResults.hidden = true;
+    searchInput.value = '';
+  });
+</script>
+
+<style>
+  .search-container {
+    position: relative;
+    margin-bottom: 2rem;
+  }
+
+  .search-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: var(--gray-900);
+    border: 1px solid var(--gray-800);
+    border-radius: 0.5rem;
+    transition: border-color var(--theme-transition);
+  }
+
+  .search-input-wrapper:focus-within {
+    border-color: var(--accent-regular);
+  }
+
+  .search-input-wrapper :global(svg) {
+    color: var(--gray-400);
+    flex-shrink: 0;
+  }
+
+  input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--gray-0);
+    font-size: var(--text-base);
+    font-family: inherit;
+  }
+
+  input::placeholder {
+    color: var(--gray-500);
+  }
+
+  .search-shortcut {
+    display: none;
+    padding: 0.25rem 0.5rem;
+    background: var(--gray-800);
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    color: var(--gray-400);
+  }
+
+  @media (min-width: 50em) {
+    .search-shortcut {
+      display: block;
+    }
+  }
+
+  .search-results {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: 0;
+    right: 0;
+    background: var(--gray-900);
+    border: 1px solid var(--gray-800);
+    border-radius: 0.5rem;
+    box-shadow: var(--shadow-lg);
+    z-index: 100;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  .search-results :global(.search-result-item) {
+    display: block;
+    padding: 1rem;
+    text-decoration: none;
+    border-bottom: 1px solid var(--gray-800);
+    transition: background-color var(--theme-transition);
+  }
+
+  .search-results :global(.search-result-item:last-child) {
+    border-bottom: none;
+  }
+
+  .search-results :global(.search-result-item:hover) {
+    background-color: var(--gray-800);
+  }
+
+  .search-results :global(.result-title) {
+    display: block;
+    color: var(--gray-0);
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+  }
+
+  .search-results :global(.result-description) {
+    display: block;
+    color: var(--gray-400);
+    font-size: var(--text-sm);
+  }
+
+  .search-results :global(mark) {
+    background-color: var(--accent-regular);
+    color: var(--accent-text-over);
+    border-radius: 0.125rem;
+    padding: 0 0.125rem;
+  }
+
+  .search-results :global(.no-results) {
+    padding: 1rem;
+    color: var(--gray-400);
+    text-align: center;
+  }
+</style>

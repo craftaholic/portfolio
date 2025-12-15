@@ -1,0 +1,30 @@
+---
+import Icon from './Icon.astro';
+
+interface Props {
+  href: string;
+  label: string;
+}
+
+const { href, label } = Astro.props;
+---
+
+<a class="back-link" href={href}>
+  <Icon icon="arrow-left" /> {label}
+</a>
+
+<style>
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--accent-regular);
+    text-decoration: none;
+    margin-bottom: 1rem;
+    transition: color var(--theme-transition);
+  }
+
+  .back-link:hover {
+    color: var(--accent-light);
+  }
+</style>
