@@ -1,0 +1,148 @@
+---
+/**
+ * Social share buttons for blog posts
+ * Generates share links for Facebook, X (Twitter), LinkedIn, and copy link
+ */
+import Icon from '../ui/Icon.astro';
+import { SITE } from '../../config';
+
+interface Props {
+  title: string;
+  slug: string;
+}
+
+const { title, slug } = Astro.props;
+const postUrl = `${SITE.website}/blog/${slug}`;
+const encodedUrl = encodeURIComponent(postUrl);
+const encodedTitle = encodeURIComponent(title);
+
+const shareLinks = [
+  {
+    name: 'Facebook',
+    icon: 'facebook-logo',
+    url: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
+  },
+  {
+    name: 'X',
+    icon: 'x-logo',
+    url: `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`,
+  },
+  {
+    name: 'LinkedIn',
+    icon: 'linkedin-logo',
+    url: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
+  },
+];
+---
+
+<div class="share-section">
+  <h3 class="share-title">Share this post</h3>
+  <div class="share-buttons">
+    {shareLinks.map(({ name, icon, url }) => (
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="share-button"
+        aria-label={`Share on ${name}`}
+        title={`Share on ${name}`}
+      >
+        <Icon icon={icon} size="1.25em" />
+        <span class="share-label">{name}</span>
+      </a>
+    ))}
+    <button
+      class="share-button copy-link"
+      data-url={postUrl}
+      aria-label="Copy link"
+      title="Copy link"
+    >
+      <Icon icon="share" size="1.25em" />
+      <span class="share-label">Copy link</span>
+    </button>
+  </div>
+</div>
+
+<script>
+  const copyButton = document.querySelector('.copy-link');
+
+  copyButton?.addEventListener('click', async () => {
+    const url = copyButton.getAttribute('data-url');
+    if (!url) return;
+
+    try {
+      await navigator.clipboard.writeText(url);
+      const label = copyButton.querySelector('.share-label');
+      if (label) {
+        const originalText = label.textContent;
+        label.textContent = 'Copied!';
+        setTimeout(() => {
+          label.textContent = originalText;
+        }, 2000);
+      }
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
+  });
+</script>
+
+<style>
+  .share-section {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--gray-800);
+  }
+
+  .share-title {
+    font-size: var(--text-base);
+    color: var(--gray-300);
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 500;
+  }
+
+  .share-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .share-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: var(--gray-900);
+    border: 1px solid var(--gray-800);
+    border-radius: 0.5rem;
+    color: var(--gray-300);
+    text-decoration: none;
+    font-size: var(--text-sm);
+    cursor: pointer;
+    transition:
+      background-color var(--theme-transition),
+      color var(--theme-transition),
+      border-color var(--theme-transition);
+  }
+
+  .share-button:hover {
+    background: var(--gray-800);
+    color: var(--gray-0);
+    border-color: var(--gray-700);
+  }
+
+  .share-label {
+    font-family: inherit;
+  }
+
+  @media (max-width: 50em) {
+    .share-label {
+      display: none;
+    }
+
+    .share-button {
+      padding: 0.75rem;
+    }
+  }
+</style>

@@ -3,22 +3,22 @@
 ## 🎯 Project Tasks
 
 ### 1. Adding 3D Model Island
-- [ ] Create Three.js scene component
-- [ ] Implement mouse/touch controls for island rotation
-- [ ] Add placeholder 3D model for testing
-- [ ] Integrate 3D scene into hero section
+- [x] Create Three.js scene component
+- [x] Implement mouse/touch controls for island rotation
+- [x] Add placeholder 3D model for testing
+- [x] Integrate 3D scene into hero section
 - [ ] Add loading state/spinner
 - [ ] Optimize performance (lazy loading, LOD)
-- [ ] Test responsive behavior on mobile/tablet
+- [x] Test responsive behavior on mobile/tablet
 
 ### 2. Update Background Color Scheme
-- [ ] Design new color palette (hacky/dev theme)
+- [x] Design new color palette (hacky/dev theme)
   - Dark mode colors
   - Light mode colors (if applicable)
   - Accent colors
-- [ ] Update CSS custom properties in `src/styles/global.css`
-- [ ] Update background images in `public/assets/backgrounds/`
-- [ ] Test theme toggle functionality
+- [x] Update CSS custom properties in `src/styles/global.css`
+- [x] Update background images in `public/assets/backgrounds/`
+- [x] Test theme toggle functionality
 - [ ] Ensure accessibility (contrast ratios)
 
 ### 3. Fill In Personal Information
@@ -40,14 +40,17 @@
 - [ ] Test and optimize loading times
 
 ### 5. Adding Blog Section
-- [ ] Set up blog content collection in `src/content/blog/`
-- [ ] Define blog post schema (frontmatter)
-- [ ] Create blog listing page (`src/pages/blog.astro`)
-- [ ] Create blog post template (`src/pages/blog/[...slug].astro`)
-- [ ] Add blog to navigation menu
-- [ ] Style blog post layout
-- [ ] Add pagination (if needed)
-- [ ] Add blog preview component
+- [x] Set up blog content collection in `src/content/blog/`
+- [x] Define blog post schema (frontmatter)
+- [x] Create blog listing page (`src/pages/blog.astro`)
+- [x] Create blog post template (`src/pages/blog/[...slug].astro`)
+- [x] Add blog to navigation menu
+- [x] Style blog post layout
+- [x] Add pagination (if needed)
+- [x] Add blog preview component
+- [x] Add search functionality
+- [x] Add tag filtering
+- [x] Add related posts
 - [ ] Write first blog post
 
 ---

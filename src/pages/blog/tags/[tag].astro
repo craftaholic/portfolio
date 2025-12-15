@@ -27,7 +27,7 @@ const posts = getPostsByTag(allPosts, tag);
 ---
 
 <BaseLayout title={`Posts tagged "${tagName}"`} description={`Blog posts tagged with ${tagName}`}>
-  <PageContainer>
+  <PageContainer size="medium">
     <BackLink href="/blog/tags" label="All tags" />
     <Hero
       title={tagName}

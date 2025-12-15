@@ -2,6 +2,8 @@
 import BackLink from '../ui/BackLink.astro';
 import Pill from '../ui/Pill.astro';
 import PageContainer from '../layout/PageContainer.astro';
+import SharePost from './SharePost.astro';
+import { formatDate, formatDateTime } from '../../utils/dateFormat';
 
 interface Props {
 	title: string;
@@ -13,9 +15,13 @@ interface Props {
 	};
 	/** Use wider container (65rem) for blog posts */
 	wide?: boolean;
+	/** Publish date for blog posts */
+	pubDate?: Date;
+	/** Post slug for share links */
+	slug?: string;
 }
 
-const { title, description, tags, backLink, wide = false } = Astro.props;
+const { title, description, tags, backLink, wide = false, pubDate, slug } = Astro.props;
 ---
 
 <PageContainer wide={wide}>
@@ -23,6 +29,11 @@ const { title, description, tags, backLink, wide = false } = Astro.props;
 		<BackLink href={backLink.href} label={backLink.label} />
 
 		<header class="header">
+			{pubDate && (
+				<time class="pub-date" datetime={formatDateTime(pubDate)}>
+					{formatDate(pubDate)}
+				</time>
+			)}
 			<h1 class="title">{title}</h1>
 			<p class="description">{description}</p>
 			<div class="tags">
@@ -34,6 +45,8 @@ const { title, description, tags, backLink, wide = false } = Astro.props;
 			<slot />
 		</div>
 
+		{slug && <SharePost title={title} slug={slug} />}
+
 		<slot name="after" />
 	</article>
 </PageContainer>
@@ -44,6 +57,15 @@ const { title, description, tags, backLink, wide = false } = Astro.props;
 		margin-bottom: 3rem;
 		padding-bottom: 2rem;
 		border-bottom: 1px solid var(--gray-800);
+	}
+
+	.pub-date {
+		display: block;
+		font-size: var(--text-sm);
+		color: var(--gray-400);
+		margin-bottom: 0.5rem;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
 	}
 
 	.title {

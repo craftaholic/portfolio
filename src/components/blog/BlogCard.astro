@@ -27,7 +27,7 @@ const date = data.modDatetime ?? data.pubDatetime;
     )}
     <div class="tags">
       {data.tags.slice(0, 3).map((tag) => (
-        <Pill>{tag}</Pill>
+        <Pill size="sm">{tag}</Pill>
       ))}
       {data.tags.length > 3 && (
         <span class="more-tags">+{data.tags.length - 3}</span>

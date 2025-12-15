@@ -1,0 +1,97 @@
+---
+/**
+ * Floating back-to-top button that appears when scrolling down
+ * Shows after scrolling past 300px, smooth scrolls to top on click
+ */
+import Icon from './Icon.astro';
+---
+
+<button
+  id="back-to-top"
+  class="back-to-top"
+  aria-label="Back to top"
+  title="Back to top"
+>
+  <Icon icon="arrow-up" size="1.25em" />
+  <span class="label">Back to top</span>
+</button>
+
+<script>
+  const button = document.getElementById('back-to-top');
+
+  const toggleVisibility = () => {
+    if (window.scrollY > 300) {
+      button?.classList.add('visible');
+    } else {
+      button?.classList.remove('visible');
+    }
+  };
+
+  window.addEventListener('scroll', toggleVisibility, { passive: true });
+
+  button?.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // Handle View Transitions
+  document.addEventListener('astro:after-swap', () => {
+    toggleVisibility();
+  });
+
+  // Initial check
+  toggleVisibility();
+</script>
+
+<style>
+  .back-to-top {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: var(--gray-900);
+    border: 1px solid var(--gray-800);
+    border-radius: 0.5rem;
+    color: var(--gray-300);
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(1rem);
+    transition:
+      opacity var(--theme-transition),
+      visibility var(--theme-transition),
+      transform var(--theme-transition),
+      background-color var(--theme-transition),
+      color var(--theme-transition);
+    z-index: 100;
+  }
+
+  .back-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .back-to-top:hover {
+    background: var(--gray-800);
+    color: var(--gray-0);
+  }
+
+  .label {
+    font-size: var(--text-sm);
+  }
+
+  @media (max-width: 50em) {
+    .back-to-top {
+      bottom: 1rem;
+      right: 1rem;
+      padding: 0.75rem;
+    }
+
+    .label {
+      display: none;
+    }
+  }
+</style>

@@ -18,7 +18,7 @@ const hasMore = tags.length > maxTags;
   <div class="tags-list">
     {visibleTags.map(({ tag, tagName }) => (
       <a href={`/blog/tags/${tag}`} class="tag-link">
-        <Pill>{tagName}</Pill>
+        <Pill size="sm">{tagName}</Pill>
       </a>
     ))}
     {hasMore && (
