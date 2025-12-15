@@ -39,6 +39,11 @@ This is a personal portfolio built with Astro 5 and Three.js. The project uses B
 - **Consistent patterns**: Follow existing patterns in the codebase
 - **Documentation**: Add comments for complex logic, but prefer self-documenting code
 
+### 6. Single Source of Truth
+- **Configuration in `src/config.ts`**: All site-wide constants (nav links, social links, site metadata) must be defined in `config.ts`
+- **Import from config**: Components must import `NAV_LINKS`, `SITE.socialLinks`, etc. from config - never hardcode these values
+- **No duplicate data**: If the same data appears in multiple places, consolidate to `config.ts`
+
 ## Commands
 
 All commands use Bun:
@@ -67,8 +72,7 @@ This site deploys to **Cloudflare Pages** as a static site:
 ```
 src/
 ├── assets/               # Images and static assets
-│   ├── images/          # Blog and project images
-│   └── socialIcons.ts   # Social media icon definitions
+│   └── images/          # Blog and project images
 ├── components/          # Reusable Astro components
 │   ├── layout/         # Page structure components
 │   ├── ui/             # Reusable UI elements
@@ -82,7 +86,7 @@ src/
 ├── pages/              # Route pages (pure composition, no CSS)
 ├── styles/             # Global CSS only
 ├── utils/              # Utility functions
-├── config.ts           # Site-wide constants and configuration
+├── config.ts           # Site-wide constants and configuration (SINGLE SOURCE OF TRUTH)
 └── content.config.ts   # Content collection schemas
 ```
 
@@ -106,18 +110,21 @@ Content is managed through Astro's content collections system:
 Components are organized by purpose into subfolders:
 
 **Layout Components** (`src/components/layout/`):
-- **Nav.astro**: Main navigation with theme toggle
-- **Footer.astro**: Site footer with social links
-- **PageContainer.astro**: Consistent max-width container (42rem for portfolio, 65rem for blog)
+- **Nav.astro**: Main navigation with theme toggle (imports `NAV_LINKS` from config)
+- **Footer.astro**: Site footer with social links (imports `SITE.socialLinks` from config)
+- **PageContainer.astro**: Consistent max-width container with `wide` prop
+  - Default: `max-width: 42rem` for portfolio pages
+  - `wide={true}`: `max-width: 65rem` for blog content
 - **MainHead.astro**: HTML head with meta tags and font loading
 
 **UI Components** (`src/components/ui/`):
 - **Icon.astro**: SVG icon component with path definitions
 - **Pill.astro**: Tag/badge UI element
-- **ThemeToggle.astro**: Dark/light mode switcher
+- **ThemeToggle.astro**: Dark/light mode switcher (persists to localStorage)
 - **Grid.astro**: Responsive grid layout
 - **LinksList.astro**: List of links with arrow indicators
 - **SimpleText.astro**: Text with consistent styling
+- **ReadingProgressBar.astro**: Scroll progress indicator for blog posts
 
 **Section Components** (`src/components/sections/`):
 - **Hero.astro**: Hero section (supports greeting or title/tagline patterns)
@@ -134,8 +141,10 @@ Components are organized by purpose into subfolders:
 - **Island3D.ts**: Three.js scene implementation with low-poly island
 
 **Blog Components** (`src/components/blog/`):
+- **ContentArticle.astro**: Shared layout for blog/work detail pages with markdown styling
+  - Props: `title`, `description`, `tags`, `backLink`, `wide`
+  - Includes all markdown content styling (headings, code, tables, blockquotes, etc.)
 - **PortfolioPreview.astro**: Card preview for work/blog items
-- **WorkDetailLayout.astro**: Layout wrapper for work details
 - **Placeholder.astro**: "Coming soon" placeholder text
 
 ### Utility Functions
@@ -148,18 +157,39 @@ Components are organized by purpose into subfolders:
 - **getPostsByTag.ts**: Filter posts by tag
 - **dateFormat.ts**: Date formatting utilities
 
-### Configuration
+### Configuration (Single Source of Truth)
 
 **Site Config** (`src/config.ts`):
 ```typescript
 export const SITE = {
   website: 'https://wip.tommytran.me',
   author: 'Tommy Tran',
+  title: 'Tommy Tran',
+  description: 'Senior Cloud/DevOps/Platform Engineer based in Vietnam',
+  locale: 'en-US',
   postPerPage: 5,
-  socialLinks: [...],
-}
+  socialLinks: [
+    { href: 'https://github.com/craftaholic', label: 'GitHub' },
+    { href: 'https://www.linkedin.com/in/tranthangportfolio/', label: 'LinkedIn' },
+    { href: 'https://blog.tommytran.me', label: 'Blog' },
+  ],
+} as const;
 
-export const NAV_LINKS = [...]
+export const NAV_LINKS = [
+  { label: 'Home', href: '/' },
+  { label: 'Work', href: '/work/' },
+  { label: 'Blog', href: '/blog/' },
+  { label: 'Awards', href: '/awards/' },
+  { label: 'Uses', href: '/uses/' },
+] as const;
+```
+
+**Usage in components**:
+```astro
+---
+import { SITE, NAV_LINKS } from '../config';
+---
+<!-- Use SITE.socialLinks, NAV_LINKS, SITE.author, etc. -->
 ```
 
 ### Styling
@@ -192,9 +222,9 @@ All pages are pure component composition with ZERO CSS:
 
 - **`src/pages/index.astro`**: Homepage with Hero (3D island), Bio timeline, Skills, Social links
 - **`src/pages/work.astro`**: Work experience listing with grid
-- **`src/pages/work/[...slug].astro`**: Individual work experience detail pages
+- **`src/pages/work/[...slug].astro`**: Individual work detail pages (uses `ContentArticle`)
 - **`src/pages/blog.astro`**: Blog posts listing with grid
-- **`src/pages/blog/[...slug].astro`**: Individual blog post pages (wider container, progress bar)
+- **`src/pages/blog/[...slug].astro`**: Individual blog post pages (uses `ContentArticle` with `wide` prop, includes `ReadingProgressBar`)
 - **`src/pages/awards.astro`**: Awards page (placeholder)
 - **`src/pages/uses.astro`**: Uses/setup page (placeholder)
 - **`src/pages/404.astro`**: Custom 404 error page
@@ -203,8 +233,9 @@ All pages are pure component composition with ZERO CSS:
 
 **Implemented:**
 - Blog post listing with draft filtering
-- Individual blog post pages with progress bar
-- Wider content container (65rem vs 42rem) for better readability
+- Individual blog post pages with progress bar (`ReadingProgressBar` component)
+- Wider content container (65rem vs 42rem) via `PageContainer wide` prop
+- Shared markdown styling via `ContentArticle` component
 - Table styling with horizontal scroll
 - Code block styling
 - Content from external blog repository integrated locally
@@ -223,14 +254,15 @@ When creating a new page:
 1. Import `BaseLayout` and `PageContainer`
 2. Import necessary section components (`Section`, `Hero`, etc.)
 3. Compose the page using components only - NO `<style>` blocks allowed
-4. Use placeholder components for "coming soon" sections
+4. Use `PageContainer wide` prop for content-heavy pages (like blog posts)
+5. Use placeholder components for "coming soon" sections
 
 Example:
 ```astro
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import PageContainer from '../components/PageContainer.astro';
-import Section from '../components/Section.astro';
+import PageContainer from '../components/layout/PageContainer.astro';
+import Section from '../components/sections/Section.astro';
 ---
 
 <BaseLayout>
@@ -239,6 +271,35 @@ import Section from '../components/Section.astro';
       <p>Content here</p>
     </Section>
   </PageContainer>
+</BaseLayout>
+```
+
+### Creating Content Detail Pages
+
+For pages that display markdown content (blog posts, work details):
+1. Use `ContentArticle` component - it handles all markdown styling
+2. Pass `wide={true}` for blog posts (longer content needs more width)
+3. Add `ReadingProgressBar` for long-form content
+
+Example:
+```astro
+---
+import ContentArticle from '../components/blog/ContentArticle.astro';
+import ReadingProgressBar from '../components/ui/ReadingProgressBar.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title={entry.data.title}>
+  <ReadingProgressBar />
+  <ContentArticle
+    title={entry.data.title}
+    description={entry.data.description}
+    tags={entry.data.tags}
+    backLink={{ href: '/blog/', label: 'Blog' }}
+    wide
+  >
+    <Content />
+  </ContentArticle>
 </BaseLayout>
 ```
 
@@ -255,7 +316,8 @@ When extracting a new component:
 3. Include all styling in component's `<style>` block
 4. Use global CSS custom properties for colors, fonts, spacing
 5. Make it reusable - avoid hardcoding content
-6. Update imports in files using the component
+6. Import shared data from `config.ts` instead of hardcoding
+7. Update imports in files using the component
 
 ### Adding New Portfolio Projects
 
@@ -265,9 +327,10 @@ Create a new markdown file in `src/content/work/` with frontmatter matching the 
 
 - **Default**: Dark mode
 - **Toggle**: ThemeToggle.astro component in navigation
-- **Storage**: Uses localStorage to persist preference
+- **Storage**: Uses localStorage to persist preference (key: `theme`, values: `dark`/`light`)
 - **Implementation**: Adds `.theme-dark` class to `:root`
-- **Initialization**: Inline script in BaseLayout.astro ensures no flash of unstyled content
+- **Initialization**: Inline script in MainHead.astro reads from localStorage on page load
+- **View Transitions**: Theme persists across Astro View Transitions via `astro:after-swap` event
 
 ### Asset Organization
 
