@@ -1,7 +1,6 @@
 ---
 import { SITE } from '../config';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Island3DScene from '../components/three/Island3DScene.astro';
 import TerminalHero from '../components/sections/TerminalHero.astro';
 import PageContainer from '../components/layout/PageContainer.astro';
 import Section from '../components/sections/Section.astro';
@@ -14,7 +13,6 @@ import LinksList from '../components/ui/LinksList.astro';
 
 <BaseLayout>
 	<PageContainer>
-		<Island3DScene />
 
 		<TerminalHero
 			name={SITE.author}

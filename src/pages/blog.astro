@@ -11,7 +11,6 @@ import BlogList from '../components/blog/BlogList.astro';
 import TagsFilter from '../components/blog/TagsFilter.astro';
 import SearchBox from '../components/blog/SearchBox.astro';
 import Pagination from '../components/blog/Pagination.astro';
-import Island3DScene from '../components/three/Island3DScene.astro';
 
 const allPosts = await getCollection('blog');
 const sortedPosts = getSortedPosts(allPosts);
@@ -21,7 +20,6 @@ const { data: posts, totalPages } = getPagination(sortedPosts, 1);
 
 <BaseLayout title="Blog" description="My blog posts">
 	<PageContainer size="medium">
-		<Island3DScene />
 		<Hero
 			title="Blog"
 			tagline="Thoughts, ideas, and learnings."

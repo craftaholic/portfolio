@@ -15,11 +15,36 @@
 <script>
   import { Island3D } from './Island3D';
 
+  // Use a global to persist across View Transitions
+  declare global {
+    interface Window {
+      __island3D?: Island3D | null;
+    }
+  }
+
   function initIsland3D() {
     const container = document.getElementById('island-3d-container');
     const loader = document.getElementById('island-loader');
 
     if (!container) return null;
+
+    // Check if already initialized (persisted)
+    if (window.__island3D) {
+      // Already have an instance, just hide the loader
+      if (loader) {
+        loader.classList.add('hidden');
+      }
+      return window.__island3D;
+    }
+
+    // Check if canvas already exists (element was persisted)
+    const existingCanvas = container.querySelector('canvas');
+    if (existingCanvas) {
+      if (loader) {
+        loader.classList.add('hidden');
+      }
+      return null;
+    }
 
     let island3D: Island3D | null = null;
 
@@ -33,34 +58,15 @@
           }
         },
       });
+      // Store globally
+      window.__island3D = island3D;
     }
 
     return island3D;
   }
 
-  let island3D = initIsland3D();
-
-  // Cleanup on navigation
-  document.addEventListener('astro:before-swap', () => {
-    if (island3D) {
-      island3D.dispose();
-      island3D = null;
-    }
-  });
-
-  // Re-initialize after navigation back to home
-  document.addEventListener('astro:after-swap', () => {
-    const container = document.getElementById('island-3d-container');
-    const loader = document.getElementById('island-loader');
-
-    if (container && !island3D) {
-      // Reset loader visibility
-      if (loader) {
-        loader.classList.remove('hidden');
-      }
-      island3D = initIsland3D();
-    }
-  });
+  // Initialize on first load
+  initIsland3D();
 </script>
 
 <style>

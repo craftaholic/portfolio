@@ -9,13 +9,15 @@ import Footer from '../components/layout/Footer.astro';
 import MainHead from '../components/layout/MainHead.astro';
 import Nav from '../components/layout/Nav.astro';
 import BackToTop from '../components/ui/BackToTop.astro';
+import Island3DScene from '../components/three/Island3DScene.astro';
 
 interface Props {
 	title?: string | undefined;
 	description?: string | undefined;
+	hideIsland?: boolean;
 }
 
-const { title, description } = Astro.props;
+const { title, description, hideIsland = false } = Astro.props;
 ---
 
 <html lang="en" class="theme-dark">
@@ -40,8 +42,15 @@ const { title, description } = Astro.props;
 		</script>
 	</head>
 	<body>
-		<div class="stack backgrounds">
+		<div transition:animate="none">
 			<Nav />
+		</div>
+		{!hideIsland && (
+			<div class="island-wrapper" transition:persist="island3d" transition:animate="none">
+				<Island3DScene />
+			</div>
+		)}
+		<div class="stack backgrounds">
 			<main class="main-content">
 				<slot />
 			</main>
@@ -56,6 +65,12 @@ const { title, description } = Astro.props;
 		</script>
 
 		<style>
+			.island-wrapper {
+				max-width: 65rem;
+				margin: 0 auto;
+				padding: 0 1.5rem;
+			}
+
 			.backgrounds {
 				min-height: 100vh;
 				isolation: isolate;

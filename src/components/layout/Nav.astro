@@ -67,6 +67,7 @@ const isCurrentPage = (href: string) => {
 	</noscript>
 	<div id="menu-content" hidden>
 		<ul class="nav-items">
+			<li class="nav-indicator" aria-hidden="true"></li>
 			{
 				NAV_LINKS.map(({ label, href }) => (
 					<li>
@@ -131,6 +132,83 @@ const isCurrentPage = (href: string) => {
 		}
 	}
 	customElements.define('menu-button', MenuButton);
+
+	// Sliding nav indicator
+	function moveIndicatorTo(targetLink: HTMLElement, animate = true) {
+		const navItems = document.querySelector('.nav-items') as HTMLElement;
+		const indicator = document.querySelector('.nav-indicator') as HTMLElement;
+
+		if (!navItems || !indicator || !targetLink) return;
+
+		const navRect = navItems.getBoundingClientRect();
+		const targetRect = targetLink.getBoundingClientRect();
+
+		if (!animate) {
+			indicator.style.transition = 'none';
+		} else {
+			indicator.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+		}
+
+		indicator.style.width = `${targetRect.width}px`;
+		indicator.style.height = `${targetRect.height}px`;
+		indicator.style.left = `${targetRect.left - navRect.left}px`;
+		indicator.style.top = `${targetRect.top - navRect.top}px`;
+		indicator.style.opacity = '1';
+	}
+
+	function initNavIndicator() {
+		const links = document.querySelectorAll('.nav-items .link') as NodeListOf<HTMLElement>;
+		const activeLink = document.querySelector('.nav-items .link[aria-current="page"]') as HTMLElement;
+
+		// Position indicator on active link (no animation on init)
+		if (activeLink) {
+			moveIndicatorTo(activeLink, false);
+		}
+
+		// Add click listeners to animate indicator before navigation
+		links.forEach(link => {
+			link.addEventListener('click', (e) => {
+				const target = e.currentTarget as HTMLElement;
+				moveIndicatorTo(target, true);
+			});
+		});
+	}
+
+	// Update active state based on URL
+	function updateActiveState() {
+		const links = document.querySelectorAll('.nav-items .link');
+		let pathname = window.location.pathname;
+		if (pathname.at(0) !== '/') pathname = '/' + pathname;
+		if (pathname.at(-1) !== '/') pathname += '/';
+
+		links.forEach(link => {
+			const href = link.getAttribute('href') || '';
+			const isActive = pathname === href || (href !== '/' && pathname.startsWith(href));
+			if (isActive) {
+				link.setAttribute('aria-current', 'page');
+			} else {
+				link.removeAttribute('aria-current');
+			}
+		});
+
+		// Update indicator position
+		const activeLink = document.querySelector('.nav-items .link[aria-current="page"]') as HTMLElement;
+		if (activeLink) {
+			moveIndicatorTo(activeLink, false);
+		}
+	}
+
+	// Initialize
+	initNavIndicator();
+
+	// Update on resize
+	window.addEventListener('resize', updateActiveState);
+
+	// Update after page swap
+	document.addEventListener('astro:after-swap', () => {
+		updateActiveState();
+		initNavIndicator();
+	});
 </script>
 
 <style>
@@ -230,6 +308,11 @@ const isCurrentPage = (href: string) => {
 		border-bottom: 1px solid var(--gray-800);
 	}
 
+	/* Hide indicator on mobile */
+	.nav-indicator {
+		display: none;
+	}
+
 	.link {
 		display: inline-block;
 		color: var(--gray-300);
@@ -318,23 +401,32 @@ const isCurrentPage = (href: string) => {
 			z-index: -1;
 		}
 
+		.nav-indicator {
+			display: block;
+			position: absolute;
+			background-color: var(--accent-regular);
+			border-radius: 999rem;
+			opacity: 0;
+			transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+			z-index: 0;
+			pointer-events: none;
+		}
+
 		.link {
+			position: relative;
+			z-index: 1;
 			padding: 0.5rem 1rem;
 			border-radius: 999rem;
-			transition:
-				color var(--theme-transition),
-				background-color var(--theme-transition);
+			transition: color var(--theme-transition);
 		}
 
 		.link:hover,
 		.link:focus {
 			color: var(--gray-100);
-			background-color: var(--accent-subtle-overlay);
 		}
 
 		.link[aria-current='page'] {
 			color: var(--accent-text-over);
-			background-color: var(--accent-regular);
 		}
 
 		.menu-footer {
