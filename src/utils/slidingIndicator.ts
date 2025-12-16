@@ -153,9 +153,12 @@ export function setupSlidingIndicator(config: SlidingIndicatorConfig): void {
   const debouncedUpdate = debounce(() => updateActiveState(config), 100);
   window.addEventListener('resize', debouncedUpdate);
 
-  // Animate indicator when navigation starts
-  document.addEventListener('astro:before-preparation', (e) => {
-    animateToDestination(config, (e as any).to);
+  // Animate indicator when link is clicked (immediate feedback)
+  document.addEventListener('click', (e) => {
+    const link = (e.target as HTMLElement).closest(config.linkSelector) as HTMLAnchorElement;
+    if (link?.href) {
+      animateToDestination(config, link.href);
+    }
   });
 
   // Update active state after page swap
