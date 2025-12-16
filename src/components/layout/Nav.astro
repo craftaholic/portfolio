@@ -128,7 +128,7 @@ const pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, '');
 	}
 	customElements.define('menu-button', MenuButton);
 
-	// Sliding nav indicator
+	// Sliding nav indicator - uses transform for smooth GPU-accelerated animation
 	function moveIndicatorTo(targetLink: HTMLElement, animate = true) {
 		const navItems = document.querySelector('.nav-items') as HTMLElement;
 		const indicator = document.querySelector('.nav-indicator') as HTMLElement;
@@ -138,12 +138,17 @@ const pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, '');
 		const navRect = navItems.getBoundingClientRect();
 		const targetRect = targetLink.getBoundingClientRect();
 
-		indicator.style.transition = animate ? 'all var(--nav-transition)' : 'none';
+		const x = targetRect.left - navRect.left;
+		const y = targetRect.top - navRect.top;
+
+		// Use transform for smooth GPU-accelerated animation
+		indicator.style.transition = animate
+			? 'transform var(--nav-transition), width var(--nav-transition), height var(--nav-transition), opacity var(--nav-transition)'
+			: 'none';
 
 		indicator.style.width = `${targetRect.width}px`;
 		indicator.style.height = `${targetRect.height}px`;
-		indicator.style.left = `${targetRect.left - navRect.left}px`;
-		indicator.style.top = `${targetRect.top - navRect.top}px`;
+		indicator.style.transform = `translate(${x}px, ${y}px)`;
 		indicator.style.opacity = '1';
 	}
 
@@ -404,12 +409,14 @@ const pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, '');
 		.nav-indicator {
 			display: block;
 			position: absolute;
+			top: 0;
+			left: 0;
 			background-color: var(--accent-regular);
 			border-radius: 999rem;
 			opacity: 0;
-			transition: all var(--nav-transition);
 			z-index: 0;
 			pointer-events: none;
+			will-change: transform, width, height, opacity;
 		}
 
 		.link {

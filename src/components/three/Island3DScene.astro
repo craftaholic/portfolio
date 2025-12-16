@@ -28,22 +28,20 @@
 
     if (!container) return null;
 
-    // Check if already initialized (persisted)
-    if (window.__island3D) {
-      // Already have an instance, just hide the loader
+    // Check if canvas already exists in DOM (element was properly persisted)
+    const existingCanvas = container.querySelector('canvas');
+    if (existingCanvas && window.__island3D) {
+      // Canvas is present and instance exists - just hide loader
       if (loader) {
         loader.classList.add('hidden');
       }
       return window.__island3D;
     }
 
-    // Check if canvas already exists (element was persisted)
-    const existingCanvas = container.querySelector('canvas');
-    if (existingCanvas) {
-      if (loader) {
-        loader.classList.add('hidden');
-      }
-      return null;
+    // If we have a stale reference but no canvas, clean it up
+    if (window.__island3D && !existingCanvas) {
+      window.__island3D.dispose();
+      window.__island3D = null;
     }
 
     let island3D: Island3D | null = null;
@@ -67,6 +65,14 @@
 
   // Initialize on first load
   initIsland3D();
+
+  // Re-initialize after page swap if needed (when returning from hideIsland pages)
+  document.addEventListener('astro:after-swap', () => {
+    // Small delay to ensure DOM is ready
+    requestAnimationFrame(() => {
+      initIsland3D();
+    });
+  });
 </script>
 
 <style>
@@ -101,7 +107,7 @@
     align-items: center;
     justify-content: center;
     gap: 1rem;
-    background: var(--gray-900);
+    background: transparent;
     border-radius: inherit;
     transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
     z-index: 10;
