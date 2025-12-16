@@ -9,8 +9,11 @@ tags:
   - Terraform
   - AWS
   - Platform Engineering
-img: /assets/work-placeholder.svg
-img_alt: Platform engineering dashboard
+role: TechLead & Product Owner
+company: FPT Software
+duration: Jun 2022 - Present
+highlight: Built platform engineering from scratch
+location: Japan
 ---
 
 ## Role

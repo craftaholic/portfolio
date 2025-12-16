@@ -28,6 +28,7 @@
 - [x] Update about page content in `src/pages/about.astro`
 - [x] Add social media links in `src/components/Nav.astro`
 - [ ] Add profile/portrait image
+- [ ] Add personal logo
 - [ ] Update meta tags and SEO information
 
 ### 4. Develop Custom 3D Island Model
@@ -55,6 +56,18 @@
 - [ ] Add comment section
 - [ ] (Optional) Add how many views
 - [x] Write first blog post
+
+### 6. Adding CTA section
+- [ ] Adding contact me section.
+- [ ] Adding inst/fb message and mail
+
+### 7. Optimize for mobile
+- [ ] Bring theme toggle button out from the current button group
+- [ ] Use a different mechanism for changing tab on mobile that's more creative
+
+### 8. Optimize UI
+- [ ] Make the 3d section shorter
+- [ ] Bring the 3d section to all pages
 
 ---
 

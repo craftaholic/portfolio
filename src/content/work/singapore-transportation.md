@@ -9,8 +9,11 @@ tags:
   - Tekton
   - ArgoCD
   - Observability
-img: /assets/work-placeholder.svg
-img_alt: Cloud infrastructure and Kubernetes
+role: DevOps TechLead
+company: FPT Software
+duration: 2023 - 2024
+highlight: 60% infrastructure cost reduction
+location: Singapore
 ---
 
 ## Role

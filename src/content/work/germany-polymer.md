@@ -9,8 +9,11 @@ tags:
   - TypeScript
   - AWS CDK
   - Automation
-img: /assets/work-placeholder.svg
-img_alt: DevOps automation and CI/CD
+role: Platform Engineer
+company: FPT Software
+duration: "2023"
+highlight: Migrated 3000+ repos in 2 months
+location: Germany
 ---
 
 ## Role

@@ -4,8 +4,7 @@ import Hero from '../components/sections/Hero.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageContainer from '../components/layout/PageContainer.astro';
 import Placeholder from '../components/blog/Placeholder.astro';
-import PortfolioPreview from '../components/blog/PortfolioPreview.astro';
-import Grid from '../components/ui/Grid.astro';
+import WorkTimeline from '../components/work/WorkTimeline.astro';
 
 const projects = (await getCollection('work')).sort(
 	(a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf(),
@@ -16,7 +15,7 @@ const projects = (await getCollection('work')).sort(
 	title="Work Experience"
 	description="My professional work experience and client projects"
 >
-	<PageContainer>
+	<PageContainer size="medium">
 		<Hero
 			title="Work Experience"
 			tagline="Professional experience across platform engineering, DevOps, and cloud infrastructure."
@@ -25,13 +24,7 @@ const projects = (await getCollection('work')).sort(
 		{projects.length === 0 ? (
 			<Placeholder>No projects yet. Add markdown files to src/content/work/</Placeholder>
 		) : (
-			<Grid variant="offset">
-				{projects.map((project) => (
-					<li>
-						<PortfolioPreview project={project} />
-					</li>
-				))}
-			</Grid>
+			<WorkTimeline projects={projects} />
 		)}
 	</PageContainer>
 </BaseLayout>

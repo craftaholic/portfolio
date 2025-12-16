@@ -1,0 +1,28 @@
+---
+/**
+ * Timeline container for work experience entries
+ * Displays projects in chronological order with connecting line
+ */
+import type { CollectionEntry } from 'astro:content';
+import WorkTimelineItem from './WorkTimelineItem.astro';
+
+interface Props {
+  projects: CollectionEntry<'work'>[];
+}
+
+const { projects } = Astro.props;
+---
+
+<div class="work-timeline">
+  {projects.map((project) => (
+    <WorkTimelineItem project={project} />
+  ))}
+</div>
+
+<style>
+  .work-timeline {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+</style>

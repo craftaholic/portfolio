@@ -9,8 +9,11 @@ tags:
   - NestJS
   - Terraform
   - AWS
-img: /assets/work-placeholder.svg
-img_alt: Cloud infrastructure platform
+role: Platform Engineer TechLead
+company: FPT Software
+duration: 2023 - 2024
+highlight: Co-author on registered IP
+location: Vietnam
 ---
 
 ## Role

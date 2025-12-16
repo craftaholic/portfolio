@@ -1,0 +1,199 @@
+---
+/**
+ * Individual timeline item for work experience
+ * Shows role, company, duration, description, highlight, and tech stack
+ */
+import type { CollectionEntry } from 'astro:content';
+import Pill from '../ui/Pill.astro';
+
+interface Props {
+  project: CollectionEntry<'work'>;
+}
+
+const { project } = Astro.props;
+const { data, id } = project;
+const href = `/work/${id}`;
+---
+
+<article class="timeline-item">
+  <div class="timeline-marker">
+    <div class="marker-dot"></div>
+    <div class="marker-line"></div>
+  </div>
+
+  <div class="timeline-content">
+    <div class="timeline-header">
+      <span class="duration">{data.duration}</span>
+      {data.location && <span class="location">{data.location}</span>}
+    </div>
+
+    <a href={href} class="project-link">
+      <h3 class="role">{data.role}</h3>
+      <p class="company">{data.company} — {data.title}</p>
+    </a>
+
+    <p class="description">{data.description}</p>
+
+    {data.highlight && (
+      <div class="highlight">
+        <span class="highlight-label">Key:</span>
+        <span class="highlight-text">{data.highlight}</span>
+      </div>
+    )}
+
+    <div class="tags">
+      {data.tags.slice(0, 5).map((tag) => (
+        <Pill size="sm">{tag}</Pill>
+      ))}
+      {data.tags.length > 5 && (
+        <span class="more-tags">+{data.tags.length - 5}</span>
+      )}
+    </div>
+  </div>
+</article>
+
+<style>
+  .timeline-item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1.5rem;
+    position: relative;
+  }
+
+  .timeline-marker {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 0.25rem;
+  }
+
+  .marker-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--accent-regular);
+    border: 2px solid var(--gray-900);
+    box-shadow: 0 0 0 3px var(--accent-overlay);
+    z-index: 1;
+    flex-shrink: 0;
+  }
+
+  .marker-line {
+    width: 2px;
+    flex: 1;
+    background: var(--gray-800);
+    margin-top: 0.5rem;
+  }
+
+  /* Hide line on last item */
+  .timeline-item:last-child .marker-line {
+    display: none;
+  }
+
+  .timeline-content {
+    padding-bottom: 2.5rem;
+  }
+
+  .timeline-item:last-child .timeline-content {
+    padding-bottom: 0;
+  }
+
+  .timeline-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .duration {
+    font-size: var(--text-sm);
+    color: var(--accent-regular);
+    font-weight: 500;
+  }
+
+  .location {
+    font-size: var(--text-sm);
+    color: var(--gray-400);
+    padding-left: 0.75rem;
+    border-left: 1px solid var(--gray-700);
+  }
+
+  .project-link {
+    text-decoration: none;
+    display: block;
+    margin-bottom: 0.75rem;
+  }
+
+  .project-link:hover .role {
+    color: var(--accent-regular);
+  }
+
+  .role {
+    font-size: var(--text-lg);
+    font-weight: 600;
+    color: var(--gray-0);
+    margin: 0 0 0.25rem 0;
+    transition: color var(--theme-transition);
+  }
+
+  .company {
+    font-size: var(--text-sm);
+    color: var(--gray-400);
+    margin: 0;
+  }
+
+  .description {
+    font-size: var(--text-sm);
+    color: var(--gray-300);
+    line-height: 1.6;
+    margin: 0 0 0.75rem 0;
+  }
+
+  .highlight {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0.75rem;
+    background: var(--accent-overlay);
+    border-radius: 0.375rem;
+    margin-bottom: 1rem;
+  }
+
+  .highlight-label {
+    font-size: var(--text-sm);
+    color: var(--gray-400);
+    font-weight: 500;
+  }
+
+  .highlight-text {
+    font-size: var(--text-sm);
+    color: var(--accent-light);
+    font-weight: 600;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    align-items: center;
+  }
+
+  .more-tags {
+    font-size: var(--text-sm);
+    color: var(--gray-500);
+  }
+
+  @media (min-width: 50em) {
+    .timeline-item {
+      gap: 2rem;
+    }
+
+    .role {
+      font-size: var(--text-xl);
+    }
+
+    .description {
+      font-size: var(--text-base);
+    }
+  }
+</style>

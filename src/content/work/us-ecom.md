@@ -8,8 +8,11 @@ tags:
   - Terraform
   - Jenkins
   - Cost Optimization
-img: /assets/work-placeholder.svg
-img_alt: Google Cloud Platform infrastructure
+role: DevOps Engineer
+company: FPT Software
+duration: 2022 - 2023
+highlight: $120K annual savings
+location: United States
 ---
 
 ## Role

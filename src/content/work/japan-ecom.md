@@ -7,8 +7,11 @@ tags:
   - CloudFormation
   - ECS
   - CodePipeline
-img: /assets/work-placeholder.svg
-img_alt: AWS cloud infrastructure
+role: DevOps Engineer
+company: FPT Software
+duration: "2022"
+highlight: Zero-downtime deployments
+location: Japan
 ---
 
 ## Role

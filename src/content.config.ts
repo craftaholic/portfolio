@@ -10,8 +10,14 @@ export const collections = {
 			description: z.string(),
 			publishDate: z.coerce.date(),
 			tags: z.array(z.string()),
-			img: z.string(),
+			img: z.string().optional(),
 			img_alt: z.string().optional(),
+			// New fields for timeline
+			role: z.string(),
+			company: z.string().default('FPT Software'),
+			duration: z.string(),
+			highlight: z.string().optional(), // Key achievement to display prominently
+			location: z.string().optional(), // e.g., "Singapore", "Germany"
 		}),
 	}),
 	blog: defineCollection({
