@@ -20,7 +20,7 @@ const { name, title, prefix = '$' } = Astro.props;
       <div class="terminal-line">
         <span class="prompt">{prefix}</span>
         <span class="command typing" data-text={`whoami`}></span>
-        <span class="cursor">_</span>
+        <span class="cursor"></span>
       </div>
       <div class="terminal-line output hidden" data-delay="1500">
         <span class="output-text name-output">{name}</span>
@@ -28,14 +28,14 @@ const { name, title, prefix = '$' } = Astro.props;
       <div class="terminal-line hidden" data-delay="2000">
         <span class="prompt">{prefix}</span>
         <span class="command typing" data-text={`cat title.txt`}></span>
-        <span class="cursor">_</span>
+        <span class="cursor"></span>
       </div>
       <div class="terminal-line output hidden" data-delay="3800">
         <span class="output-text title-output">{title}</span>
       </div>
       <div class="terminal-line hidden" data-delay="4300">
         <span class="prompt">{prefix}</span>
-        <span class="cursor blink">_</span>
+        <span class="cursor blink"></span>
       </div>
     </div>
   </div>
@@ -212,12 +212,16 @@ const { name, title, prefix = '$' } = Astro.props;
   }
 
   .cursor {
-    color: var(--accent-regular);
+    display: inline-block;
+    width: 0.6em;
+    height: 1.1em;
+    background-color: var(--accent-regular);
+    vertical-align: text-bottom;
     animation: none;
   }
 
   .cursor.blink {
-    animation: blink 1s infinite;
+    animation: blink 1s step-end infinite;
   }
 
   .cursor.hidden {
