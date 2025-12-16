@@ -76,6 +76,8 @@
 
 	/* Transitions */
 	--theme-transition: 0.2s ease-in-out;
+	--nav-easing: cubic-bezier(0.4, 0, 0.2, 1);
+	--nav-transition: 0.3s var(--nav-easing);
 }
 
 :root.theme-dark {

@@ -3,19 +3,14 @@ import { NAV_LINKS, SITE } from '../../config';
 import Icon from '../ui/Icon.astro';
 import type { iconPaths } from '../ui/IconPaths';
 import ThemeToggle from '../ui/ThemeToggle.astro';
+import { isCurrentPage } from '../../utils/navigation';
 
 /** Icon links to social media */
 const iconLinks: { label: string; href: string; icon: keyof typeof iconPaths }[] = [
 	{ label: 'GitHub', href: SITE.socialLinks[0].href, icon: 'github-logo' },
 ];
 
-/** Test if a link is pointing to the current page. */
-const isCurrentPage = (href: string) => {
-	let pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, '');
-	if (pathname.at(0) !== '/') pathname = '/' + pathname;
-	if (pathname.at(-1) !== '/') pathname += '/';
-	return pathname === href || (href !== '/' && pathname.startsWith(href));
-};
+const pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, '');
 ---
 
 <nav>
@@ -43,7 +38,7 @@ const isCurrentPage = (href: string) => {
 			{
 				NAV_LINKS.map(({ label, href }) => (
 					<li>
-						<a aria-current={isCurrentPage(href) ? 'page' : null} class="link" href={href}>
+						<a aria-current={isCurrentPage(pathname, href) ? 'page' : null} class="link" href={href}>
 							{label}
 						</a>
 					</li>
@@ -71,7 +66,7 @@ const isCurrentPage = (href: string) => {
 			{
 				NAV_LINKS.map(({ label, href }) => (
 					<li>
-						<a aria-current={isCurrentPage(href) ? 'page' : null} class="link" href={href}>
+						<a aria-current={isCurrentPage(pathname, href) ? 'page' : null} class="link" href={href}>
 							{label}
 						</a>
 					</li>
@@ -143,11 +138,7 @@ const isCurrentPage = (href: string) => {
 		const navRect = navItems.getBoundingClientRect();
 		const targetRect = targetLink.getBoundingClientRect();
 
-		if (!animate) {
-			indicator.style.transition = 'none';
-		} else {
-			indicator.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-		}
+		indicator.style.transition = animate ? 'all var(--nav-transition)' : 'none';
 
 		indicator.style.width = `${targetRect.width}px`;
 		indicator.style.height = `${targetRect.height}px`;
@@ -416,7 +407,7 @@ const isCurrentPage = (href: string) => {
 			background-color: var(--accent-regular);
 			border-radius: 999rem;
 			opacity: 0;
-			transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+			transition: all var(--nav-transition);
 			z-index: 0;
 			pointer-events: none;
 		}
