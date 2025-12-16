@@ -13,7 +13,7 @@ role: Platform Engineer
 company: FPT Software
 duration: "2023"
 highlight: Migrated 3000+ repos in 2 months
-location: Germany
+location: Vietnam
 ---
 
 ## Role

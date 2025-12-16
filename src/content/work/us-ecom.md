@@ -12,7 +12,7 @@ role: DevOps Engineer
 company: FPT Software
 duration: 2022 - 2023
 highlight: $120K annual savings
-location: United States
+location: Vietnam
 ---
 
 ## Role

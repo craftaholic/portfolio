@@ -13,7 +13,7 @@ role: TechLead & Product Owner
 company: FPT Software
 duration: Jun 2022 - Present
 highlight: Built platform engineering from scratch
-location: Japan
+location: Vietnam
 ---
 
 ## Role

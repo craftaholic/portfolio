@@ -3,6 +3,7 @@
 // https://docs.astro.build/en/core-concepts/layouts/
 
 import { ViewTransitions } from 'astro:transitions';
+import BottomTabBar from '../components/layout/BottomTabBar.astro';
 import Footer from '../components/layout/Footer.astro';
 // Component Imports
 import MainHead from '../components/layout/MainHead.astro';
@@ -46,6 +47,7 @@ const { title, description } = Astro.props;
 			</main>
 			<Footer />
 		</div>
+		<BottomTabBar />
 		<BackToTop />
 
 		<script>
@@ -60,10 +62,19 @@ const { title, description } = Astro.props;
 				background-color: var(--gray-999);
 				display: flex;
 				flex-direction: column;
+				/* Add padding for floating bottom tab bar on mobile */
+				padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px));
 			}
 
 			.main-content {
 				flex: 1;
+			}
+
+			/* Remove bottom padding on desktop where tab bar is hidden */
+			@media (min-width: 50em) {
+				.backgrounds {
+					padding-bottom: 0;
+				}
 			}
 		</style>
 	</body>

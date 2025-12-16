@@ -11,7 +11,7 @@ role: DevOps Engineer
 company: FPT Software
 duration: "2022"
 highlight: Zero-downtime deployments
-location: Japan
+location: Vietnam
 ---
 
 ## Role

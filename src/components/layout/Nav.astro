@@ -24,14 +24,19 @@ const isCurrentPage = (href: string) => {
 			<Icon icon="terminal-window" color="var(--accent-regular)" size="1.6em" gradient />
 			Tommy Tran
 		</a>
-		<menu-button>
-			<template>
-				<button class="menu-button" aria-expanded="false">
-					<span class="sr-only">Menu</span>
-					<Icon icon="list" />
-				</button>
-			</template>
-		</menu-button>
+		<div class="header-actions">
+			<div class="theme-toggle-header">
+				<ThemeToggle />
+			</div>
+			<menu-button>
+				<template>
+					<button class="menu-button" aria-expanded="false">
+						<span class="sr-only">Menu</span>
+						<Icon icon="list" />
+					</button>
+				</template>
+			</menu-button>
+		</div>
 	</div>
 	<noscript>
 		<ul class="nav-items">
@@ -153,6 +158,27 @@ const isCurrentPage = (href: string) => {
 		text-decoration: none;
 	}
 
+	.header-actions {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.theme-toggle-header {
+		display: flex;
+		align-items: center;
+	}
+
+	/* Hide theme toggle in dropdown on mobile - it's in header now */
+	.theme-toggle {
+		display: none;
+	}
+
+	/* Hide hamburger menu on mobile - using bottom tab bar instead */
+	menu-button {
+		display: none;
+	}
+
 	.menu-button {
 		position: relative;
 		display: flex;
@@ -247,12 +273,6 @@ const isCurrentPage = (href: string) => {
 		color: var(--accent-text-over);
 	}
 
-	.theme-toggle {
-		display: flex;
-		align-items: center;
-		height: calc(var(--icon-size) + 2 * var(--icon-padding));
-	}
-
 	@media (min-width: 50em) {
 		nav {
 			display: grid;
@@ -325,6 +345,18 @@ const isCurrentPage = (href: string) => {
 			padding: 0;
 			background-color: transparent;
 			box-shadow: none;
+		}
+
+		/* Hide header theme toggle on desktop - use menu-footer one */
+		.theme-toggle-header {
+			display: none;
+		}
+
+		/* Show theme toggle in menu-footer on desktop */
+		.theme-toggle {
+			display: flex;
+			align-items: center;
+			height: calc(var(--icon-size) + 2 * var(--icon-padding));
 		}
 
 		.socials {

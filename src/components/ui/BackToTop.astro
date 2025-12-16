@@ -97,7 +97,8 @@ import Icon from './Icon.astro';
 
   @media (max-width: 50em) {
     .back-to-top {
-      bottom: 1rem;
+      /* Position above bottom tab bar */
+      bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px));
       right: 1rem;
       padding: 0.75rem;
     }

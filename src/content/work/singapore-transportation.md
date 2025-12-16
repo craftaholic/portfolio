@@ -13,7 +13,7 @@ role: DevOps TechLead
 company: FPT Software
 duration: 2023 - 2024
 highlight: 60% infrastructure cost reduction
-location: Singapore
+location: Vietnam
 ---
 
 ## Role
