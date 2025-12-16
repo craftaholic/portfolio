@@ -19,6 +19,7 @@ const { name, title, prefix = '$' } = Astro.props;
       <span class="terminal-title">~/{SITE.terminalUser}</span>
     </div>
     <div class="terminal-body">
+      <img src="/assets/images/profile.png" alt="" class="terminal-profile" />
       <!-- Invisible pre-rendered content to reserve space -->
       <div class="terminal-placeholder" aria-hidden="true">
         <div class="terminal-line">
@@ -209,6 +210,19 @@ const { name, title, prefix = '$' } = Astro.props;
     color: var(--gray-400);
   }
 
+  .terminal-profile {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    width: 86px;
+    height: 86px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--accent-regular);
+    box-shadow: var(--shadow-sm);
+    z-index: 5;
+  }
+
   .terminal-body {
     padding: 1rem;
     font-family: var(--font-brand);
@@ -325,6 +339,13 @@ const { name, title, prefix = '$' } = Astro.props;
 
     .name-output {
       font-size: var(--text-xl);
+    }
+
+    .terminal-profile {
+      top: 1rem;
+      right: 1rem;
+      width: 114px;
+      height: 114px;
     }
   }
 </style>

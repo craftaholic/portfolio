@@ -1,64 +1,14 @@
 ---
-// Wrapper for biography paragraphs with optional profile image
-
-interface Props {
-	profileImage?: string;
-	profileAlt?: string;
-}
-
-const { profileImage, profileAlt = 'Profile picture' } = Astro.props;
+// Wrapper for biography paragraphs with proper indentation and styling
 ---
 
-<div class:list={["bio-section", { "with-image": profileImage }]}>
-	{profileImage && (
-		<div class="profile-container">
-			<img
-				src={profileImage}
-				alt={profileAlt}
-				class="profile-image"
-				loading="eager"
-			/>
-		</div>
-	)}
-	<div class="bio-content">
-		<slot />
-	</div>
+<div class="bio-section">
+	<slot />
 </div>
 
 <style>
 	.bio-section {
 		text-indent: 1rem;
-	}
-
-	.bio-section.with-image {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 1.5rem;
-		text-indent: 0;
-	}
-
-	.profile-container {
-		flex-shrink: 0;
-	}
-
-	.profile-image {
-		width: 150px;
-		height: 150px;
-		border-radius: 50%;
-		object-fit: cover;
-		border: 3px solid var(--accent-regular);
-		box-shadow: var(--shadow-md);
-		transition: transform 0.3s ease, box-shadow 0.3s ease;
-	}
-
-	.profile-image:hover {
-		transform: scale(1.05);
-		box-shadow: var(--shadow-lg);
-	}
-
-	.bio-content {
-		flex: 1;
 	}
 
 	.bio-section :global(p) {
@@ -69,22 +19,5 @@ const { profileImage, profileAlt = 'Profile picture' } = Astro.props;
 		hyphens: auto;
 		word-spacing: -0.05em;
 		text-justify: inter-word;
-	}
-
-	@media (min-width: 50em) {
-		.bio-section.with-image {
-			flex-direction: row;
-			align-items: flex-start;
-			gap: 2rem;
-		}
-
-		.profile-image {
-			width: 180px;
-			height: 180px;
-		}
-
-		.bio-section.with-image .bio-content {
-			text-indent: 1rem;
-		}
 	}
 </style>
