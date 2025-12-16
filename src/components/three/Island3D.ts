@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 export interface Island3DOptions {
   onLoad?: () => void;
@@ -8,11 +9,11 @@ export class Island3D {
   private scene: THREE.Scene;
   private camera: THREE.PerspectiveCamera;
   private renderer: THREE.WebGLRenderer;
-  private island: THREE.Group;
+  private model: THREE.Group | null = null;
   private isDragging = false;
   private previousMouse = { x: 0, y: 0 };
-  private targetRotation = { x: 0.2, y: 0 };
-  private currentRotation = { x: 0.2, y: 0 };
+  private targetRotation = { x: 0, y: 0 };
+  private currentRotation = { x: 0, y: 0 };
   private animationFrameId: number | null = null;
 
   constructor(container: HTMLElement, options: Island3DOptions = {}) {
@@ -22,7 +23,7 @@ export class Island3D {
     // Camera setup
     const aspect = container.clientWidth / container.clientHeight;
     this.camera = new THREE.PerspectiveCamera(45, aspect, 0.1, 1000);
-    this.camera.position.set(0, 3, 8);
+    this.camera.position.set(0, 2, 6);
     this.camera.lookAt(0, 0, 0);
 
     // Renderer setup with transparent background
@@ -31,22 +32,21 @@ export class Island3D {
       alpha: true,
       premultipliedAlpha: false,
     });
-    this.renderer.setClearColor(0x000000, 0); // Fully transparent
+    this.renderer.setClearColor(0x000000, 0);
     this.renderer.setSize(container.clientWidth, container.clientHeight);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-    // Hide canvas initially until first render completes
+    // Hide canvas initially until model loads
     this.renderer.domElement.style.opacity = '0';
     container.appendChild(this.renderer.domElement);
 
-    // Create placeholder island
-    this.island = this.createPlaceholderIsland();
-    this.scene.add(this.island);
-
     // Lighting
     this.setupLighting();
+
+    // Load the GLB model
+    this.loadModel(options.onLoad);
 
     // Event listeners
     this.setupEventListeners(container);
@@ -56,152 +56,67 @@ export class Island3D {
 
     // Handle resize
     window.addEventListener('resize', () => this.onResize(container));
+  }
 
-    // Show canvas and call onLoad after first render
-    requestAnimationFrame(() => {
-      // Render one frame first
-      this.renderer.render(this.scene, this.camera);
-      // Then show the canvas
-      this.renderer.domElement.style.opacity = '1';
-      if (options.onLoad) {
-        options.onLoad();
+  private loadModel(onLoad?: () => void): void {
+    const loader = new GLTFLoader();
+
+    loader.load(
+      '/assets/model/voxel_cat_3d.glb',
+      (gltf) => {
+        this.model = gltf.scene;
+
+        // Center and scale the model
+        const box = new THREE.Box3().setFromObject(this.model);
+        const center = box.getCenter(new THREE.Vector3());
+        const size = box.getSize(new THREE.Vector3());
+
+        // Center the model
+        this.model.position.sub(center);
+
+        // Scale to fit nicely in view (adjust as needed)
+        const maxDim = Math.max(size.x, size.y, size.z);
+        const scale = 4.2 / maxDim;
+        this.model.scale.setScalar(scale);
+
+        // Enable shadows for all meshes
+        this.model.traverse((child) => {
+          if (child instanceof THREE.Mesh) {
+            child.castShadow = true;
+            child.receiveShadow = true;
+          }
+        });
+
+        this.scene.add(this.model);
+
+        // Show canvas and call onLoad
+        this.renderer.domElement.style.opacity = '1';
+        if (onLoad) {
+          onLoad();
+        }
+      },
+      (progress) => {
+        // Loading progress (optional)
+        console.log('Loading model:', (progress.loaded / progress.total) * 100 + '%');
+      },
+      (error) => {
+        console.error('Error loading model:', error);
+        // Show canvas even on error
+        this.renderer.domElement.style.opacity = '1';
+        if (onLoad) {
+          onLoad();
+        }
       }
-    });
-  }
-
-  private createPlaceholderIsland(): THREE.Group {
-    const group = new THREE.Group();
-
-    // Low-poly color palette
-    const colors = {
-      water: 0x4a90e2,
-      sand: 0xe8d4a2,
-      grass: 0x7ec850,
-      tree: 0x4a7c59,
-      trunk: 0x8b5a3c,
-      rock: 0x8b8680,
-    };
-
-    // Water base (octagon for low-poly look)
-    const waterGeometry = new THREE.CylinderGeometry(3, 3, 0.3, 8);
-    const waterMaterial = new THREE.MeshStandardMaterial({
-      color: colors.water,
-      flatShading: true,
-      roughness: 0.5,
-      metalness: 0.2,
-    });
-    const water = new THREE.Mesh(waterGeometry, waterMaterial);
-    water.position.y = -0.5;
-    water.receiveShadow = true;
-    group.add(water);
-
-    // Sand layer
-    const sandGeometry = new THREE.CylinderGeometry(2.2, 2.5, 0.8, 8);
-    const sandMaterial = new THREE.MeshStandardMaterial({
-      color: colors.sand,
-      flatShading: true,
-    });
-    const sand = new THREE.Mesh(sandGeometry, sandMaterial);
-    sand.position.y = 0;
-    sand.castShadow = true;
-    sand.receiveShadow = true;
-    group.add(sand);
-
-    // Grass layer
-    const grassGeometry = new THREE.CylinderGeometry(1.8, 2, 1, 8);
-    const grassMaterial = new THREE.MeshStandardMaterial({
-      color: colors.grass,
-      flatShading: true,
-    });
-    const grass = new THREE.Mesh(grassGeometry, grassMaterial);
-    grass.position.y = 0.7;
-    grass.castShadow = true;
-    grass.receiveShadow = true;
-    group.add(grass);
-
-    // Add trees
-    const treePositions = [
-      { x: 0, z: 0, scale: 0.8 },
-      { x: 0.8, z: 0.5, scale: 0.6 },
-      { x: -0.6, z: 0.7, scale: 0.7 },
-      { x: 0.5, z: -0.8, scale: 0.5 },
-    ];
-
-    treePositions.forEach((pos) => {
-      const tree = this.createTree(colors.tree, colors.trunk);
-      tree.position.set(pos.x, 1.2, pos.z);
-      tree.scale.setScalar(pos.scale);
-      group.add(tree);
-    });
-
-    // Add some rocks
-    const rockPositions = [
-      { x: 1.5, y: 0.2, z: 1.2, scale: 0.3 },
-      { x: -1.3, y: 0.3, z: -1.5, scale: 0.25 },
-    ];
-
-    rockPositions.forEach((pos) => {
-      const rock = this.createRock(colors.rock);
-      rock.position.set(pos.x, pos.y, pos.z);
-      rock.scale.setScalar(pos.scale);
-      group.add(rock);
-    });
-
-    return group;
-  }
-
-  private createTree(foliageColor: number, trunkColor: number): THREE.Group {
-    const tree = new THREE.Group();
-
-    // Trunk
-    const trunkGeometry = new THREE.CylinderGeometry(0.15, 0.2, 1, 6);
-    const trunkMaterial = new THREE.MeshStandardMaterial({
-      color: trunkColor,
-      flatShading: true,
-    });
-    const trunk = new THREE.Mesh(trunkGeometry, trunkMaterial);
-    trunk.castShadow = true;
-    tree.add(trunk);
-
-    // Foliage (low-poly cone)
-    const foliageGeometry = new THREE.ConeGeometry(0.6, 1.2, 6);
-    const foliageMaterial = new THREE.MeshStandardMaterial({
-      color: foliageColor,
-      flatShading: true,
-    });
-    const foliage = new THREE.Mesh(foliageGeometry, foliageMaterial);
-    foliage.position.y = 0.9;
-    foliage.castShadow = true;
-    tree.add(foliage);
-
-    return tree;
-  }
-
-  private createRock(color: number): THREE.Mesh {
-    // Irregular tetrahedron for rock
-    const geometry = new THREE.TetrahedronGeometry(1, 0);
-    const material = new THREE.MeshStandardMaterial({
-      color: color,
-      flatShading: true,
-      roughness: 0.9,
-    });
-    const rock = new THREE.Mesh(geometry, material);
-    rock.castShadow = true;
-    rock.rotation.set(
-      Math.random() * Math.PI,
-      Math.random() * Math.PI,
-      Math.random() * Math.PI
     );
-    return rock;
   }
 
   private setupLighting(): void {
     // Ambient light
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
     this.scene.add(ambientLight);
 
     // Main directional light (sun)
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
     directionalLight.position.set(5, 10, 5);
     directionalLight.castShadow = true;
     directionalLight.shadow.camera.left = -10;
@@ -213,7 +128,7 @@ export class Island3D {
     this.scene.add(directionalLight);
 
     // Hemisphere light for better color
-    const hemisphereLight = new THREE.HemisphereLight(0x87ceeb, 0x545454, 0.4);
+    const hemisphereLight = new THREE.HemisphereLight(0x87ceeb, 0x545454, 0.5);
     this.scene.add(hemisphereLight);
   }
 
@@ -282,13 +197,15 @@ export class Island3D {
     this.currentRotation.x += (this.targetRotation.x - this.currentRotation.x) * 0.1;
     this.currentRotation.y += (this.targetRotation.y - this.currentRotation.y) * 0.1;
 
-    // Apply rotation to island
-    this.island.rotation.x = this.currentRotation.x;
-    this.island.rotation.y = this.currentRotation.y;
+    // Apply rotation to model
+    if (this.model) {
+      this.model.rotation.x = this.currentRotation.x;
+      this.model.rotation.y = this.currentRotation.y;
+    }
 
     // Auto-rotate when not dragging
     if (!this.isDragging) {
-      this.targetRotation.y += 0.002;
+      this.targetRotation.y += 0.003;
     }
 
     this.renderer.render(this.scene, this.camera);
