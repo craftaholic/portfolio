@@ -29,11 +29,16 @@ export class Island3D {
     this.renderer = new THREE.WebGLRenderer({
       antialias: true,
       alpha: true,
+      premultipliedAlpha: false,
     });
+    this.renderer.setClearColor(0x000000, 0); // Fully transparent
     this.renderer.setSize(container.clientWidth, container.clientHeight);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    // Hide canvas initially until first render completes
+    this.renderer.domElement.style.opacity = '0';
     container.appendChild(this.renderer.domElement);
 
     // Create placeholder island
@@ -52,12 +57,16 @@ export class Island3D {
     // Handle resize
     window.addEventListener('resize', () => this.onResize(container));
 
-    // Call onLoad callback after first render
-    if (options.onLoad) {
-      requestAnimationFrame(() => {
-        options.onLoad!();
-      });
-    }
+    // Show canvas and call onLoad after first render
+    requestAnimationFrame(() => {
+      // Render one frame first
+      this.renderer.render(this.scene, this.camera);
+      // Then show the canvas
+      this.renderer.domElement.style.opacity = '1';
+      if (options.onLoad) {
+        options.onLoad();
+      }
+    });
   }
 
   private createPlaceholderIsland(): THREE.Group {

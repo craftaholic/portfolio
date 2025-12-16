@@ -130,8 +130,8 @@ const pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, '');
 
 	// Sliding nav indicator - uses transform for smooth GPU-accelerated animation
 	function moveIndicatorTo(targetLink: HTMLElement, animate = true) {
-		const navItems = document.querySelector('.nav-items') as HTMLElement;
-		const indicator = document.querySelector('.nav-indicator') as HTMLElement;
+		const navItems = document.querySelector('#menu-content .nav-items') as HTMLElement;
+		const indicator = document.querySelector('#menu-content .nav-indicator') as HTMLElement;
 
 		if (!navItems || !indicator || !targetLink) return;
 
@@ -141,10 +141,11 @@ const pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, '');
 		const x = targetRect.left - navRect.left;
 		const y = targetRect.top - navRect.top;
 
-		// Use transform for smooth GPU-accelerated animation
-		indicator.style.transition = animate
-			? 'transform var(--nav-transition), width var(--nav-transition), height var(--nav-transition), opacity var(--nav-transition)'
-			: 'none';
+		if (animate) {
+			indicator.style.transition = 'transform 0.35s var(--nav-easing), width 0.35s var(--nav-easing), height 0.35s var(--nav-easing)';
+		} else {
+			indicator.style.transition = 'none';
+		}
 
 		indicator.style.width = `${targetRect.width}px`;
 		indicator.style.height = `${targetRect.height}px`;
@@ -153,26 +154,17 @@ const pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, '');
 	}
 
 	function initNavIndicator() {
-		const links = document.querySelectorAll('.nav-items .link') as NodeListOf<HTMLElement>;
-		const activeLink = document.querySelector('.nav-items .link[aria-current="page"]') as HTMLElement;
-
-		// Position indicator on active link (no animation on init)
+		const activeLink = document.querySelector('#menu-content .nav-items .link[aria-current="page"]') as HTMLElement;
 		if (activeLink) {
 			moveIndicatorTo(activeLink, false);
 		}
-
-		// Add click listeners to animate indicator before navigation
-		links.forEach(link => {
-			link.addEventListener('click', (e) => {
-				const target = e.currentTarget as HTMLElement;
-				moveIndicatorTo(target, true);
-			});
-		});
 	}
 
 	// Update active state based on URL
 	function updateActiveState() {
-		const links = document.querySelectorAll('.nav-items .link');
+		const links = document.querySelectorAll('#menu-content .nav-items .link');
+		if (!links.length) return;
+
 		let pathname = window.location.pathname;
 		if (pathname.at(0) !== '/') pathname = '/' + pathname;
 		if (pathname.at(-1) !== '/') pathname += '/';
@@ -187,23 +179,34 @@ const pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, '');
 			}
 		});
 
-		// Update indicator position
-		const activeLink = document.querySelector('.nav-items .link[aria-current="page"]') as HTMLElement;
+		// Update indicator position without animation
+		const activeLink = document.querySelector('#menu-content .nav-items .link[aria-current="page"]') as HTMLElement;
 		if (activeLink) {
 			moveIndicatorTo(activeLink, false);
 		}
 	}
 
+	// Use event delegation - attach to document once, works for all current and future elements
+	document.addEventListener('click', (e) => {
+		const link = (e.target as HTMLElement).closest('#menu-content .nav-items .link') as HTMLElement;
+		if (link) {
+			moveIndicatorTo(link, true);
+		}
+	});
+
 	// Initialize
 	initNavIndicator();
 
-	// Update on resize
-	window.addEventListener('resize', updateActiveState);
+	// Update on resize (debounced)
+	let resizeTimeout: number;
+	window.addEventListener('resize', () => {
+		clearTimeout(resizeTimeout);
+		resizeTimeout = window.setTimeout(updateActiveState, 100);
+	});
 
 	// Update after page swap
 	document.addEventListener('astro:after-swap', () => {
 		updateActiveState();
-		initNavIndicator();
 	});
 </script>
 
@@ -416,7 +419,7 @@ const pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, '');
 			opacity: 0;
 			z-index: 0;
 			pointer-events: none;
-			will-change: transform, width, height, opacity;
+			will-change: transform, width, height;
 		}
 
 		.link {

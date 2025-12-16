@@ -27,8 +27,8 @@ const pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, '');
 <script>
 	// Sliding tab indicator - uses transform for smooth GPU-accelerated animation
 	function moveTabIndicatorTo(targetLink: HTMLElement, animate = true) {
-		const tabList = document.querySelector('.tab-list') as HTMLElement;
-		const indicator = document.querySelector('.tab-indicator') as HTMLElement;
+		const tabList = document.querySelector('.bottom-tab-bar .tab-list') as HTMLElement;
+		const indicator = document.querySelector('.bottom-tab-bar .tab-indicator') as HTMLElement;
 
 		if (!tabList || !indicator || !targetLink) return;
 
@@ -38,10 +38,11 @@ const pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, '');
 		const x = targetRect.left - listRect.left;
 		const y = targetRect.top - listRect.top;
 
-		// Use transform for smooth GPU-accelerated animation
-		indicator.style.transition = animate
-			? 'transform var(--nav-transition), width var(--nav-transition), height var(--nav-transition), opacity var(--nav-transition)'
-			: 'none';
+		if (animate) {
+			indicator.style.transition = 'transform 0.35s var(--nav-easing), width 0.35s var(--nav-easing), height 0.35s var(--nav-easing)';
+		} else {
+			indicator.style.transition = 'none';
+		}
 
 		indicator.style.width = `${targetRect.width}px`;
 		indicator.style.height = `${targetRect.height}px`;
@@ -50,26 +51,17 @@ const pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, '');
 	}
 
 	function initTabIndicator() {
-		const links = document.querySelectorAll('.tab-list .tab-item') as NodeListOf<HTMLElement>;
-		const activeLink = document.querySelector('.tab-list .tab-item[aria-current="page"]') as HTMLElement;
-
-		// Position indicator on active link (no animation on init)
+		const activeLink = document.querySelector('.bottom-tab-bar .tab-item[aria-current="page"]') as HTMLElement;
 		if (activeLink) {
 			moveTabIndicatorTo(activeLink, false);
 		}
-
-		// Add click listeners to animate indicator before navigation
-		links.forEach(link => {
-			link.addEventListener('click', (e) => {
-				const target = e.currentTarget as HTMLElement;
-				moveTabIndicatorTo(target, true);
-			});
-		});
 	}
 
 	// Update active state based on URL
 	function updateTabActiveState() {
-		const links = document.querySelectorAll('.tab-list .tab-item');
+		const links = document.querySelectorAll('.bottom-tab-bar .tab-item');
+		if (!links.length) return;
+
 		let pathname = window.location.pathname;
 		if (pathname.at(0) !== '/') pathname = '/' + pathname;
 		if (pathname.at(-1) !== '/') pathname += '/';
@@ -86,23 +78,34 @@ const pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, '');
 			}
 		});
 
-		// Update indicator position
-		const activeLink = document.querySelector('.tab-list .tab-item[aria-current="page"]') as HTMLElement;
+		// Update indicator position without animation
+		const activeLink = document.querySelector('.bottom-tab-bar .tab-item[aria-current="page"]') as HTMLElement;
 		if (activeLink) {
 			moveTabIndicatorTo(activeLink, false);
 		}
 	}
 
+	// Use event delegation - attach to document once, works for all current and future elements
+	document.addEventListener('click', (e) => {
+		const link = (e.target as HTMLElement).closest('.bottom-tab-bar .tab-item') as HTMLElement;
+		if (link) {
+			moveTabIndicatorTo(link, true);
+		}
+	});
+
 	// Initialize
 	initTabIndicator();
 
-	// Update on resize
-	window.addEventListener('resize', updateTabActiveState);
+	// Update on resize (debounced)
+	let tabResizeTimeout: number;
+	window.addEventListener('resize', () => {
+		clearTimeout(tabResizeTimeout);
+		tabResizeTimeout = window.setTimeout(updateTabActiveState, 100);
+	});
 
 	// Update after page swap
 	document.addEventListener('astro:after-swap', () => {
 		updateTabActiveState();
-		initTabIndicator();
 	});
 </script>
 
@@ -159,7 +162,7 @@ const pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, '');
 		opacity: 0;
 		z-index: 0;
 		pointer-events: none;
-		will-change: transform, width, height, opacity;
+		will-change: transform, width, height;
 	}
 
 	.tab-item {
