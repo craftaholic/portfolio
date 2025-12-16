@@ -218,6 +218,15 @@ const isCurrentPage = (href: string) => {
 		font-family: var(--font-brand);
 		font-weight: 500;
 		margin-bottom: 0;
+		/* Prevent disappearing during view transitions */
+		view-transition-name: top-nav;
+	}
+
+	/* Disable animation for this element during transitions */
+	::view-transition-old(top-nav),
+	::view-transition-new(top-nav) {
+		animation: none;
+		mix-blend-mode: normal;
 	}
 
 	.menu-header {

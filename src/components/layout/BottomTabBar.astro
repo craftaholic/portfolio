@@ -12,6 +12,7 @@ const isCurrentPage = (href: string) => {
 
 <nav class="bottom-tab-bar" aria-label="Mobile navigation">
 	<ul class="tab-list">
+		<li class="tab-indicator" aria-hidden="true"></li>
 		{
 			NAV_LINKS.map(({ label, href }) => (
 				<li>
@@ -28,6 +29,87 @@ const isCurrentPage = (href: string) => {
 	</ul>
 </nav>
 
+<script>
+	// Sliding tab indicator
+	function moveTabIndicatorTo(targetLink: HTMLElement, animate = true) {
+		const tabList = document.querySelector('.tab-list') as HTMLElement;
+		const indicator = document.querySelector('.tab-indicator') as HTMLElement;
+
+		if (!tabList || !indicator || !targetLink) return;
+
+		const listRect = tabList.getBoundingClientRect();
+		const targetRect = targetLink.getBoundingClientRect();
+
+		if (!animate) {
+			indicator.style.transition = 'none';
+		} else {
+			indicator.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+		}
+
+		indicator.style.width = `${targetRect.width}px`;
+		indicator.style.height = `${targetRect.height}px`;
+		indicator.style.left = `${targetRect.left - listRect.left}px`;
+		indicator.style.top = `${targetRect.top - listRect.top}px`;
+		indicator.style.opacity = '1';
+	}
+
+	function initTabIndicator() {
+		const links = document.querySelectorAll('.tab-list .tab-item') as NodeListOf<HTMLElement>;
+		const activeLink = document.querySelector('.tab-list .tab-item[aria-current="page"]') as HTMLElement;
+
+		// Position indicator on active link (no animation on init)
+		if (activeLink) {
+			moveTabIndicatorTo(activeLink, false);
+		}
+
+		// Add click listeners to animate indicator before navigation
+		links.forEach(link => {
+			link.addEventListener('click', (e) => {
+				const target = e.currentTarget as HTMLElement;
+				moveTabIndicatorTo(target, true);
+			});
+		});
+	}
+
+	// Update active state based on URL
+	function updateTabActiveState() {
+		const links = document.querySelectorAll('.tab-list .tab-item');
+		let pathname = window.location.pathname;
+		if (pathname.at(0) !== '/') pathname = '/' + pathname;
+		if (pathname.at(-1) !== '/') pathname += '/';
+
+		links.forEach(link => {
+			const href = link.getAttribute('href') || '';
+			const isActive = pathname === href || (href !== '/' && pathname.startsWith(href));
+			if (isActive) {
+				link.setAttribute('aria-current', 'page');
+				link.classList.add('active');
+			} else {
+				link.removeAttribute('aria-current');
+				link.classList.remove('active');
+			}
+		});
+
+		// Update indicator position
+		const activeLink = document.querySelector('.tab-list .tab-item[aria-current="page"]') as HTMLElement;
+		if (activeLink) {
+			moveTabIndicatorTo(activeLink, false);
+		}
+	}
+
+	// Initialize
+	initTabIndicator();
+
+	// Update on resize
+	window.addEventListener('resize', updateTabActiveState);
+
+	// Update after page swap
+	document.addEventListener('astro:after-swap', () => {
+		updateTabActiveState();
+		initTabIndicator();
+	});
+</script>
+
 <style>
 	.bottom-tab-bar {
 		display: flex;
@@ -38,6 +120,15 @@ const isCurrentPage = (href: string) => {
 		left: 50%;
 		transform: translateX(-50%);
 		z-index: 9999;
+		/* Prevent disappearing during view transitions */
+		view-transition-name: bottom-tab-bar;
+	}
+
+	/* Disable animation for this element during transitions */
+	::view-transition-old(bottom-tab-bar),
+	::view-transition-new(bottom-tab-bar) {
+		animation: none;
+		mix-blend-mode: normal;
 	}
 
 	.tab-list {
@@ -63,7 +154,19 @@ const isCurrentPage = (href: string) => {
 		z-index: -1;
 	}
 
+	.tab-indicator {
+		position: absolute;
+		background-color: var(--accent-regular);
+		border-radius: 999rem;
+		opacity: 0;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		z-index: 0;
+		pointer-events: none;
+	}
+
 	.tab-item {
+		position: relative;
+		z-index: 1;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -73,21 +176,17 @@ const isCurrentPage = (href: string) => {
 		color: var(--gray-300);
 		text-decoration: none;
 		border-radius: 999rem;
-		transition:
-			color var(--theme-transition),
-			background-color var(--theme-transition);
+		transition: color var(--theme-transition);
 		white-space: nowrap;
 	}
 
 	.tab-item:hover,
 	.tab-item:focus {
 		color: var(--gray-100);
-		background-color: var(--accent-subtle-overlay);
 	}
 
 	.tab-item.active {
 		color: var(--accent-text-over);
-		background-color: var(--accent-regular);
 	}
 
 	/* Hide on desktop */

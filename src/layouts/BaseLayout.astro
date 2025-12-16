@@ -42,9 +42,7 @@ const { title, description, hideIsland = false } = Astro.props;
 		</script>
 	</head>
 	<body>
-		<div transition:animate="none">
-			<Nav />
-		</div>
+		<Nav />
 		{!hideIsland && (
 			<div class="island-wrapper" transition:persist="island3d" transition:animate="none">
 				<Island3DScene />
