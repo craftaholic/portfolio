@@ -19,25 +19,49 @@ const { name, title, prefix = '$' } = Astro.props;
       <span class="terminal-title">~/{SITE.terminalUser}</span>
     </div>
     <div class="terminal-body">
-      <div class="terminal-line">
-        <span class="prompt">{prefix}</span>
-        <span class="command typing" data-text={`whoami`}></span>
-        <span class="cursor"></span>
+      <!-- Invisible pre-rendered content to reserve space -->
+      <div class="terminal-placeholder" aria-hidden="true">
+        <div class="terminal-line">
+          <span class="prompt">{prefix}</span>
+          <span class="command">whoami</span>
+        </div>
+        <div class="terminal-line output">
+          <span class="output-text name-output">{name}</span>
+        </div>
+        <div class="terminal-line">
+          <span class="prompt">{prefix}</span>
+          <span class="command">cat title.txt</span>
+        </div>
+        <div class="terminal-line output">
+          <span class="output-text title-output">{title}</span>
+        </div>
+        <div class="terminal-line">
+          <span class="prompt">{prefix}</span>
+          <span class="cursor"></span>
+        </div>
       </div>
-      <div class="terminal-line output hidden" data-delay="1500">
-        <span class="output-text name-output">{name}</span>
-      </div>
-      <div class="terminal-line hidden" data-delay="2000">
-        <span class="prompt">{prefix}</span>
-        <span class="command typing" data-text={`cat title.txt`}></span>
-        <span class="cursor"></span>
-      </div>
-      <div class="terminal-line output hidden" data-delay="3800">
-        <span class="output-text title-output">{title}</span>
-      </div>
-      <div class="terminal-line hidden" data-delay="4300">
-        <span class="prompt">{prefix}</span>
-        <span class="cursor blink"></span>
+      <!-- Animated content positioned on top -->
+      <div class="terminal-content">
+        <div class="terminal-line">
+          <span class="prompt">{prefix}</span>
+          <span class="command typing" data-text={`whoami`}></span>
+          <span class="cursor"></span>
+        </div>
+        <div class="terminal-line output hidden" data-delay="1500">
+          <span class="output-text name-output">{name}</span>
+        </div>
+        <div class="terminal-line hidden" data-delay="2000">
+          <span class="prompt">{prefix}</span>
+          <span class="command typing" data-text={`cat title.txt`}></span>
+          <span class="cursor"></span>
+        </div>
+        <div class="terminal-line output hidden" data-delay="3800">
+          <span class="output-text title-output">{title}</span>
+        </div>
+        <div class="terminal-line hidden" data-delay="4300">
+          <span class="prompt">{prefix}</span>
+          <span class="cursor blink"></span>
+        </div>
       </div>
     </div>
   </div>
@@ -45,8 +69,11 @@ const { name, title, prefix = '$' } = Astro.props;
 
 <script>
   function initTerminalAnimation() {
-    const terminalLines = document.querySelectorAll('.terminal-line');
-    const typingElements = document.querySelectorAll('.typing');
+    const terminalContent = document.querySelector('.terminal-content');
+    if (!terminalContent) return;
+
+    const terminalLines = terminalContent.querySelectorAll('.terminal-line');
+    const typingElements = terminalContent.querySelectorAll('.typing');
 
     // Reset all lines
     terminalLines.forEach((line, index) => {
@@ -187,6 +214,18 @@ const { name, title, prefix = '$' } = Astro.props;
     font-family: var(--font-brand);
     font-size: var(--text-sm);
     line-height: 1.8;
+    position: relative;
+  }
+
+  .terminal-placeholder {
+    visibility: hidden;
+  }
+
+  .terminal-content {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    right: 1rem;
   }
 
   .terminal-line {
@@ -276,6 +315,12 @@ const { name, title, prefix = '$' } = Astro.props;
     .terminal-body {
       padding: 1.5rem;
       font-size: var(--text-lg);
+    }
+
+    .terminal-content {
+      top: 1.5rem;
+      left: 1.5rem;
+      right: 1.5rem;
     }
 
     .name-output {

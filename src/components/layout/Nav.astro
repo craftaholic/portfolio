@@ -16,7 +16,7 @@ const pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, '');
 <nav>
 	<div class="menu-header">
 		<a href="/" class="site-title">
-			<Icon icon="terminal-window" color="var(--accent-regular)" size="1.6em" gradient />
+			<img src="/assets/images/profile.png" alt="" class="nav-profile-image" />
 			{SITE.author}
 		</a>
 		<div class="header-actions">
@@ -169,6 +169,14 @@ const pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, '');
 		line-height: 1.1;
 		color: var(--gray-0);
 		text-decoration: none;
+	}
+
+	.nav-profile-image {
+		width: 1.8em;
+		height: 1.8em;
+		border-radius: 50%;
+		object-fit: cover;
+		border: 2px solid var(--accent-regular);
 	}
 
 	.header-actions {
