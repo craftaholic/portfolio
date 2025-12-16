@@ -16,6 +16,12 @@ export class Island3D {
   private currentRotation = { x: 0, y: 0 };
   private animationFrameId: number | null = null;
 
+  // Spin-in animation state
+  private spinInStartTime: number | null = null;
+  private readonly spinInDuration = 2000; // Duration in ms
+  private readonly spinInStartSpeed = 0.32; // Fast initial spin (4x faster)
+  private readonly spinInEndSpeed = 0.003; // Normal auto-rotate speed
+
   constructor(container: HTMLElement, options: Island3DOptions = {}) {
     // Scene setup
     this.scene = new THREE.Scene();
@@ -88,6 +94,9 @@ export class Island3D {
         });
 
         this.scene.add(this.model);
+
+        // Start spin-in animation
+        this.spinInStartTime = performance.now();
 
         // Show canvas and call onLoad
         this.renderer.domElement.style.opacity = '1';
@@ -190,6 +199,39 @@ export class Island3D {
     this.renderer.setSize(width, height);
   }
 
+  /**
+   * Easing function for spin-in animation (ease-out cubic)
+   * Starts fast, slows down smoothly
+   */
+  private easeOutCubic(t: number): number {
+    return 1 - Math.pow(1 - t, 3);
+  }
+
+  /**
+   * Get current rotation speed based on spin-in animation progress
+   */
+  private getRotationSpeed(): number {
+    if (this.spinInStartTime === null) {
+      return this.spinInEndSpeed;
+    }
+
+    const elapsed = performance.now() - this.spinInStartTime;
+    const progress = Math.min(elapsed / this.spinInDuration, 1);
+
+    // Use easing to smoothly transition from fast to slow
+    const easedProgress = this.easeOutCubic(progress);
+
+    // Interpolate between start and end speed
+    const speed = this.spinInStartSpeed + (this.spinInEndSpeed - this.spinInStartSpeed) * easedProgress;
+
+    // Clear start time when animation is complete
+    if (progress >= 1) {
+      this.spinInStartTime = null;
+    }
+
+    return speed;
+  }
+
   private animate = (): void => {
     this.animationFrameId = requestAnimationFrame(this.animate);
 
@@ -203,9 +245,9 @@ export class Island3D {
       this.model.rotation.y = this.currentRotation.y;
     }
 
-    // Auto-rotate when not dragging
+    // Auto-rotate when not dragging (with spin-in effect)
     if (!this.isDragging) {
-      this.targetRotation.y += 0.003;
+      this.targetRotation.y += this.getRotationSpeed();
     }
 
     this.renderer.render(this.scene, this.camera);
