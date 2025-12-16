@@ -128,85 +128,12 @@ const pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, '');
 	}
 	customElements.define('menu-button', MenuButton);
 
-	// Sliding nav indicator - uses transform for smooth GPU-accelerated animation
-	function moveIndicatorTo(targetLink: HTMLElement, animate = true) {
-		const navItems = document.querySelector('#menu-content .nav-items') as HTMLElement;
-		const indicator = document.querySelector('#menu-content .nav-indicator') as HTMLElement;
+	import { setupSlidingIndicator } from '../../utils/slidingIndicator';
 
-		if (!navItems || !indicator || !targetLink) return;
-
-		const navRect = navItems.getBoundingClientRect();
-		const targetRect = targetLink.getBoundingClientRect();
-
-		const x = targetRect.left - navRect.left;
-		const y = targetRect.top - navRect.top;
-
-		if (animate) {
-			indicator.style.transition = 'transform 0.35s var(--nav-easing), width 0.35s var(--nav-easing), height 0.35s var(--nav-easing)';
-		} else {
-			indicator.style.transition = 'none';
-		}
-
-		indicator.style.width = `${targetRect.width}px`;
-		indicator.style.height = `${targetRect.height}px`;
-		indicator.style.transform = `translate(${x}px, ${y}px)`;
-		indicator.style.opacity = '1';
-	}
-
-	function initNavIndicator() {
-		const activeLink = document.querySelector('#menu-content .nav-items .link[aria-current="page"]') as HTMLElement;
-		if (activeLink) {
-			moveIndicatorTo(activeLink, false);
-		}
-	}
-
-	// Update active state based on URL
-	function updateActiveState() {
-		const links = document.querySelectorAll('#menu-content .nav-items .link');
-		if (!links.length) return;
-
-		let pathname = window.location.pathname;
-		if (pathname.at(0) !== '/') pathname = '/' + pathname;
-		if (pathname.at(-1) !== '/') pathname += '/';
-
-		links.forEach(link => {
-			const href = link.getAttribute('href') || '';
-			const isActive = pathname === href || (href !== '/' && pathname.startsWith(href));
-			if (isActive) {
-				link.setAttribute('aria-current', 'page');
-			} else {
-				link.removeAttribute('aria-current');
-			}
-		});
-
-		// Update indicator position without animation
-		const activeLink = document.querySelector('#menu-content .nav-items .link[aria-current="page"]') as HTMLElement;
-		if (activeLink) {
-			moveIndicatorTo(activeLink, false);
-		}
-	}
-
-	// Use event delegation - attach to document once, works for all current and future elements
-	document.addEventListener('click', (e) => {
-		const link = (e.target as HTMLElement).closest('#menu-content .nav-items .link') as HTMLElement;
-		if (link) {
-			moveIndicatorTo(link, true);
-		}
-	});
-
-	// Initialize
-	initNavIndicator();
-
-	// Update on resize (debounced)
-	let resizeTimeout: number;
-	window.addEventListener('resize', () => {
-		clearTimeout(resizeTimeout);
-		resizeTimeout = window.setTimeout(updateActiveState, 100);
-	});
-
-	// Update after page swap
-	document.addEventListener('astro:after-swap', () => {
-		updateActiveState();
+	setupSlidingIndicator({
+		containerSelector: '#menu-content .nav-items',
+		indicatorSelector: '#menu-content .nav-indicator',
+		linkSelector: '#menu-content .nav-items .link',
 	});
 </script>
 

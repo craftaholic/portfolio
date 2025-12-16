@@ -25,87 +25,13 @@ const pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, '');
 </nav>
 
 <script>
-	// Sliding tab indicator - uses transform for smooth GPU-accelerated animation
-	function moveTabIndicatorTo(targetLink: HTMLElement, animate = true) {
-		const tabList = document.querySelector('.bottom-tab-bar .tab-list') as HTMLElement;
-		const indicator = document.querySelector('.bottom-tab-bar .tab-indicator') as HTMLElement;
+	import { setupSlidingIndicator } from '../../utils/slidingIndicator';
 
-		if (!tabList || !indicator || !targetLink) return;
-
-		const listRect = tabList.getBoundingClientRect();
-		const targetRect = targetLink.getBoundingClientRect();
-
-		const x = targetRect.left - listRect.left;
-		const y = targetRect.top - listRect.top;
-
-		if (animate) {
-			indicator.style.transition = 'transform 0.35s var(--nav-easing), width 0.35s var(--nav-easing), height 0.35s var(--nav-easing)';
-		} else {
-			indicator.style.transition = 'none';
-		}
-
-		indicator.style.width = `${targetRect.width}px`;
-		indicator.style.height = `${targetRect.height}px`;
-		indicator.style.transform = `translate(${x}px, ${y}px)`;
-		indicator.style.opacity = '1';
-	}
-
-	function initTabIndicator() {
-		const activeLink = document.querySelector('.bottom-tab-bar .tab-item[aria-current="page"]') as HTMLElement;
-		if (activeLink) {
-			moveTabIndicatorTo(activeLink, false);
-		}
-	}
-
-	// Update active state based on URL
-	function updateTabActiveState() {
-		const links = document.querySelectorAll('.bottom-tab-bar .tab-item');
-		if (!links.length) return;
-
-		let pathname = window.location.pathname;
-		if (pathname.at(0) !== '/') pathname = '/' + pathname;
-		if (pathname.at(-1) !== '/') pathname += '/';
-
-		links.forEach(link => {
-			const href = link.getAttribute('href') || '';
-			const isActive = pathname === href || (href !== '/' && pathname.startsWith(href));
-			if (isActive) {
-				link.setAttribute('aria-current', 'page');
-				link.classList.add('active');
-			} else {
-				link.removeAttribute('aria-current');
-				link.classList.remove('active');
-			}
-		});
-
-		// Update indicator position without animation
-		const activeLink = document.querySelector('.bottom-tab-bar .tab-item[aria-current="page"]') as HTMLElement;
-		if (activeLink) {
-			moveTabIndicatorTo(activeLink, false);
-		}
-	}
-
-	// Use event delegation - attach to document once, works for all current and future elements
-	document.addEventListener('click', (e) => {
-		const link = (e.target as HTMLElement).closest('.bottom-tab-bar .tab-item') as HTMLElement;
-		if (link) {
-			moveTabIndicatorTo(link, true);
-		}
-	});
-
-	// Initialize
-	initTabIndicator();
-
-	// Update on resize (debounced)
-	let tabResizeTimeout: number;
-	window.addEventListener('resize', () => {
-		clearTimeout(tabResizeTimeout);
-		tabResizeTimeout = window.setTimeout(updateTabActiveState, 100);
-	});
-
-	// Update after page swap
-	document.addEventListener('astro:after-swap', () => {
-		updateTabActiveState();
+	setupSlidingIndicator({
+		containerSelector: '.bottom-tab-bar .tab-list',
+		indicatorSelector: '.bottom-tab-bar .tab-indicator',
+		linkSelector: '.bottom-tab-bar .tab-item',
+		activeClass: 'active',
 	});
 </script>
 

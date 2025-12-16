@@ -1,12 +1,9 @@
+import { isPathMatch, normalizePath } from './slidingIndicator';
+
 /**
  * Check if a given href matches the current page URL.
- * Used for highlighting active navigation items.
+ * Used for highlighting active navigation items (server-side).
  */
 export function isCurrentPage(pathname: string, href: string): boolean {
-	// Normalize pathname
-	let normalizedPath = pathname;
-	if (normalizedPath.at(0) !== '/') normalizedPath = '/' + normalizedPath;
-	if (normalizedPath.at(-1) !== '/') normalizedPath += '/';
-
-	return normalizedPath === href || (href !== '/' && normalizedPath.startsWith(href));
+	return isPathMatch(normalizePath(pathname), href);
 }
