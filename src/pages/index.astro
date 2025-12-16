@@ -2,7 +2,7 @@
 import { SITE } from '../config';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Island3DScene from '../components/three/Island3DScene.astro';
-import Hero from '../components/sections/Hero.astro';
+import TerminalHero from '../components/sections/TerminalHero.astro';
 import PageContainer from '../components/layout/PageContainer.astro';
 import Section from '../components/sections/Section.astro';
 import BioSection from '../components/sections/BioSection.astro';
@@ -14,11 +14,14 @@ import LinksList from '../components/ui/LinksList.astro';
 
 <BaseLayout>
 	<PageContainer>
-		<Hero greeting="Hello, I'm a Senior Cloud/DevOps/Platform Engineer based in Vietnam!">
-			<Island3DScene slot="image" />
-		</Hero>
+		<Island3DScene />
 
-		<Section title="Work">
+		<TerminalHero
+			name="Tommy Tran"
+			title="Senior Cloud/DevOps/Platform Engineer"
+		/>
+
+		<Section title="About">
 			<BioSection>
 				<p>
 					I'm an engineer with a strong foundation in computer science and extensive experience in DevOps, complemented by strong full-stack development skills. I specialize in building complex infrastructure and platform solutions, and I am recognized for tackling challenging problems, delivering high-impact results, and earning the trust of my peers through reliability and technical expertise.
