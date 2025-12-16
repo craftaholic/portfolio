@@ -7,8 +7,8 @@
 - [x] Implement mouse/touch controls for island rotation
 - [x] Add placeholder 3D model for testing
 - [x] Integrate 3D scene into hero section
-- [ ] Add loading state/spinner
-- [ ] Optimize performance (lazy loading, LOD)
+- [x] Add loading state/spinner
+- [x] Optimize performance (lazy loading, LOD)
 - [x] Test responsive behavior on mobile/tablet
 
 ### 2. Update Background Color Scheme
@@ -22,11 +22,11 @@
 - [ ] Ensure accessibility (contrast ratios)
 
 ### 3. Fill In Personal Information
-- [ ] Update site title and name in `src/components/Nav.astro`
-- [ ] Update homepage hero title and tagline in `src/pages/index.astro`
-- [ ] Update footer copyright in `src/components/Footer.astro`
-- [ ] Update about page content in `src/pages/about.astro`
-- [ ] Add social media links in `src/components/Nav.astro`
+- [x] Update site title and name in `src/components/Nav.astro`
+- [x] Update homepage hero title and tagline in `src/pages/index.astro`
+- [x] Update footer copyright in `src/components/Footer.astro`
+- [x] Update about page content in `src/pages/about.astro`
+- [x] Add social media links in `src/components/Nav.astro`
 - [ ] Add profile/portrait image
 - [ ] Update meta tags and SEO information
 
@@ -54,7 +54,7 @@
 - [ ] Add suggest changes at the bottom
 - [ ] Add comment section
 - [ ] (Optional) Add how many views
-- [ ] Write first blog post
+- [x] Write first blog post
 
 ---
 
