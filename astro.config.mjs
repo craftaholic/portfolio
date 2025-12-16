@@ -9,6 +9,12 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export default defineConfig({
   // Static site generation (default)
   // Deploy to Cloudflare Pages: bun run build && npx wrangler pages deploy dist
+  prefetch: {
+    // Prefetch links on hover (desktop) and tap start (mobile)
+    defaultStrategy: 'hover',
+    // Also prefetch links as they become visible
+    prefetchAll: true,
+  },
   vite: {
     resolve: {
       alias: {

@@ -44,21 +44,25 @@
       window.__island3D = null;
     }
 
+    // Wait for container to have dimensions (may be 0 during prefetch)
+    if (container.clientWidth === 0 || container.clientHeight === 0) {
+      // Retry after a short delay
+      requestAnimationFrame(() => initIsland3D());
+      return null;
+    }
+
     let island3D: Island3D | null = null;
 
-    // Initialize the 3D scene
-    if (container.clientWidth > 0 && container.clientHeight > 0) {
-      island3D = new Island3D(container, {
-        onLoad: () => {
-          // Hide loader when scene is ready
-          if (loader) {
-            loader.classList.add('hidden');
-          }
-        },
-      });
-      // Store globally
-      window.__island3D = island3D;
-    }
+    island3D = new Island3D(container, {
+      onLoad: () => {
+        // Hide loader when scene is ready
+        if (loader) {
+          loader.classList.add('hidden');
+        }
+      },
+    });
+    // Store globally
+    window.__island3D = island3D;
 
     return island3D;
   }
@@ -68,7 +72,6 @@
 
   // Re-initialize after page swap if needed (when returning from hideIsland pages)
   document.addEventListener('astro:after-swap', () => {
-    // Small delay to ensure DOM is ready
     requestAnimationFrame(() => {
       initIsland3D();
     });
