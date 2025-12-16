@@ -4,6 +4,7 @@ export const SITE = {
   title: 'Tommy Tran',
   description: 'Senior Cloud/DevOps/Platform Engineer based in Vietnam',
   locale: 'en-US',
+  terminalUser: 'tommy',
 
   // Blog settings
   postPerPage: 5,
@@ -12,7 +13,6 @@ export const SITE = {
   socialLinks: [
     { href: 'https://github.com/craftaholic', label: 'GitHub' },
     { href: 'https://www.linkedin.com/in/tranthangportfolio/', label: 'LinkedIn' },
-    { href: 'https://blog.tommytran.me', label: 'Blog' },
   ],
 } as const;
 

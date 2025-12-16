@@ -5,6 +5,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PageContainer from '../components/layout/PageContainer.astro';
 import Placeholder from '../components/blog/Placeholder.astro';
 import WorkTimeline from '../components/work/WorkTimeline.astro';
+import Island3DScene from '../components/three/Island3DScene.astro';
 
 const projects = (await getCollection('work')).sort(
 	(a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf(),
@@ -16,6 +17,7 @@ const projects = (await getCollection('work')).sort(
 	description="My professional work experience and client projects"
 >
 	<PageContainer size="medium">
+		<Island3DScene />
 		<Hero
 			title="Work Experience"
 			tagline="Professional experience across platform engineering, DevOps, and cloud infrastructure."

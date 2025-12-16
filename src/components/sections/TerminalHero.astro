@@ -1,4 +1,6 @@
 ---
+import { SITE } from '../../config';
+
 interface Props {
   name: string;
   title: string;
@@ -14,7 +16,7 @@ const { name, title, prefix = '$' } = Astro.props;
       <span class="terminal-dot red"></span>
       <span class="terminal-dot yellow"></span>
       <span class="terminal-dot green"></span>
-      <span class="terminal-title">~/tommy</span>
+      <span class="terminal-title">~/{SITE.terminalUser}</span>
     </div>
     <div class="terminal-body">
       <div class="terminal-line">
