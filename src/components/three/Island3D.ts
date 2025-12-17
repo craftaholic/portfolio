@@ -23,9 +23,10 @@ export class Island3D {
 
   // Spin-in animation state
   private spinInStartTime: number | null = null;
-  private readonly spinInDuration = 2000; // Duration in ms
-  private readonly spinInStartSpeed = 0.32; // Fast initial spin (4x faster)
-  private readonly spinInEndSpeed = 0.003; // Normal auto-rotate speed
+  private lastFrameTime: number = 0;
+  private readonly spinInDuration = 1200; // Duration in ms
+  private readonly spinInStartSpeed = 80; // Fast initial spin (radians per second)
+  private readonly spinInEndSpeed = 0.36; // Normal auto-rotate speed (radians per second)
 
   constructor(container: HTMLElement, options: Island3DOptions = {}) {
     // Scene setup
@@ -282,13 +283,19 @@ export class Island3D {
   private animate = (): void => {
     this.animationFrameId = requestAnimationFrame(this.animate);
 
+    // Calculate delta time for frame-rate independent animation
+    const currentTime = performance.now();
+    const deltaTime = this.lastFrameTime ? (currentTime - this.lastFrameTime) / 1000 : 0.016;
+    this.lastFrameTime = currentTime;
+
     // Auto-rotate camera when not dragging (with spin-in effect)
     if (!this.isDragging) {
-      this.targetCameraAngle += this.getRotationSpeed();
+      this.targetCameraAngle += this.getRotationSpeed() * deltaTime;
     }
 
-    // Smooth camera angle interpolation
-    this.cameraAngle += (this.targetCameraAngle - this.cameraAngle) * 0.1;
+    // Smooth camera angle interpolation (frame-rate independent)
+    const lerpFactor = 1 - Math.pow(0.00001, deltaTime);
+    this.cameraAngle += (this.targetCameraAngle - this.cameraAngle) * lerpFactor;
 
     // Update camera position on orbit
     this.updateCameraPosition();
