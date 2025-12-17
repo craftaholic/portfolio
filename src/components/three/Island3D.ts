@@ -68,7 +68,7 @@ export class Island3D {
     const loader = new GLTFLoader();
 
     loader.load(
-      '/assets/model/voxel_cat_3d.glb',
+      '/assets/model/voxel_3d.glb',
       (gltf) => {
         this.model = gltf.scene;
 
