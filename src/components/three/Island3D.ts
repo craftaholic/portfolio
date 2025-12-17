@@ -131,32 +131,33 @@ export class Island3D {
   }
 
   private setupLighting(): void {
-    // Ambient light - reduced for more contrast
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+    // Minimal ambient - dark room feel
+    const ambientLight = new THREE.AmbientLight(0x222222, 0.2);
     this.scene.add(ambientLight);
 
-    // Main directional light (sun) - stronger for visible shadows
-    const directionalLight = new THREE.DirectionalLight(0xfff5e6, 2.0);
-    directionalLight.position.set(5, 12, 5);
-    directionalLight.castShadow = true;
-    directionalLight.shadow.camera.left = -10;
-    directionalLight.shadow.camera.right = 10;
-    directionalLight.shadow.camera.top = 10;
-    directionalLight.shadow.camera.bottom = -10;
-    directionalLight.shadow.mapSize.width = 2048;
-    directionalLight.shadow.mapSize.height = 2048;
-    directionalLight.shadow.bias = -0.0001;
-    directionalLight.shadow.normalBias = 0.02;
-    this.scene.add(directionalLight);
+    // Key light - main studio light, slightly warm white
+    const keyLight = new THREE.DirectionalLight(0xfff8f0, 2.5);
+    keyLight.position.set(4, 8, 6);
+    keyLight.castShadow = true;
+    keyLight.shadow.camera.left = -10;
+    keyLight.shadow.camera.right = 10;
+    keyLight.shadow.camera.top = 10;
+    keyLight.shadow.camera.bottom = -10;
+    keyLight.shadow.mapSize.width = 2048;
+    keyLight.shadow.mapSize.height = 2048;
+    keyLight.shadow.bias = -0.0001;
+    keyLight.shadow.normalBias = 0.02;
+    this.scene.add(keyLight);
 
-    // Fill light from opposite side - softer
-    const fillLight = new THREE.DirectionalLight(0xe6f0ff, 0.4);
-    fillLight.position.set(-5, 5, -5);
+    // Fill light - very subtle, just to soften harsh shadows
+    const fillLight = new THREE.DirectionalLight(0xffffff, 0.3);
+    fillLight.position.set(-4, 4, -3);
     this.scene.add(fillLight);
 
-    // Hemisphere light for ambient color variation
-    const hemisphereLight = new THREE.HemisphereLight(0x87ceeb, 0x545454, 0.3);
-    this.scene.add(hemisphereLight);
+    // Rim/back light - subtle edge highlight
+    const rimLight = new THREE.DirectionalLight(0xffeedd, 0.4);
+    rimLight.position.set(0, 6, -8);
+    this.scene.add(rimLight);
 
     // Ground plane to receive shadows - will be repositioned when model loads
     const groundGeometry = new THREE.PlaneGeometry(30, 30);
