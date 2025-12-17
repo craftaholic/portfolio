@@ -207,10 +207,11 @@ export class Island3D {
     }, { passive: true });
 
     container.addEventListener('touchmove', (e) => {
-      if (e.touches.length === 1) {
+      if (e.touches.length === 1 && this.isDragging) {
+        e.preventDefault(); // Prevent page scroll when interacting with 3D model
         this.onPointerMove(e.touches[0].clientX, e.touches[0].clientY);
       }
-    }, { passive: true });
+    }, { passive: false }); // Must be false to allow preventDefault
 
     container.addEventListener('touchend', () => this.onPointerUp());
   }
