@@ -10,6 +10,7 @@ export class Island3D {
   private camera: THREE.PerspectiveCamera;
   private renderer: THREE.WebGLRenderer;
   private model: THREE.Group | null = null;
+  private groundPlane: THREE.Mesh | null = null;
   private isDragging = false;
   private previousMouse = { x: 0, y: 0 };
   private animationFrameId: number | null = null;
@@ -17,8 +18,8 @@ export class Island3D {
   // Camera orbit parameters
   private cameraAngle = 0; // Current horizontal angle
   private targetCameraAngle = 0; // Target horizontal angle for smooth interpolation
-  private readonly cameraRadius = 7.5; // Distance from center
-  private readonly cameraElevation = (18 * Math.PI) / 180; // 18 degrees in radians
+  private readonly cameraRadius = 6.85; // Distance from center
+  private readonly cameraElevation = (15 * Math.PI) / 180; // 15 degrees in radians
 
   // Spin-in animation state
   private spinInStartTime: number | null = null;
@@ -99,6 +100,12 @@ export class Island3D {
 
         this.scene.add(this.model);
 
+        // Position ground plane at the bottom of the scaled model
+        const scaledBox = new THREE.Box3().setFromObject(this.model);
+        if (this.groundPlane) {
+          this.groundPlane.position.y = scaledBox.min.y;
+        }
+
         // Start spin-in animation
         this.spinInStartTime = performance.now();
 
@@ -124,13 +131,13 @@ export class Island3D {
   }
 
   private setupLighting(): void {
-    // Ambient light
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+    // Ambient light - reduced for more contrast
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
     this.scene.add(ambientLight);
 
-    // Main directional light (sun)
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
-    directionalLight.position.set(5, 10, 5);
+    // Main directional light (sun) - stronger for visible shadows
+    const directionalLight = new THREE.DirectionalLight(0xfff5e6, 1.5);
+    directionalLight.position.set(5, 12, 5);
     directionalLight.castShadow = true;
     directionalLight.shadow.camera.left = -10;
     directionalLight.shadow.camera.right = 10;
@@ -138,11 +145,27 @@ export class Island3D {
     directionalLight.shadow.camera.bottom = -10;
     directionalLight.shadow.mapSize.width = 2048;
     directionalLight.shadow.mapSize.height = 2048;
+    directionalLight.shadow.bias = -0.0001;
+    directionalLight.shadow.normalBias = 0.02;
     this.scene.add(directionalLight);
 
-    // Hemisphere light for better color
-    const hemisphereLight = new THREE.HemisphereLight(0x87ceeb, 0x545454, 0.5);
+    // Fill light from opposite side - softer
+    const fillLight = new THREE.DirectionalLight(0xe6f0ff, 0.4);
+    fillLight.position.set(-5, 5, -5);
+    this.scene.add(fillLight);
+
+    // Hemisphere light for ambient color variation
+    const hemisphereLight = new THREE.HemisphereLight(0x87ceeb, 0x545454, 0.3);
     this.scene.add(hemisphereLight);
+
+    // Ground plane to receive shadows - will be repositioned when model loads
+    const groundGeometry = new THREE.PlaneGeometry(30, 30);
+    const groundMaterial = new THREE.ShadowMaterial({ opacity: 0.3 });
+    this.groundPlane = new THREE.Mesh(groundGeometry, groundMaterial);
+    this.groundPlane.rotation.x = -Math.PI / 2;
+    this.groundPlane.position.y = -2.5;
+    this.groundPlane.receiveShadow = true;
+    this.scene.add(this.groundPlane);
   }
 
   private setupEventListeners(container: HTMLElement): void {
