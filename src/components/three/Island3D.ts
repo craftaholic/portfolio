@@ -136,7 +136,7 @@ export class Island3D {
     this.scene.add(ambientLight);
 
     // Main directional light (sun) - stronger for visible shadows
-    const directionalLight = new THREE.DirectionalLight(0xfff5e6, 1.5);
+    const directionalLight = new THREE.DirectionalLight(0xfff5e6, 2.0);
     directionalLight.position.set(5, 12, 5);
     directionalLight.castShadow = true;
     directionalLight.shadow.camera.left = -10;
