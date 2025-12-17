@@ -19,8 +19,11 @@ export class Island3D {
   // Camera orbit parameters
   private cameraAngle = 0; // Current horizontal angle
   private targetCameraAngle = 0; // Target horizontal angle for smooth interpolation
+  private cameraElevation = (15 * Math.PI) / 180; // Current vertical angle in radians
+  private targetCameraElevation = (15 * Math.PI) / 180; // Target vertical angle
   private readonly cameraRadius = 6.85; // Distance from center
-  private readonly cameraElevation = (15 * Math.PI) / 180; // 15 degrees in radians
+  private readonly minElevation = (5 * Math.PI) / 180; // Minimum 5 degrees
+  private readonly maxElevation = (60 * Math.PI) / 180; // Maximum 60 degrees
 
   // Spin-in animation state
   private spinInStartTime: number | null = null;
@@ -221,9 +224,15 @@ export class Island3D {
   private onPointerMove(x: number, y: number): void {
     if (this.isDragging) {
       const deltaX = x - this.previousMouse.x;
+      const deltaY = y - this.previousMouse.y;
 
       // Adjust camera orbit angle based on horizontal drag
       this.targetCameraAngle -= deltaX * 0.01;
+
+      // Adjust camera elevation based on vertical drag
+      this.targetCameraElevation += deltaY * 0.01;
+      // Clamp elevation between min and max
+      this.targetCameraElevation = Math.max(this.minElevation, Math.min(this.maxElevation, this.targetCameraElevation));
 
       this.previousMouse.x = x;
       this.previousMouse.y = y;
@@ -303,6 +312,7 @@ export class Island3D {
     // Smooth camera angle interpolation (frame-rate independent)
     const lerpFactor = 1 - Math.pow(0.00001, deltaTime);
     this.cameraAngle += (this.targetCameraAngle - this.cameraAngle) * lerpFactor;
+    this.cameraElevation += (this.targetCameraElevation - this.cameraElevation) * lerpFactor;
 
     // Update camera position on orbit
     this.updateCameraPosition();
