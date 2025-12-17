@@ -12,9 +12,13 @@ export class Island3D {
   private model: THREE.Group | null = null;
   private isDragging = false;
   private previousMouse = { x: 0, y: 0 };
-  private targetRotation = { x: 0, y: 0 };
-  private currentRotation = { x: 0, y: 0 };
   private animationFrameId: number | null = null;
+
+  // Camera orbit parameters
+  private cameraAngle = 0; // Current horizontal angle
+  private targetCameraAngle = 0; // Target horizontal angle for smooth interpolation
+  private readonly cameraRadius = 7.5; // Distance from center
+  private readonly cameraElevation = (18 * Math.PI) / 180; // 18 degrees in radians
 
   // Spin-in animation state
   private spinInStartTime: number | null = null;
@@ -29,7 +33,7 @@ export class Island3D {
     // Camera setup
     const aspect = container.clientWidth / container.clientHeight;
     this.camera = new THREE.PerspectiveCamera(45, aspect, 0.1, 1000);
-    this.camera.position.set(0, 2, 6);
+    this.updateCameraPosition();
     this.camera.lookAt(0, 0, 0);
 
     // Renderer setup with transparent background
@@ -82,7 +86,7 @@ export class Island3D {
 
         // Scale to fit nicely in view (adjust as needed)
         const maxDim = Math.max(size.x, size.y, size.z);
-        const scale = 4.2 / maxDim;
+        const scale = (4.2 / maxDim) * 1.3; // Scaled by 30%
         this.model.scale.setScalar(scale);
 
         // Enable shadows for all meshes
@@ -173,17 +177,24 @@ export class Island3D {
   private onPointerMove(x: number, y: number): void {
     if (this.isDragging) {
       const deltaX = x - this.previousMouse.x;
-      const deltaY = y - this.previousMouse.y;
 
-      this.targetRotation.y += deltaX * 0.01;
-      this.targetRotation.x += deltaY * 0.01;
-
-      // Clamp vertical rotation
-      this.targetRotation.x = Math.max(-Math.PI / 4, Math.min(Math.PI / 4, this.targetRotation.x));
+      // Adjust camera orbit angle based on horizontal drag
+      this.targetCameraAngle -= deltaX * 0.01;
 
       this.previousMouse.x = x;
       this.previousMouse.y = y;
     }
+  }
+
+  private updateCameraPosition(): void {
+    // Calculate camera position on a circular orbit at 25 degrees elevation
+    const x = this.cameraRadius * Math.cos(this.cameraElevation) * Math.sin(this.cameraAngle);
+    const y = this.cameraRadius * Math.sin(this.cameraElevation);
+    const z = this.cameraRadius * Math.cos(this.cameraElevation) * Math.cos(this.cameraAngle);
+
+    this.camera.position.set(x, y, z);
+    // Look slightly below center to shift model up in view
+    this.camera.lookAt(0, -1, 0);
   }
 
   private onPointerUp(): void {
@@ -235,20 +246,16 @@ export class Island3D {
   private animate = (): void => {
     this.animationFrameId = requestAnimationFrame(this.animate);
 
-    // Smooth rotation interpolation
-    this.currentRotation.x += (this.targetRotation.x - this.currentRotation.x) * 0.1;
-    this.currentRotation.y += (this.targetRotation.y - this.currentRotation.y) * 0.1;
-
-    // Apply rotation to model
-    if (this.model) {
-      this.model.rotation.x = this.currentRotation.x;
-      this.model.rotation.y = this.currentRotation.y;
-    }
-
-    // Auto-rotate when not dragging (with spin-in effect)
+    // Auto-rotate camera when not dragging (with spin-in effect)
     if (!this.isDragging) {
-      this.targetRotation.y += this.getRotationSpeed();
+      this.targetCameraAngle += this.getRotationSpeed();
     }
+
+    // Smooth camera angle interpolation
+    this.cameraAngle += (this.targetCameraAngle - this.cameraAngle) * 0.1;
+
+    // Update camera position on orbit
+    this.updateCameraPosition();
 
     this.renderer.render(this.scene, this.camera);
   };
