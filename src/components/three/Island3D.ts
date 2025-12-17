@@ -14,6 +14,7 @@ export class Island3D {
   private isDragging = false;
   private previousMouse = { x: 0, y: 0 };
   private animationFrameId: number | null = null;
+  private isMobile: boolean;
 
   // Camera orbit parameters
   private cameraAngle = 0; // Current horizontal angle
@@ -38,17 +39,23 @@ export class Island3D {
     this.updateCameraPosition();
     this.camera.lookAt(0, 0, 0);
 
+    // Detect mobile device
+    this.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
     // Renderer setup with transparent background
     this.renderer = new THREE.WebGLRenderer({
-      antialias: true,
+      antialias: !this.isMobile, // Disable antialiasing on mobile for performance
       alpha: true,
       premultipliedAlpha: false,
+      powerPreference: 'high-performance',
     });
     this.renderer.setClearColor(0x000000, 0);
     this.renderer.setSize(container.clientWidth, container.clientHeight);
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    // Lower pixel ratio on mobile for smoother performance
+    this.renderer.setPixelRatio(this.isMobile ? Math.min(window.devicePixelRatio, 1.5) : Math.min(window.devicePixelRatio, 2));
     this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    // Use simpler shadow map on mobile
+    this.renderer.shadowMap.type = this.isMobile ? THREE.BasicShadowMap : THREE.PCFSoftShadowMap;
 
     // Hide canvas initially until model loads
     this.renderer.domElement.style.opacity = '0';
