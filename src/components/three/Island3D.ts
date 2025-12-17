@@ -90,15 +90,30 @@ export class Island3D {
         const scale = (4.2 / maxDim) * 1.3; // Scaled by 30%
         this.model.scale.setScalar(scale);
 
-        // Enable shadows for all meshes
+        // Enable shadows and find light objects to make them glow
         this.model.traverse((child) => {
           if (child instanceof THREE.Mesh) {
             child.castShadow = true;
             child.receiveShadow = true;
+
           }
         });
 
         this.scene.add(this.model);
+
+        // Add a glowing lamp light - adjust position to match lamp location
+        const lampGlow = new THREE.Mesh(
+          new THREE.SphereGeometry(0.15, 16, 16),
+          new THREE.MeshBasicMaterial({ color: 0xffeeaa })
+        );
+        // Starting position - adjust these values to match the lamp
+        lampGlow.position.set(3.4, 2.8, 2.6);
+        this.model.add(lampGlow);
+
+        // Add point light at lamp position for illumination effect
+        const lampLight = new THREE.PointLight(0xffeeaa, 5, 8);
+        lampLight.position.copy(lampGlow.position);
+        this.model.add(lampLight);
 
         // Position ground plane at the bottom of the scaled model
         const scaledBox = new THREE.Box3().setFromObject(this.model);
@@ -115,10 +130,7 @@ export class Island3D {
           onLoad();
         }
       },
-      (progress) => {
-        // Loading progress (optional)
-        console.log('Loading model:', (progress.loaded / progress.total) * 100 + '%');
-      },
+      undefined,
       (error) => {
         console.error('Error loading model:', error);
         // Show canvas even on error
