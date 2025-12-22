@@ -93,8 +93,12 @@ const { title, description, hideIsland = false } = Astro.props;
 				smoothScrollTo(targetY, 1500);
 			}
 
-			// Run on both initial load and View Transitions navigation
-			scrollToTitle();
+			// On initial load: scroll to top first, wait for 3D spin, then scroll to title
+			if (window.location.pathname !== '/') {
+				window.scrollTo(0, 0);
+				setTimeout(scrollToTitle, 2000);
+			}
+			// Run on View Transitions navigation (no delay needed)
 			document.addEventListener('astro:page-load', scrollToTitle);
 		</script>
 
