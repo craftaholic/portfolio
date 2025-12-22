@@ -34,18 +34,18 @@ export class Island3D {
     const { camera, scale } = this.createCamera(container);
     this.camera = camera;
 
-    // Renderer setup
+    // Renderer setup (same quality on mobile and desktop)
     this.renderer = new THREE.WebGLRenderer({
-      antialias: !this.isMobile,
+      antialias: true,
       alpha: true,
       powerPreference: 'high-performance',
     });
     this.renderer.setClearColor(0x000000, 0);
     this.renderer.setSize(container.clientWidth, container.clientHeight);
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, this.isMobile ? 1.5 : 2));
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = this.isMobile ? THREE.BasicShadowMap : THREE.PCFSoftShadowMap;
+    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
     // Hide canvas initially
     this.renderer.domElement.style.opacity = '0';
@@ -106,8 +106,8 @@ export class Island3D {
     keyLight.shadow.camera.right = 10;
     keyLight.shadow.camera.top = 10;
     keyLight.shadow.camera.bottom = -10;
-    keyLight.shadow.mapSize.width = this.isMobile ? 1024 : 2048;
-    keyLight.shadow.mapSize.height = this.isMobile ? 1024 : 2048;
+    keyLight.shadow.mapSize.width = 2048;
+    keyLight.shadow.mapSize.height = 2048;
     keyLight.shadow.bias = -0.0001;
     this.scene.add(keyLight);
 
