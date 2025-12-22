@@ -43,6 +43,8 @@ export class Island3D {
     this.renderer.setSize(container.clientWidth, container.clientHeight);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, this.isMobile ? 1.5 : 2));
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
+    this.renderer.shadowMap.enabled = true;
+    this.renderer.shadowMap.type = this.isMobile ? THREE.BasicShadowMap : THREE.PCFSoftShadowMap;
 
     // Hide canvas initially
     this.renderer.domElement.style.opacity = '0';
@@ -91,14 +93,36 @@ export class Island3D {
   }
 
   private setupLighting(): void {
-    // Simple ambient light (like craftz.dog)
-    const ambientLight = new THREE.AmbientLight(0xcccccc, Math.PI);
+    // Ambient light
+    const ambientLight = new THREE.AmbientLight(0x222222, 0.3);
     this.scene.add(ambientLight);
 
-    // Directional light for some depth
-    const dirLight = new THREE.DirectionalLight(0xffffff, 1);
-    dirLight.position.set(5, 10, 7.5);
-    this.scene.add(dirLight);
+    // Key light with shadows
+    const keyLight = new THREE.DirectionalLight(0xfff8f0, 2.5);
+    keyLight.position.set(4, 8, 6);
+    keyLight.castShadow = true;
+    keyLight.shadow.camera.left = -10;
+    keyLight.shadow.camera.right = 10;
+    keyLight.shadow.camera.top = 10;
+    keyLight.shadow.camera.bottom = -10;
+    keyLight.shadow.mapSize.width = this.isMobile ? 1024 : 2048;
+    keyLight.shadow.mapSize.height = this.isMobile ? 1024 : 2048;
+    keyLight.shadow.bias = -0.0001;
+    this.scene.add(keyLight);
+
+    // Fill light
+    const fillLight = new THREE.DirectionalLight(0xffffff, 0.3);
+    fillLight.position.set(-4, 4, -3);
+    this.scene.add(fillLight);
+
+    // Ground plane for shadows
+    const groundGeometry = new THREE.PlaneGeometry(30, 30);
+    const groundMaterial = new THREE.ShadowMaterial({ opacity: 0.3 });
+    const groundPlane = new THREE.Mesh(groundGeometry, groundMaterial);
+    groundPlane.rotation.x = -Math.PI / 2;
+    groundPlane.position.y = -2.5;
+    groundPlane.receiveShadow = true;
+    this.scene.add(groundPlane);
   }
 
   private loadModel(onLoad?: () => void): void {
@@ -123,11 +147,11 @@ export class Island3D {
         const scale = isSmallPhone ? baseScale * 0.7 : this.isMobile ? baseScale * 0.85 : baseScale;
         this.model.scale.setScalar(scale);
 
-        // Disable shadows for performance (like craftz.dog)
+        // Enable shadows
         this.model.traverse((child) => {
           if (child instanceof THREE.Mesh) {
-            child.castShadow = false;
-            child.receiveShadow = false;
+            child.castShadow = true;
+            child.receiveShadow = true;
           }
         });
 
