@@ -301,8 +301,8 @@ const pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, '');
 
 	@media (min-width: 50em) {
 		nav {
-			display: grid;
-			grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+			display: flex;
+			justify-content: space-between;
 			align-items: center;
 			padding: 1rem 1.5rem;
 			gap: 1rem;
@@ -322,56 +322,9 @@ const pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, '');
 			display: contents;
 		}
 
+		/* Hide nav-items on desktop - using BottomTabBar for all screen sizes */
 		.nav-items {
-			position: relative;
-			flex-direction: row;
-			flex-wrap: wrap;
-			font-size: var(--text-sm);
-			border-radius: 999rem;
-			border: 0;
-			padding: 0.5rem 0.5625rem;
-			background: radial-gradient(var(--gray-900), var(--gray-800) 150%);
-			box-shadow: var(--shadow-md);
-			justify-content: center;
-		}
-
-		.nav-items::before {
-			position: absolute;
-			inset: -1px;
-			content: '';
-			background: var(--gradient-stroke);
-			border-radius: 999rem;
-			z-index: -1;
-		}
-
-		.nav-indicator {
-			display: block;
-			position: absolute;
-			top: 0;
-			left: 0;
-			background-color: var(--accent-regular);
-			border-radius: 999rem;
-			opacity: 0;
-			z-index: 0;
-			pointer-events: none;
-			will-change: transform, width, height;
-		}
-
-		.link {
-			position: relative;
-			z-index: 1;
-			padding: 0.5rem 1rem;
-			border-radius: 999rem;
-			transition: color var(--theme-transition);
-		}
-
-		.link:hover,
-		.link:focus {
-			color: var(--gray-100);
-		}
-
-		.link[aria-current='page'] {
-			color: var(--accent-text-over);
+			display: none;
 		}
 
 		.menu-footer {

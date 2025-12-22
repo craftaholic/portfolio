@@ -171,7 +171,6 @@ export const SITE = {
   socialLinks: [
     { href: 'https://github.com/craftaholic', label: 'GitHub' },
     { href: 'https://www.linkedin.com/in/tranthangportfolio/', label: 'LinkedIn' },
-    { href: 'https://blog.tommytran.me', label: 'Blog' },
   ],
 } as const;
 
@@ -180,7 +179,7 @@ export const NAV_LINKS = [
   { label: 'Work', href: '/work/' },
   { label: 'Blog', href: '/blog/' },
   { label: 'Awards', href: '/awards/' },
-  { label: 'Uses', href: '/uses/' },
+  { label: 'Products', href: '/products/' },
 ] as const;
 ```
 
@@ -226,7 +225,7 @@ All pages are pure component composition with ZERO CSS:
 - **`src/pages/blog.astro`**: Blog posts listing with grid
 - **`src/pages/blog/[...slug].astro`**: Individual blog post pages (uses `ContentArticle` with `wide` prop, includes `ReadingProgressBar`)
 - **`src/pages/awards.astro`**: Awards page (placeholder)
-- **`src/pages/uses.astro`**: Uses/setup page (placeholder)
+- **`src/pages/products.astro`**: Products page (placeholder)
 - **`src/pages/404.astro`**: Custom 404 error page
 
 ### Blog Features

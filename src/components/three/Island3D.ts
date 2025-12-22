@@ -19,8 +19,8 @@ export class Island3D {
   // Camera orbit parameters
   private cameraAngle = 0; // Current horizontal angle
   private targetCameraAngle = 0; // Target horizontal angle for smooth interpolation
-  private cameraElevation = (15 * Math.PI) / 180; // Current vertical angle in radians
-  private targetCameraElevation = (15 * Math.PI) / 180; // Target vertical angle
+  private cameraElevation = (20 * Math.PI) / 180; // Current vertical angle in radians
+  private targetCameraElevation = (20 * Math.PI) / 180; // Target vertical angle
   private readonly cameraRadius = 6.85; // Distance from center
   private readonly minElevation = (5 * Math.PI) / 180; // Minimum 5 degrees
   private readonly maxElevation = (60 * Math.PI) / 180; // Maximum 60 degrees

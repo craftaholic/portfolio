@@ -58,7 +58,48 @@ const { title, description, hideIsland = false } = Astro.props;
 		<BackToTop />
 
 		<script>
-			// Add “loaded” class once the document has completely loaded.
+			function smoothScrollTo(targetY: number, duration: number) {
+				const startY = window.scrollY;
+				const distance = targetY - startY;
+				const startTime = performance.now();
+
+				function easeInOutCubic(t: number): number {
+					return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+				}
+
+				function step(currentTime: number) {
+					const elapsed = currentTime - startTime;
+					const progress = Math.min(elapsed / duration, 1);
+					window.scrollTo(0, startY + distance * easeInOutCubic(progress));
+					if (progress < 1) requestAnimationFrame(step);
+				}
+
+				requestAnimationFrame(step);
+			}
+
+			function scrollToTitle() {
+				// Guard: Skip if home page
+				if (window.location.pathname === '/') return;
+
+				// Guard: Skip if hash navigation (preserve anchor behavior)
+				if (window.location.hash) return;
+
+				// Find title element
+				const title = document.querySelector('h1.title');
+				if (!title) return; // Graceful exit if no title (404, etc.)
+
+				// Smooth scroll to title (1.5 seconds)
+				const targetY = title.getBoundingClientRect().top + window.scrollY;
+				smoothScrollTo(targetY, 1500);
+			}
+
+			// Run on both initial load and View Transitions navigation
+			scrollToTitle();
+			document.addEventListener('astro:page-load', scrollToTitle);
+		</script>
+
+		<script>
+			// Add "loaded" class once the document has completely loaded.
 			addEventListener('load', () => document.documentElement.classList.add('loaded'));
 		</script>
 
