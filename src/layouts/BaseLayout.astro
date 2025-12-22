@@ -58,24 +58,53 @@ const { title, description, hideIsland = false } = Astro.props;
 		<BackToTop />
 
 		<script>
+			let scrollAnimationId: number | null = null;
+			let isAutoScrolling = false;
+
+			function cancelAutoScroll() {
+				if (scrollAnimationId !== null) {
+					cancelAnimationFrame(scrollAnimationId);
+					scrollAnimationId = null;
+				}
+				isAutoScrolling = false;
+			}
+
 			function smoothScrollTo(targetY: number, duration: number) {
+				cancelAutoScroll();
+
 				const startY = window.scrollY;
 				const distance = targetY - startY;
 				const startTime = performance.now();
+				isAutoScrolling = true;
 
 				function easeInOutCubic(t: number): number {
 					return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 				}
 
 				function step(currentTime: number) {
+					if (!isAutoScrolling) return;
+
 					const elapsed = currentTime - startTime;
 					const progress = Math.min(elapsed / duration, 1);
 					window.scrollTo(0, startY + distance * easeInOutCubic(progress));
-					if (progress < 1) requestAnimationFrame(step);
+
+					if (progress < 1) {
+						scrollAnimationId = requestAnimationFrame(step);
+					} else {
+						isAutoScrolling = false;
+						scrollAnimationId = null;
+					}
 				}
 
-				requestAnimationFrame(step);
+				scrollAnimationId = requestAnimationFrame(step);
 			}
+
+			// Cancel auto-scroll if user interacts
+			['wheel', 'touchstart', 'keydown'].forEach(event => {
+				window.addEventListener(event, () => {
+					if (isAutoScrolling) cancelAutoScroll();
+				}, { passive: true });
+			});
 
 			function scrollToTitle() {
 				// Guard: Skip if home page
