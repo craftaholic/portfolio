@@ -96,9 +96,10 @@ export class Island3D {
         // Center the model
         this.model.position.sub(center);
 
-        // Scale to fit nicely in view (adjust as needed)
+        // Scale to fit nicely in view (smaller on mobile)
         const maxDim = Math.max(size.x, size.y, size.z);
-        const scale = (4.2 / maxDim) * 1.3; // Scaled by 30%
+        const baseScale = (4.2 / maxDim) * 1.3;
+        const scale = this.isMobile ? baseScale * 0.85 : baseScale;
         this.model.scale.setScalar(scale);
 
         // Enable shadows and find light objects to make them glow
