@@ -6,7 +6,7 @@ interface Props {
 	align?: 'start' | 'center';
 }
 
-const { greeting, title, tagline, align = 'center' } = Astro.props;
+const { greeting, title, tagline, align = 'start' } = Astro.props;
 ---
 
 {greeting ? (
@@ -75,6 +75,16 @@ const { greeting, title, tagline, align = 'center' } = Astro.props;
 		color: var(--gray-300);
 	}
 
+	/* Left-align on all screen sizes when start is set */
+	.start {
+		text-align: start;
+	}
+
+	.start .title,
+	.start .tagline {
+		margin-inline: unset;
+	}
+
 	@media (min-width: 50em) {
 		.profile-image {
 			max-width: 400px;
@@ -87,15 +97,6 @@ const { greeting, title, tagline, align = 'center' } = Astro.props;
 
 		.hero-simple {
 			font-size: var(--text-xl);
-		}
-
-		.start {
-			text-align: start;
-		}
-
-		.start .title,
-		.start .tagline {
-			margin-inline: unset;
 		}
 
 		.title {
