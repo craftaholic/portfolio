@@ -56,7 +56,9 @@ export class Island3D {
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.autoRotate = true;
     this.controls.autoRotateSpeed = 1.5;
-    this.controls.enableZoom = false;
+    this.controls.enableZoom = true;
+    this.controls.minZoom = 0.5;
+    this.controls.maxZoom = 2;
     this.controls.enablePan = false;
     this.controls.enableDamping = true;
     this.controls.dampingFactor = 0.05;
