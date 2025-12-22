@@ -5,9 +5,8 @@ import { isCurrentPage } from '../../utils/navigation';
 const pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, '');
 ---
 
-<nav class="bottom-tab-bar" aria-label="Mobile navigation">
+<nav class="bottom-tab-bar" aria-label="Navigation">
 	<ul class="tab-list">
-		<li class="tab-indicator" aria-hidden="true"></li>
 		{
 			NAV_LINKS.map(({ label, href }) => (
 				<li>
@@ -23,17 +22,6 @@ const pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, '');
 		}
 	</ul>
 </nav>
-
-<script>
-	import { setupSlidingIndicator } from '../../utils/slidingIndicator';
-
-	setupSlidingIndicator({
-		containerSelector: '.bottom-tab-bar .tab-list',
-		indicatorSelector: '.bottom-tab-bar .tab-indicator',
-		linkSelector: '.bottom-tab-bar .tab-item',
-		activeClass: 'active',
-	});
-</script>
 
 <style>
 	.bottom-tab-bar {
@@ -79,21 +67,7 @@ const pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, '');
 		z-index: -1;
 	}
 
-	.tab-indicator {
-		position: absolute;
-		top: 0;
-		left: 0;
-		background-color: var(--accent-regular);
-		border-radius: 999rem;
-		opacity: 0;
-		z-index: 0;
-		pointer-events: none;
-		will-change: transform, width, height;
-	}
-
 	.tab-item {
-		position: relative;
-		z-index: 1;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -103,7 +77,7 @@ const pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, '');
 		color: var(--gray-300);
 		text-decoration: none;
 		border-radius: 999rem;
-		transition: color var(--theme-transition);
+		transition: color 0.15s ease, background-color 0.15s ease;
 		white-space: nowrap;
 	}
 
@@ -114,6 +88,7 @@ const pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, '');
 
 	.tab-item.active {
 		color: var(--accent-text-over);
+		background-color: var(--accent-regular);
 	}
 
 	/* Scale down for very small screens */
