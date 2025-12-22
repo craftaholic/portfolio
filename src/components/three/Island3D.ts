@@ -12,6 +12,7 @@ export class Island3D {
   private renderer: THREE.WebGLRenderer;
   private controls: OrbitControls;
   private model: THREE.Group | null = null;
+  private groundPlane: THREE.Mesh | null = null;
   private animationFrameId: number | null = null;
   private container: HTMLElement;
   private isMobile: boolean;
@@ -115,14 +116,14 @@ export class Island3D {
     fillLight.position.set(-4, 4, -3);
     this.scene.add(fillLight);
 
-    // Ground plane for shadows
+    // Ground plane for shadows (will be repositioned when model loads)
     const groundGeometry = new THREE.PlaneGeometry(30, 30);
     const groundMaterial = new THREE.ShadowMaterial({ opacity: 0.3 });
-    const groundPlane = new THREE.Mesh(groundGeometry, groundMaterial);
-    groundPlane.rotation.x = -Math.PI / 2;
-    groundPlane.position.y = -2.5;
-    groundPlane.receiveShadow = true;
-    this.scene.add(groundPlane);
+    this.groundPlane = new THREE.Mesh(groundGeometry, groundMaterial);
+    this.groundPlane.rotation.x = -Math.PI / 2;
+    this.groundPlane.position.y = -2.5;
+    this.groundPlane.receiveShadow = true;
+    this.scene.add(this.groundPlane);
   }
 
   private loadModel(onLoad?: () => void): void {
@@ -157,15 +158,21 @@ export class Island3D {
 
         this.scene.add(this.model);
 
+        // Position ground plane at the bottom of the scaled model
+        const scaledBox = new THREE.Box3().setFromObject(this.model);
+        if (this.groundPlane) {
+          this.groundPlane.position.y = scaledBox.min.y;
+        }
+
         // Add lamp glow effect
         const lampGlow = new THREE.Mesh(
-          new THREE.SphereGeometry(0.15, 16, 16),
-          new THREE.MeshBasicMaterial({ color: 0xffeeaa })
+          new THREE.SphereGeometry(0.25, 16, 16),
+          new THREE.MeshBasicMaterial({ color: 0xffffcc })
         );
         lampGlow.position.set(3.4, 2.8, 2.6);
         this.model.add(lampGlow);
 
-        const lampLight = new THREE.PointLight(0xffeeaa, 5, 8);
+        const lampLight = new THREE.PointLight(0xffeeaa, 15, 12);
         lampLight.position.copy(lampGlow.position);
         this.model.add(lampLight);
 
