@@ -23,6 +23,17 @@ const pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, '');
 	</ul>
 </nav>
 
+<script>
+	// Immediate visual feedback on click
+	document.addEventListener('click', (e) => {
+		const link = (e.target as HTMLElement).closest('.tab-item');
+		if (link) {
+			document.querySelectorAll('.tab-item').forEach(item => item.classList.remove('active'));
+			link.classList.add('active');
+		}
+	});
+</script>
+
 <style>
 	.bottom-tab-bar {
 		display: flex;
