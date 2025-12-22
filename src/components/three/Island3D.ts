@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 export interface Island3DOptions {
   onLoad?: () => void;
@@ -7,77 +8,97 @@ export interface Island3DOptions {
 
 export class Island3D {
   private scene: THREE.Scene;
-  private camera: THREE.PerspectiveCamera;
+  private camera: THREE.OrthographicCamera;
   private renderer: THREE.WebGLRenderer;
+  private controls: OrbitControls;
   private model: THREE.Group | null = null;
-  private groundPlane: THREE.Mesh | null = null;
-  private isDragging = false;
-  private previousMouse = { x: 0, y: 0 };
   private animationFrameId: number | null = null;
+  private container: HTMLElement;
   private isMobile: boolean;
 
-  // Camera orbit parameters
-  private cameraAngle = 0; // Current horizontal angle
-  private targetCameraAngle = 0; // Target horizontal angle for smooth interpolation
-  private cameraElevation = (20 * Math.PI) / 180; // Current vertical angle in radians
-  private targetCameraElevation = (20 * Math.PI) / 180; // Target vertical angle
-  private readonly cameraRadius = 6.85; // Distance from center
-  private readonly minElevation = (5 * Math.PI) / 180; // Minimum 5 degrees
-  private readonly maxElevation = (60 * Math.PI) / 180; // Maximum 60 degrees
-
   // Spin-in animation state
-  private spinInStartTime: number | null = null;
-  private lastFrameTime: number = 0;
-  private readonly spinInDuration = 1200; // Duration in ms
-  private readonly spinInStartSpeed = 80; // Fast initial spin (radians per second)
-  private readonly spinInEndSpeed = 0.36; // Normal auto-rotate speed (radians per second)
+  private frame = 0;
+  private readonly spinInFrames = 120;
 
   constructor(container: HTMLElement, options: Island3DOptions = {}) {
-    // Scene setup
-    this.scene = new THREE.Scene();
-
-    // Camera setup
-    const aspect = container.clientWidth / container.clientHeight;
-    this.camera = new THREE.PerspectiveCamera(45, aspect, 0.1, 1000);
-    this.updateCameraPosition();
-    this.camera.lookAt(0, 0, 0);
+    this.container = container;
 
     // Detect mobile device
     this.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-    // Renderer setup with transparent background
+    // Scene setup
+    this.scene = new THREE.Scene();
+
+    // OrthographicCamera setup (like craftz.dog)
+    const { camera, scale } = this.createCamera(container);
+    this.camera = camera;
+
+    // Renderer setup
     this.renderer = new THREE.WebGLRenderer({
-      antialias: !this.isMobile, // Disable antialiasing on mobile for performance
+      antialias: !this.isMobile,
       alpha: true,
-      premultipliedAlpha: false,
       powerPreference: 'high-performance',
     });
     this.renderer.setClearColor(0x000000, 0);
     this.renderer.setSize(container.clientWidth, container.clientHeight);
-    // Lower pixel ratio on mobile for smoother performance
-    this.renderer.setPixelRatio(this.isMobile ? Math.min(window.devicePixelRatio, 1.5) : Math.min(window.devicePixelRatio, 2));
-    this.renderer.shadowMap.enabled = true;
-    // Use simpler shadow map on mobile
-    this.renderer.shadowMap.type = this.isMobile ? THREE.BasicShadowMap : THREE.PCFSoftShadowMap;
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, this.isMobile ? 1.5 : 2));
+    this.renderer.outputColorSpace = THREE.SRGBColorSpace;
 
-    // Hide canvas initially until model loads
+    // Hide canvas initially
     this.renderer.domElement.style.opacity = '0';
+    this.renderer.domElement.style.transition = 'opacity 0.3s ease-in';
     container.appendChild(this.renderer.domElement);
+
+    // OrbitControls setup
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    this.controls.autoRotate = true;
+    this.controls.autoRotateSpeed = 1.5;
+    this.controls.enableZoom = false;
+    this.controls.enablePan = false;
+    this.controls.enableDamping = true;
+    this.controls.dampingFactor = 0.05;
+    this.controls.target.set(0, 0, 0);
 
     // Lighting
     this.setupLighting();
 
-    // Load the GLB model
+    // Load model
     this.loadModel(options.onLoad);
-
-    // Event listeners
-    this.setupEventListeners(container);
 
     // Start animation
     this.animate();
 
     // Handle resize
-    window.addEventListener('resize', () => this.onResize(container));
+    window.addEventListener('resize', this.onResize);
+  }
+
+  private createCamera(container: HTMLElement): { camera: THREE.OrthographicCamera; scale: number } {
+    const w = container.clientWidth;
+    const h = container.clientHeight;
+    // Dynamic scale based on height (similar to craftz.dog)
+    const scale = h * 0.005 + 4.8;
+    const camera = new THREE.OrthographicCamera(
+      -scale * (w / h),
+      scale * (w / h),
+      scale,
+      -scale,
+      0.01,
+      50000
+    );
+    camera.position.set(8, 5, 8);
+    camera.lookAt(0, 0, 0);
+    return { camera, scale };
+  }
+
+  private setupLighting(): void {
+    // Simple ambient light (like craftz.dog)
+    const ambientLight = new THREE.AmbientLight(0xcccccc, Math.PI);
+    this.scene.add(ambientLight);
+
+    // Directional light for some depth
+    const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+    dirLight.position.set(5, 10, 7.5);
+    this.scene.add(dirLight);
   }
 
   private loadModel(onLoad?: () => void): void {
@@ -88,244 +109,101 @@ export class Island3D {
       (gltf) => {
         this.model = gltf.scene;
 
-        // Center and scale the model
+        // Center the model
         const box = new THREE.Box3().setFromObject(this.model);
         const center = box.getCenter(new THREE.Vector3());
         const size = box.getSize(new THREE.Vector3());
 
-        // Center the model
         this.model.position.sub(center);
 
-        // Scale to fit nicely in view (smaller on mobile)
+        // Scale to fit (smaller on mobile, even smaller on small phones)
         const maxDim = Math.max(size.x, size.y, size.z);
-        const baseScale = (4.2 / maxDim) * 1.3;
-        const scale = this.isMobile ? baseScale * 0.85 : baseScale;
+        const baseScale = (4.2 / maxDim) * 2.65;
+        const isSmallPhone = window.innerWidth < 400;
+        const scale = isSmallPhone ? baseScale * 0.7 : this.isMobile ? baseScale * 0.85 : baseScale;
         this.model.scale.setScalar(scale);
 
-        // Enable shadows and find light objects to make them glow
+        // Disable shadows for performance (like craftz.dog)
         this.model.traverse((child) => {
           if (child instanceof THREE.Mesh) {
-            child.castShadow = true;
-            child.receiveShadow = true;
-
+            child.castShadow = false;
+            child.receiveShadow = false;
           }
         });
 
         this.scene.add(this.model);
 
-        // Add a glowing lamp light - adjust position to match lamp location
+        // Add lamp glow effect
         const lampGlow = new THREE.Mesh(
           new THREE.SphereGeometry(0.15, 16, 16),
           new THREE.MeshBasicMaterial({ color: 0xffeeaa })
         );
-        // Starting position - adjust these values to match the lamp
         lampGlow.position.set(3.4, 2.8, 2.6);
         this.model.add(lampGlow);
 
-        // Add point light at lamp position for illumination effect
         const lampLight = new THREE.PointLight(0xffeeaa, 5, 8);
         lampLight.position.copy(lampGlow.position);
         this.model.add(lampLight);
 
-        // Position ground plane at the bottom of the scaled model
-        const scaledBox = new THREE.Box3().setFromObject(this.model);
-        if (this.groundPlane) {
-          this.groundPlane.position.y = scaledBox.min.y;
-        }
-
         // Start spin-in animation
-        this.spinInStartTime = performance.now();
+        this.frame = 0;
 
-        // Show canvas and call onLoad
+        // Show canvas
         this.renderer.domElement.style.opacity = '1';
-        if (onLoad) {
-          onLoad();
-        }
+        if (onLoad) onLoad();
       },
       undefined,
       (error) => {
         console.error('Error loading model:', error);
-        // Show canvas even on error
         this.renderer.domElement.style.opacity = '1';
-        if (onLoad) {
-          onLoad();
-        }
+        if (onLoad) onLoad();
       }
     );
   }
 
-  private setupLighting(): void {
-    // Minimal ambient - dark room feel
-    const ambientLight = new THREE.AmbientLight(0x222222, 0.2);
-    this.scene.add(ambientLight);
-
-    // Key light - main studio light, slightly warm white
-    const keyLight = new THREE.DirectionalLight(0xfff8f0, 2.5);
-    keyLight.position.set(4, 8, 6);
-    keyLight.castShadow = true;
-    keyLight.shadow.camera.left = -10;
-    keyLight.shadow.camera.right = 10;
-    keyLight.shadow.camera.top = 10;
-    keyLight.shadow.camera.bottom = -10;
-    keyLight.shadow.mapSize.width = 2048;
-    keyLight.shadow.mapSize.height = 2048;
-    keyLight.shadow.bias = -0.0001;
-    keyLight.shadow.normalBias = 0.02;
-    this.scene.add(keyLight);
-
-    // Fill light - very subtle, just to soften harsh shadows
-    const fillLight = new THREE.DirectionalLight(0xffffff, 0.3);
-    fillLight.position.set(-4, 4, -3);
-    this.scene.add(fillLight);
-
-    // Rim/back light - subtle edge highlight
-    const rimLight = new THREE.DirectionalLight(0xffeedd, 0.4);
-    rimLight.position.set(0, 6, -8);
-    this.scene.add(rimLight);
-
-    // Ground plane to receive shadows - will be repositioned when model loads
-    const groundGeometry = new THREE.PlaneGeometry(30, 30);
-    const groundMaterial = new THREE.ShadowMaterial({ opacity: 0.3 });
-    this.groundPlane = new THREE.Mesh(groundGeometry, groundMaterial);
-    this.groundPlane.rotation.x = -Math.PI / 2;
-    this.groundPlane.position.y = -2.5;
-    this.groundPlane.receiveShadow = true;
-    this.scene.add(this.groundPlane);
+  // Easing function (like craftz.dog - easeOutCirc)
+  private easeOutCirc(x: number): number {
+    return Math.sqrt(1 - Math.pow(x - 1, 2));
   }
 
-  private setupEventListeners(container: HTMLElement): void {
-    // Mouse events
-    container.addEventListener('mousedown', (e) => this.onPointerDown(e.clientX, e.clientY));
-    container.addEventListener('mousemove', (e) => this.onPointerMove(e.clientX, e.clientY));
-    container.addEventListener('mouseup', () => this.onPointerUp());
-    container.addEventListener('mouseleave', () => this.onPointerUp());
+  private onResize = (): void => {
+    const w = this.container.clientWidth;
+    const h = this.container.clientHeight;
 
-    // Touch events
-    container.addEventListener('touchstart', (e) => {
-      if (e.touches.length === 1) {
-        this.onPointerDown(e.touches[0].clientX, e.touches[0].clientY);
-      }
-    }, { passive: true });
-
-    container.addEventListener('touchmove', (e) => {
-      if (e.touches.length === 1 && this.isDragging) {
-        e.preventDefault(); // Prevent page scroll when interacting with 3D model
-        this.onPointerMove(e.touches[0].clientX, e.touches[0].clientY);
-      }
-    }, { passive: false }); // Must be false to allow preventDefault
-
-    container.addEventListener('touchend', () => this.onPointerUp());
-  }
-
-  private onPointerDown(x: number, y: number): void {
-    this.isDragging = true;
-    this.previousMouse.x = x;
-    this.previousMouse.y = y;
-  }
-
-  private onPointerMove(x: number, y: number): void {
-    if (this.isDragging) {
-      const deltaX = x - this.previousMouse.x;
-      const deltaY = y - this.previousMouse.y;
-
-      // Adjust camera orbit angle based on horizontal drag
-      this.targetCameraAngle -= deltaX * 0.01;
-
-      // Adjust camera elevation based on vertical drag
-      this.targetCameraElevation += deltaY * 0.01;
-      // Clamp elevation between min and max
-      this.targetCameraElevation = Math.max(this.minElevation, Math.min(this.maxElevation, this.targetCameraElevation));
-
-      this.previousMouse.x = x;
-      this.previousMouse.y = y;
-    }
-  }
-
-  private updateCameraPosition(): void {
-    // Calculate camera position on a circular orbit at 25 degrees elevation
-    const x = this.cameraRadius * Math.cos(this.cameraElevation) * Math.sin(this.cameraAngle);
-    const y = this.cameraRadius * Math.sin(this.cameraElevation);
-    const z = this.cameraRadius * Math.cos(this.cameraElevation) * Math.cos(this.cameraAngle);
-
-    this.camera.position.set(x, y, z);
-    // Look slightly below center to shift model up in view
-    this.camera.lookAt(0, -1, 0);
-  }
-
-  private onPointerUp(): void {
-    this.isDragging = false;
-  }
-
-  private onResize(container: HTMLElement): void {
-    const width = container.clientWidth;
-    const height = container.clientHeight;
-
-    this.camera.aspect = width / height;
+    const scale = h * 0.005 + 4.8;
+    this.camera.left = -scale * (w / h);
+    this.camera.right = scale * (w / h);
+    this.camera.top = scale;
+    this.camera.bottom = -scale;
     this.camera.updateProjectionMatrix();
-    this.renderer.setSize(width, height);
-  }
 
-  /**
-   * Easing function for spin-in animation (ease-out cubic)
-   * Starts fast, slows down smoothly
-   */
-  private easeOutCubic(t: number): number {
-    return 1 - Math.pow(1 - t, 3);
-  }
-
-  /**
-   * Get current rotation speed based on spin-in animation progress
-   */
-  private getRotationSpeed(): number {
-    if (this.spinInStartTime === null) {
-      return this.spinInEndSpeed;
-    }
-
-    const elapsed = performance.now() - this.spinInStartTime;
-    const progress = Math.min(elapsed / this.spinInDuration, 1);
-
-    // Use easing to smoothly transition from fast to slow
-    const easedProgress = this.easeOutCubic(progress);
-
-    // Interpolate between start and end speed
-    const speed = this.spinInStartSpeed + (this.spinInEndSpeed - this.spinInStartSpeed) * easedProgress;
-
-    // Clear start time when animation is complete
-    if (progress >= 1) {
-      this.spinInStartTime = null;
-    }
-
-    return speed;
-  }
+    this.renderer.setSize(w, h);
+  };
 
   private animate = (): void => {
     this.animationFrameId = requestAnimationFrame(this.animate);
 
-    // Calculate delta time for frame-rate independent animation
-    const currentTime = performance.now();
-    const deltaTime = this.lastFrameTime ? (currentTime - this.lastFrameTime) / 1000 : 0.016;
-    this.lastFrameTime = currentTime;
-
-    // Auto-rotate camera when not dragging (with spin-in effect)
-    if (!this.isDragging) {
-      this.targetCameraAngle += this.getRotationSpeed() * deltaTime;
+    // Spin-in animation (like craftz.dog - first 120 frames)
+    if (this.frame < this.spinInFrames) {
+      const rotSpeed = -this.easeOutCirc(this.frame / this.spinInFrames) * Math.PI * 20;
+      this.camera.position.x = 8 * Math.cos(rotSpeed);
+      this.camera.position.z = 8 * Math.sin(rotSpeed);
+      this.camera.lookAt(0, 0, 0);
+      this.frame++;
+    } else {
+      // After intro, let OrbitControls handle rotation
+      this.controls.update();
     }
-
-    // Smooth camera angle interpolation (frame-rate independent)
-    const lerpFactor = 1 - Math.pow(0.00001, deltaTime);
-    this.cameraAngle += (this.targetCameraAngle - this.cameraAngle) * lerpFactor;
-    this.cameraElevation += (this.targetCameraElevation - this.cameraElevation) * lerpFactor;
-
-    // Update camera position on orbit
-    this.updateCameraPosition();
 
     this.renderer.render(this.scene, this.camera);
   };
 
   public dispose(): void {
+    window.removeEventListener('resize', this.onResize);
     if (this.animationFrameId !== null) {
       cancelAnimationFrame(this.animationFrameId);
     }
+    this.controls.dispose();
     this.renderer.dispose();
     this.scene.clear();
   }
