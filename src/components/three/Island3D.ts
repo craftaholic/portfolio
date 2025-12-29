@@ -21,6 +21,11 @@ export class Island3D {
   private frame = 0;
   private readonly spinInFrames = 120;
 
+  // Hover effect state
+  private targetLift = 0;
+  private currentLift = 0;
+  private baseModelY = 0;
+
   constructor(container: HTMLElement, options: Island3DOptions = {}) {
     this.container = container;
 
@@ -75,6 +80,10 @@ export class Island3D {
 
     // Handle resize
     window.addEventListener('resize', this.onResize);
+
+    // Handle hover events
+    container.addEventListener('mouseenter', this.onMouseEnter);
+    container.addEventListener('mouseleave', this.onMouseLeave);
   }
 
   private createCamera(container: HTMLElement): { camera: THREE.OrthographicCamera; scale: number } {
@@ -160,6 +169,9 @@ export class Island3D {
 
         this.scene.add(this.model);
 
+        // Store base Y position for hover lift effect
+        this.baseModelY = this.model.position.y;
+
         // Position ground plane at the bottom of the scaled model
         const scaledBox = new THREE.Box3().setFromObject(this.model);
         if (this.groundPlane) {
@@ -213,6 +225,16 @@ export class Island3D {
     this.renderer.setSize(w, h);
   };
 
+  private onMouseEnter = (): void => {
+    this.targetLift = 0.3;
+    this.container.classList.add('hovered');
+  };
+
+  private onMouseLeave = (): void => {
+    this.targetLift = 0;
+    this.container.classList.remove('hovered');
+  };
+
   private animate = (): void => {
     this.animationFrameId = requestAnimationFrame(this.animate);
 
@@ -228,11 +250,22 @@ export class Island3D {
       this.controls.update();
     }
 
+    // Smooth hover lift with lerp
+    const lerpFactor = 0.08;
+    this.currentLift += (this.targetLift - this.currentLift) * lerpFactor;
+
+    // Apply lift to model
+    if (this.model) {
+      this.model.position.y = this.baseModelY + this.currentLift;
+    }
+
     this.renderer.render(this.scene, this.camera);
   };
 
   public dispose(): void {
     window.removeEventListener('resize', this.onResize);
+    this.container.removeEventListener('mouseenter', this.onMouseEnter);
+    this.container.removeEventListener('mouseleave', this.onMouseLeave);
     if (this.animationFrameId !== null) {
       cancelAnimationFrame(this.animationFrameId);
     }

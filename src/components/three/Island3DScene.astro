@@ -85,10 +85,16 @@
     margin: 0 auto;
     height: 320px;
     border-radius: 1.5rem;
-    overflow: hidden;
+    overflow: visible;
     background: transparent;
     cursor: grab;
     position: relative;
+    transition: filter 0.4s ease;
+  }
+
+  .island-container.hovered {
+    filter: drop-shadow(0 0 20px rgba(77, 184, 176, 0.5))
+            drop-shadow(0 0 40px rgba(77, 184, 176, 0.3));
   }
 
   .island-container:active {
