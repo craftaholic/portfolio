@@ -145,6 +145,27 @@ const searchData = posts.map((post) => ({
 
   initSearch();
   document.addEventListener('astro:after-swap', initSearch);
+
+  // Handle touch glow effect (CSS :hover gets stuck on touch devices)
+  function initTouchGlow() {
+    const wrapper = document.querySelector('.search-input-wrapper');
+    if (!wrapper) return;
+
+    wrapper.addEventListener('touchstart', () => {
+      wrapper.classList.add('touch-active');
+    }, { passive: true });
+
+    wrapper.addEventListener('touchend', () => {
+      wrapper.classList.remove('touch-active');
+    });
+
+    wrapper.addEventListener('touchcancel', () => {
+      wrapper.classList.remove('touch-active');
+    });
+  }
+
+  initTouchGlow();
+  document.addEventListener('astro:after-swap', initTouchGlow);
 </script>
 
 <style>
@@ -164,7 +185,16 @@ const searchData = posts.map((post) => ({
     transition: border-color var(--theme-transition), box-shadow var(--theme-transition);
   }
 
-  .search-input-wrapper:hover {
+  /* Hover glow - only on devices with mouse */
+  @media (hover: hover) {
+    .search-input-wrapper:hover {
+      border-color: var(--gray-500);
+      box-shadow: 0 0 15px var(--terminal-glow-color), 0 0 30px var(--terminal-glow-color-strong);
+    }
+  }
+
+  /* Touch glow - controlled via JS */
+  .search-input-wrapper.touch-active {
     border-color: var(--gray-500);
     box-shadow: 0 0 15px var(--terminal-glow-color), 0 0 30px var(--terminal-glow-color-strong);
   }
