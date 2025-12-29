@@ -1,0 +1,352 @@
+---
+import { type CollectionEntry, getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageContainer from '../../components/layout/PageContainer.astro';
+import BackLink from '../../components/ui/BackLink.astro';
+import Pill from '../../components/ui/Pill.astro';
+import Accordion from '../../components/ui/Accordion.astro';
+
+interface Props {
+  entry: CollectionEntry<'products'>;
+}
+
+export async function getStaticPaths() {
+  const products = await getCollection('products');
+  return products.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const { data } = entry;
+
+const statusLabels = {
+  active: 'Active',
+  wip: 'In Progress',
+  archived: 'Archived',
+};
+
+const statusColors = {
+  active: 'status-active',
+  wip: 'status-wip',
+  archived: 'status-archived',
+};
+---
+
+<BaseLayout title={data.title} description={data.description} hideModel>
+  <PageContainer>
+    <article class="product-detail">
+      <BackLink href="/products/" label="Products" />
+
+      <header class="header">
+        <div class="header-top">
+          {data.icon && <span class="icon">{data.icon}</span>}
+          <span class:list={['status-badge', statusColors[data.status]]}>{statusLabels[data.status]}</span>
+        </div>
+        <h1 class="title">{data.title}</h1>
+        <p class="description">{data.description}</p>
+
+        <div class="tags">
+          {data.tags.map((t) => <Pill size="sm">{t}</Pill>)}
+        </div>
+
+        <div class="links">
+          {data.github && (
+            <a href={data.github} target="_blank" rel="noopener noreferrer" class="link-btn">
+              GitHub
+            </a>
+          )}
+          {data.demo && (
+            <a href={data.demo} target="_blank" rel="noopener noreferrer" class="link-btn link-btn-primary">
+              Live Demo
+            </a>
+          )}
+        </div>
+      </header>
+
+      <div class="sections">
+        <Accordion title="Overview" defaultOpen>
+          <div class="content">
+            <Content />
+          </div>
+        </Accordion>
+
+        {data.features && data.features.length > 0 && (
+          <Accordion title="Features">
+            <ul class="features-list">
+              {data.features.map((feature) => (
+                <li>{feature}</li>
+              ))}
+            </ul>
+          </Accordion>
+        )}
+
+        {data.journey && data.journey.length > 0 && (
+          <Accordion title="Development Journey">
+            <div class="journey">
+              {data.journey.map((entry) => (
+                <div class="journey-entry">
+                  <div class="journey-header">
+                    <span class="journey-date">{entry.date}</span>
+                    <span class="journey-title">{entry.title}</span>
+                  </div>
+                  <p class="journey-content">{entry.content}</p>
+                </div>
+              ))}
+            </div>
+          </Accordion>
+        )}
+      </div>
+    </article>
+  </PageContainer>
+</BaseLayout>
+
+<style>
+  .header {
+    margin-top: 1rem;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--gray-800);
+  }
+
+  .header-top {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .icon {
+    font-size: 2.5rem;
+  }
+
+  .status-badge {
+    font-size: var(--text-xs);
+    font-weight: 500;
+    padding: 0.25rem 0.625rem;
+    border-radius: 0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .status-active {
+    background: rgba(52, 211, 153, 0.15);
+    color: rgb(52, 211, 153);
+  }
+
+  .status-wip {
+    background: rgba(251, 191, 36, 0.15);
+    color: rgb(251, 191, 36);
+  }
+
+  .status-archived {
+    background: rgba(156, 163, 175, 0.15);
+    color: rgb(156, 163, 175);
+  }
+
+  .title {
+    font-size: var(--text-2xl);
+    color: var(--gray-0);
+    margin-bottom: 1rem;
+  }
+
+  .description {
+    font-size: var(--text-md);
+    color: var(--gray-300);
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+  }
+
+  .tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+  }
+
+  .links {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .link-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    font-size: var(--text-sm);
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 0.375rem;
+    border: 1px solid var(--gray-700);
+    color: var(--gray-300);
+    transition: border-color var(--theme-transition), color var(--theme-transition);
+  }
+
+  .link-btn:hover {
+    border-color: var(--accent-regular);
+    color: var(--accent-regular);
+  }
+
+  .link-btn-primary {
+    background: var(--accent-regular);
+    border-color: var(--accent-regular);
+    color: var(--accent-text-over);
+  }
+
+  .link-btn-primary:hover {
+    background: var(--accent-light);
+    border-color: var(--accent-light);
+    color: var(--accent-text-over);
+  }
+
+  .sections {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .features-list {
+    padding-left: 1.25rem;
+    margin: 0;
+  }
+
+  .features-list li {
+    margin-bottom: 0.5rem;
+    color: var(--gray-200);
+  }
+
+  .journey {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .journey-entry {
+    padding-left: 1rem;
+    border-left: 2px solid var(--gray-700);
+  }
+
+  .journey-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .journey-date {
+    font-size: var(--text-sm);
+    color: var(--accent-regular);
+    font-weight: 500;
+  }
+
+  .journey-title {
+    font-size: var(--text-base);
+    color: var(--gray-0);
+    font-weight: 600;
+  }
+
+  .journey-content {
+    font-size: var(--text-sm);
+    color: var(--gray-300);
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  /* Content markdown styles */
+  .content {
+    line-height: 1.8;
+  }
+
+  .content :global(h2) {
+    font-size: 1.15rem;
+    color: var(--gray-0);
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .content :global(h3) {
+    font-size: 1.09rem;
+    color: var(--gray-0);
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+
+  .content :global(p) {
+    color: var(--gray-200);
+    margin-bottom: 1rem;
+  }
+
+  .content :global(ul),
+  .content :global(ol) {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+    color: var(--gray-200);
+  }
+
+  .content :global(li) {
+    margin-bottom: 0.5rem;
+  }
+
+  .content :global(strong) {
+    color: var(--gray-0);
+    font-weight: 600;
+  }
+
+  .content :global(a) {
+    color: var(--accent-regular);
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+    transition: color var(--theme-transition);
+  }
+
+  .content :global(a:hover) {
+    color: var(--accent-light);
+  }
+
+  .content :global(code) {
+    background-color: var(--gray-900);
+    color: var(--accent-regular);
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.25rem;
+    font-size: 0.9em;
+  }
+
+  .content :global(pre) {
+    background-color: var(--gray-900);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin: 1rem 0;
+  }
+
+  .content :global(pre code) {
+    background-color: transparent;
+    padding: 0;
+    color: var(--gray-200);
+  }
+
+  .content :global(blockquote) {
+    border-left: 4px solid var(--accent-regular);
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+    color: var(--gray-300);
+    font-style: italic;
+  }
+
+  @media (min-width: 50em) {
+    .title {
+      font-size: var(--text-3xl);
+    }
+
+    .description {
+      font-size: var(--text-lg);
+    }
+  }
+</style>

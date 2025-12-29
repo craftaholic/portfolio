@@ -1,0 +1,33 @@
+---
+/**
+ * Grid container for product cards
+ */
+import type { CollectionEntry } from 'astro:content';
+import ProductCard from './ProductCard.astro';
+
+interface Props {
+  products: CollectionEntry<'products'>[];
+}
+
+const { products } = Astro.props;
+---
+
+<div class="product-grid">
+  {products.map((product) => (
+    <ProductCard product={product} />
+  ))}
+</div>
+
+<style>
+  .product-grid {
+    display: grid;
+    gap: 1rem;
+  }
+
+  @media (min-width: 50em) {
+    .product-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.25rem;
+    }
+  }
+</style>

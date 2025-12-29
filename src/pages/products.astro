@@ -1,8 +1,14 @@
 ---
+import { getCollection } from 'astro:content';
 import Hero from '../components/sections/Hero.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageContainer from '../components/layout/PageContainer.astro';
 import Placeholder from '../components/blog/Placeholder.astro';
+import ProductGrid from '../components/products/ProductGrid.astro';
+
+const products = (await getCollection('products')).sort(
+	(a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf(),
+);
 ---
 
 <BaseLayout title="Products" description="Products I've built">
@@ -12,6 +18,10 @@ import Placeholder from '../components/blog/Placeholder.astro';
 			tagline="Things I've built and shipped."
 			align="start"
 		/>
-		<Placeholder>Products coming soon...</Placeholder>
+		{products.length === 0 ? (
+			<Placeholder>Products coming soon...</Placeholder>
+		) : (
+			<ProductGrid products={products} />
+		)}
 	</PageContainer>
 </BaseLayout>

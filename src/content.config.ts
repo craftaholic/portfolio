@@ -2,6 +2,26 @@ import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 
 export const collections = {
+	products: defineCollection({
+		loader: glob({ base: './src/content/products', pattern: '**/*.md' }),
+		schema: z.object({
+			title: z.string(),
+			description: z.string(),
+			publishDate: z.coerce.date(),
+			tags: z.array(z.string()).default([]),
+			github: z.string().optional(),
+			demo: z.string().optional(),
+			status: z.enum(['active', 'archived', 'wip']).default('active'),
+			icon: z.string().optional(),
+			// Accordion sections
+			features: z.array(z.string()).optional(),
+			journey: z.array(z.object({
+				date: z.string(),
+				title: z.string(),
+				content: z.string(),
+			})).optional(),
+		}),
+	}),
 	work: defineCollection({
 		// Load Markdown files in the src/content/work directory.
 		loader: glob({ base: './src/content/work', pattern: '**/*.md' }),
