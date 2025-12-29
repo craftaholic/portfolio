@@ -1,0 +1,71 @@
+/*
+ * Nord Theme
+ * Calm, arctic tones - popular with devs
+ * Based on nordtheme.com
+ */
+
+:root.theme-dark {
+	/* Polar Night - dark backgrounds */
+	--gray-0: #eceff4;
+	--gray-50: #e5e9f0;
+	--gray-100: #d8dee9;
+	--gray-200: #a5b3c4;
+	--gray-300: #7b8da0;
+	--gray-400: #616e7c;
+	--gray-500: #4c566a;
+	--gray-600: #434c5e;
+	--gray-700: #3b4252;
+	--gray-800: #2e3440;
+	--gray-900: #272c36;
+	--gray-999-basis: 220, 16%, 16%;
+	--gray-999: #2e3440;
+
+	/* Frost - accent colors */
+	--accent-light: #88c0d0;
+	--accent-regular: #81a1c1;
+	--accent-dark: #5e81ac;
+	--accent-overlay: hsla(193, 43%, 67%, 0.25);
+	--accent-subtle-overlay: hsla(210, 34%, 63%, 0.18);
+	--accent-text-over: var(--gray-999);
+	--accent-secondary: #b48ead;
+
+	--link-color: var(--accent-light);
+
+	/* Gradients */
+	--gradient-stop-1: var(--accent-light);
+	--gradient-subtle: linear-gradient(150deg, var(--gray-900) 19%, var(--gray-999) 81%);
+	--gradient-accent-orange: linear-gradient(
+		150deg,
+		var(--accent-secondary),
+		var(--accent-regular),
+		var(--accent-dark)
+	);
+	--gradient-stroke: linear-gradient(180deg, var(--gray-600), var(--gray-800));
+
+	/* Shadows - subtle cool tint */
+	--shadow-sm:
+		0px 6px 3px rgba(136, 192, 208, 0.01), 0px 4px 2px rgba(136, 192, 208, 0.01),
+		0px 2px 2px rgba(136, 192, 208, 0.02), 0px 0px 1px rgba(136, 192, 208, 0.03);
+	--shadow-md:
+		0px 28px 11px rgba(136, 192, 208, 0.01), 0px 16px 10px rgba(136, 192, 208, 0.03),
+		0px 7px 7px rgba(136, 192, 208, 0.05), 0px 2px 4px rgba(136, 192, 208, 0.06);
+	--shadow-lg:
+		0px 62px 25px rgba(136, 192, 208, 0.01), 0px 35px 21px rgba(136, 192, 208, 0.05),
+		0px 16px 16px rgba(136, 192, 208, 0.1), 0px 4px 9px rgba(136, 192, 208, 0.12);
+
+	/* Component: Terminal */
+	--terminal-bg: var(--gray-800);
+	--terminal-header-bg: var(--gray-700);
+	--terminal-border: var(--gray-600);
+	--terminal-glow-color: rgba(136, 192, 208, 0.25);
+	--terminal-glow-color-strong: rgba(136, 192, 208, 0.35);
+
+	/* Component: 3D Model */
+	--model-glow-color: rgba(136, 192, 208, 0.4);
+	--model-glow-color-subtle: rgba(136, 192, 208, 0.25);
+
+	/* Component: Code syntax */
+	--syntax-comment: var(--gray-300);
+	--syntax-keyword: var(--accent-light);
+	--syntax-string: #a3be8c;
+}

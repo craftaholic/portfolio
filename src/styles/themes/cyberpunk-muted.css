@@ -1,0 +1,70 @@
+/*
+ * Cyberpunk Muted Theme
+ * Neon accents toned down for comfort - techy but chill
+ */
+
+:root.theme-dark {
+	/* Grays - blue-black tinted */
+	--gray-0: #e4e4e7;
+	--gray-50: #d4d4d8;
+	--gray-100: #a1a1aa;
+	--gray-200: #71717a;
+	--gray-300: #52525b;
+	--gray-400: #3f3f46;
+	--gray-500: #2e2e35;
+	--gray-600: #252529;
+	--gray-700: #1f1f24;
+	--gray-800: #17171c;
+	--gray-900: #12121a;
+	--gray-999-basis: 240, 15%, 6%;
+	--gray-999: #0f0f12;
+
+	/* Accent - cyan with muted teal */
+	--accent-light: #00d9ff;
+	--accent-regular: #0ea5a5;
+	--accent-dark: #0d7377;
+	--accent-overlay: hsla(187, 100%, 50%, 0.2);
+	--accent-subtle-overlay: hsla(180, 85%, 35%, 0.15);
+	--accent-text-over: var(--gray-999);
+	--accent-secondary: #a855f7;
+
+	--link-color: var(--accent-light);
+
+	/* Gradients */
+	--gradient-stop-1: var(--accent-light);
+	--gradient-subtle: linear-gradient(150deg, var(--gray-900) 19%, var(--gray-999) 81%);
+	--gradient-accent-orange: linear-gradient(
+		150deg,
+		var(--accent-secondary),
+		var(--accent-regular),
+		var(--accent-dark)
+	);
+	--gradient-stroke: linear-gradient(180deg, var(--gray-600), var(--gray-800));
+
+	/* Shadows - cyan tinted */
+	--shadow-sm:
+		0px 6px 3px rgba(0, 217, 255, 0.01), 0px 4px 2px rgba(0, 217, 255, 0.01),
+		0px 2px 2px rgba(0, 217, 255, 0.02), 0px 0px 1px rgba(0, 217, 255, 0.03);
+	--shadow-md:
+		0px 28px 11px rgba(0, 217, 255, 0.01), 0px 16px 10px rgba(0, 217, 255, 0.03),
+		0px 7px 7px rgba(0, 217, 255, 0.05), 0px 2px 4px rgba(0, 217, 255, 0.06);
+	--shadow-lg:
+		0px 62px 25px rgba(0, 217, 255, 0.01), 0px 35px 21px rgba(0, 217, 255, 0.05),
+		0px 16px 16px rgba(0, 217, 255, 0.1), 0px 4px 9px rgba(0, 217, 255, 0.12);
+
+	/* Component: Terminal */
+	--terminal-bg: var(--gray-900);
+	--terminal-header-bg: var(--gray-800);
+	--terminal-border: var(--gray-700);
+	--terminal-glow-color: rgba(0, 217, 255, 0.3);
+	--terminal-glow-color-strong: rgba(0, 217, 255, 0.4);
+
+	/* Component: 3D Model */
+	--model-glow-color: rgba(0, 217, 255, 0.5);
+	--model-glow-color-subtle: rgba(0, 217, 255, 0.3);
+
+	/* Component: Code syntax */
+	--syntax-comment: var(--gray-300);
+	--syntax-keyword: var(--accent-light);
+	--syntax-string: var(--accent-secondary);
+}

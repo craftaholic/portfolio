@@ -1,3 +1,9 @@
+/* Import active dark theme - swap file to change theme */
+/* @import './themes/cyberpunk-muted.css'; */
+/* @import './themes/original.css'; */
+/* @import './themes/nord.css'; */
+@import './themes/tokyo-night.css';
+
 /* Global variables */
 :root {
 	/* Colors - Light mode (warm, cream tones) */
@@ -97,67 +103,6 @@
 	--syntax-comment: var(--gray-400);
 	--syntax-keyword: var(--accent-light);
 	--syntax-string: #e9c46a;
-}
-
-:root.theme-dark {
-	--gray-0: #f5f5f0;
-	--gray-50: #e8e8e8;
-	--gray-100: #d4d4d4;
-	--gray-200: #b8b8b8;
-	--gray-300: #a0a0a0;
-	--gray-400: #8a8a8a;
-	--gray-500: #6b6b6b;
-	--gray-600: #525252;
-	--gray-700: #3a3a3a;
-	--gray-800: #2d2d2d;
-	--gray-900: #202023;
-	--gray-999-basis: 240, 6%, 10%;
-	--gray-999: #1a1a1c;
-
-	--accent-light: #7ee2db;
-	--accent-regular: #4db8b0;
-	--accent-dark: #2a9d8f;
-	--accent-overlay: hsla(175, 60%, 65%, 0.33);
-	--accent-subtle-overlay: hsla(175, 50%, 45%, 0.25);
-	--accent-text-over: var(--gray-999);
-
-	--link-color: var(--accent-light);
-
-	--gradient-stop-1: var(--accent-light);
-	--gradient-subtle: linear-gradient(150deg, var(--gray-900) 19%, var(--gray-999) 81%);
-	--gradient-accent-orange: linear-gradient(
-		150deg,
-		#88d4ab,
-		var(--accent-regular),
-		var(--accent-dark)
-	);
-	--gradient-stroke: linear-gradient(180deg, var(--gray-600), var(--gray-800));
-
-	--shadow-sm:
-		0px 6px 3px rgba(255, 255, 255, 0.01), 0px 4px 2px rgba(255, 255, 255, 0.01),
-		0px 2px 2px rgba(255, 255, 255, 0.02), 0px 0px 1px rgba(255, 255, 255, 0.03);
-	--shadow-md:
-		0px 28px 11px rgba(255, 255, 255, 0.01), 0px 16px 10px rgba(255, 255, 255, 0.03),
-		0px 7px 7px rgba(255, 255, 255, 0.05), 0px 2px 4px rgba(255, 255, 255, 0.06);
-	--shadow-lg:
-		0px 62px 25px rgba(255, 255, 255, 0.01), 0px 35px 21px rgba(255, 255, 255, 0.05),
-		0px 16px 16px rgba(255, 255, 255, 0.1), 0px 4px 9px rgba(255, 255, 255, 0.12);
-
-	/* Component: Terminal (VimHero) */
-	--terminal-bg: var(--gray-900);
-	--terminal-header-bg: var(--gray-800);
-	--terminal-border: var(--gray-700);
-	--terminal-glow-color: rgba(126, 226, 219, 0.3);
-	--terminal-glow-color-strong: rgba(126, 226, 219, 0.4);
-
-	/* Component: 3D Model */
-	--model-glow-color: rgba(126, 226, 219, 0.5);
-	--model-glow-color-subtle: rgba(126, 226, 219, 0.3);
-
-	/* Component: Code syntax */
-	--syntax-comment: var(--gray-400);
-	--syntax-keyword: var(--accent-light);
-	--syntax-string: #f4d35e;
 }
 
 html,

@@ -1,0 +1,71 @@
+/*
+ * Tokyo Night Theme
+ * VS Code theme vibes - purple/blue harmony
+ * Based on tokyo-night theme
+ */
+
+:root.theme-dark {
+	/* Storm variant backgrounds */
+	--gray-0: #c0caf5;
+	--gray-50: #a9b1d6;
+	--gray-100: #9aa5ce;
+	--gray-200: #787c99;
+	--gray-300: #565f89;
+	--gray-400: #414868;
+	--gray-500: #363b54;
+	--gray-600: #2f3549;
+	--gray-700: #24283b;
+	--gray-800: #1f2335;
+	--gray-900: #1a1b26;
+	--gray-999-basis: 235, 18%, 12%;
+	--gray-999: #1a1b26;
+
+	/* Accent - soft blue/lavender */
+	--accent-light: #7aa2f7;
+	--accent-regular: #7dcfff;
+	--accent-dark: #2ac3de;
+	--accent-overlay: hsla(220, 90%, 72%, 0.22);
+	--accent-subtle-overlay: hsla(220, 80%, 60%, 0.15);
+	--accent-text-over: var(--gray-999);
+	--accent-secondary: #bb9af7;
+
+	--link-color: var(--accent-light);
+
+	/* Gradients */
+	--gradient-stop-1: var(--accent-light);
+	--gradient-subtle: linear-gradient(150deg, var(--gray-900) 19%, var(--gray-999) 81%);
+	--gradient-accent-orange: linear-gradient(
+		150deg,
+		var(--accent-secondary),
+		var(--accent-light),
+		var(--accent-dark)
+	);
+	--gradient-stroke: linear-gradient(180deg, var(--gray-600), var(--gray-800));
+
+	/* Shadows - blue tinted */
+	--shadow-sm:
+		0px 6px 3px rgba(122, 162, 247, 0.01), 0px 4px 2px rgba(122, 162, 247, 0.01),
+		0px 2px 2px rgba(122, 162, 247, 0.02), 0px 0px 1px rgba(122, 162, 247, 0.03);
+	--shadow-md:
+		0px 28px 11px rgba(122, 162, 247, 0.01), 0px 16px 10px rgba(122, 162, 247, 0.03),
+		0px 7px 7px rgba(122, 162, 247, 0.05), 0px 2px 4px rgba(122, 162, 247, 0.06);
+	--shadow-lg:
+		0px 62px 25px rgba(122, 162, 247, 0.01), 0px 35px 21px rgba(122, 162, 247, 0.05),
+		0px 16px 16px rgba(122, 162, 247, 0.1), 0px 4px 9px rgba(122, 162, 247, 0.12);
+
+	/* Component: Terminal */
+	--terminal-bg: var(--gray-900);
+	--terminal-header-bg: var(--gray-800);
+	--terminal-border: var(--gray-700);
+	--terminal-glow-color: rgba(122, 162, 247, 0.3);
+	--terminal-glow-color-strong: rgba(122, 162, 247, 0.4);
+
+	/* Component: 3D Model */
+	--model-glow-color: rgba(122, 162, 247, 0.5);
+	--model-glow-color-subtle: rgba(122, 162, 247, 0.3);
+
+	/* Component: Code syntax */
+	--syntax-comment: var(--gray-300);
+	--syntax-keyword: var(--accent-secondary);
+	--syntax-string: #9ece6a;
+}
