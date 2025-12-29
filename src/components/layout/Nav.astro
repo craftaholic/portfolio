@@ -3,6 +3,13 @@ import { SITE } from '../../config';
 import Icon from '../ui/Icon.astro';
 import type { iconPaths } from '../ui/IconPaths';
 import ThemeToggle from '../ui/ThemeToggle.astro';
+import Island3DScene from '../three/Island3DScene.astro';
+
+interface Props {
+	hideIsland?: boolean;
+}
+
+const { hideIsland = false } = Astro.props;
 
 /** Icon links to social media */
 const iconLinks: { label: string; href: string; icon: keyof typeof iconPaths }[] = [
@@ -11,35 +18,37 @@ const iconLinks: { label: string; href: string; icon: keyof typeof iconPaths }[]
 ---
 
 <nav>
-	<a href="/" class="site-title">
-		<Icon icon="code" size="1.4em" />
-		{SITE.author}
-	</a>
-	<div class="nav-actions">
-		<div class="socials">
-			{
-				iconLinks.map(({ href, icon, label }) => (
-					<a href={href} class="social">
-						<span class="sr-only">{label}</span>
-						<Icon icon={icon} />
-					</a>
-				))
-			}
+	<div class="nav-bar">
+		<a href="/" class="site-title">
+			<Icon icon="code" size="1.4em" />
+			{SITE.author}
+		</a>
+		<div class="nav-actions">
+			<div class="socials">
+				{
+					iconLinks.map(({ href, icon, label }) => (
+						<a href={href} class="social">
+							<span class="sr-only">{label}</span>
+							<Icon icon={icon} />
+						</a>
+					))
+				}
+			</div>
+			<ThemeToggle />
 		</div>
-		<ThemeToggle />
 	</div>
+	{!hideIsland && (
+		<div class="island-wrapper" transition:persist="island3d" transition:animate="none">
+			<Island3DScene />
+		</div>
+	)}
 </nav>
 
 <style>
 	nav {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		padding: 0.75rem 1rem;
+		view-transition-name: top-nav;
 		font-family: var(--font-brand);
 		font-weight: 500;
-		/* Prevent disappearing during view transitions */
-		view-transition-name: top-nav;
 	}
 
 	/* Disable animation for this element during transitions */
@@ -47,6 +56,19 @@ const iconLinks: { label: string; href: string; icon: keyof typeof iconPaths }[]
 	::view-transition-new(top-nav) {
 		animation: none;
 		mix-blend-mode: normal;
+	}
+
+	.nav-bar {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 0.75rem 1rem;
+	}
+
+	.island-wrapper {
+		max-width: 500px;
+		margin: 0 auto;
+		padding: 0 1rem;
 	}
 
 	.site-title {
@@ -95,7 +117,7 @@ const iconLinks: { label: string; href: string; icon: keyof typeof iconPaths }[]
 	}
 
 	@media (min-width: 50em) {
-		nav {
+		.nav-bar {
 			padding: 1rem 1.5rem;
 		}
 
@@ -111,7 +133,7 @@ const iconLinks: { label: string; href: string; icon: keyof typeof iconPaths }[]
 	}
 
 	@media (min-width: 60em) {
-		nav {
+		.nav-bar {
 			padding: 1rem 5rem;
 		}
 	}
