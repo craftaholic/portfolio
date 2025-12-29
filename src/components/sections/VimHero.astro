@@ -1,0 +1,288 @@
+---
+interface Props {
+  name: string;
+  role: string;
+  imageSrc: string;
+  imageAlt?: string;
+}
+
+const {
+  name,
+  role,
+  imageSrc,
+  imageAlt = name,
+} = Astro.props;
+---
+
+<div class="vim-hero">
+  <div class="vim-window">
+    <div class="vim-header">
+      <button class="vim-tab active" data-tab="about">~/about.sh</button>
+      <button class="vim-tab" data-tab="role">role.md</button>
+    </div>
+    <div class="vim-body">
+      <div class="vim-lines" data-lines></div>
+      <div class="vim-code">
+        <!-- About tab content -->
+        <div class="tab-content active" data-content="about">
+          <div class="line"><span class="comment">#!/bin/bash</span></div>
+          <div class="line"></div>
+          <div class="line"><span class="keyword">export</span> USER=<span class="string">"{name}"</span></div>
+          <div class="line"></div>
+          <div class="line"><span class="keyword">echo</span> <span class="string">"$USER - Love to build things and craves for knowledge"</span><span class="cursor"></span></div>
+        </div>
+        <!-- Role tab content -->
+        <div class="tab-content" data-content="role">
+          <div class="line"><span class="comment"># Role</span></div>
+          <div class="line"></div>
+          <div class="line"><span class="output">{role}</span></div>
+        </div>
+      </div>
+      <img src={imageSrc} alt={imageAlt} class="profile-img" />
+    </div>
+    <div class="vim-statusline">
+      <span class="vim-mode">NORMAL</span>
+      <span class="vim-file" data-filename>about.sh</span>
+      <span class="vim-position" data-position>6:1</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  function initVimTabs() {
+    const tabs = document.querySelectorAll('.vim-tab');
+    const contents = document.querySelectorAll('.tab-content');
+    const linesContainer = document.querySelector('[data-lines]');
+    const filenameEl = document.querySelector('[data-filename]');
+    const positionEl = document.querySelector('[data-position]');
+
+    function updateLineNumbers(count: number) {
+      if (!linesContainer) return;
+      linesContainer.innerHTML = '';
+      for (let i = 1; i <= count; i++) {
+        const span = document.createElement('span');
+        span.className = 'line-nr';
+        span.textContent = String(i);
+        linesContainer.appendChild(span);
+      }
+    }
+
+    function switchTab(tabName: string) {
+      tabs.forEach(t => t.classList.toggle('active', t.getAttribute('data-tab') === tabName));
+      contents.forEach(c => c.classList.toggle('active', c.getAttribute('data-content') === tabName));
+
+      const activeContent = document.querySelector(`.tab-content[data-content="${tabName}"]`);
+      const lineCount = activeContent?.querySelectorAll('.line').length || 7;
+      updateLineNumbers(lineCount);
+
+      if (filenameEl) filenameEl.textContent = tabName === 'about' ? 'about.sh' : 'role.md';
+      if (positionEl) positionEl.textContent = `${lineCount}:1`;
+    }
+
+    // Initial line numbers
+    const initialContent = document.querySelector('.tab-content.active');
+    updateLineNumbers(initialContent?.querySelectorAll('.line').length || 7);
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const tabName = tab.getAttribute('data-tab');
+        if (tabName) switchTab(tabName);
+      });
+    });
+  }
+
+  initVimTabs();
+  document.addEventListener('astro:after-swap', initVimTabs);
+</script>
+
+<style>
+  .vim-hero {
+    display: flex;
+    justify-content: center;
+    padding: 1rem 0 2rem;
+  }
+
+  .vim-window {
+    width: 100%;
+    max-width: 500px;
+    background: var(--gray-900);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--gray-700);
+  }
+
+  .vim-header {
+    display: flex;
+    background: var(--gray-800);
+    border-bottom: 1px solid var(--gray-700);
+  }
+
+  .vim-tab {
+    padding: 0.4rem 0.75rem;
+    font-size: var(--text-sm);
+    font-family: inherit;
+    color: var(--gray-400);
+    background: transparent;
+    border: none;
+    border-right: 1px solid var(--gray-700);
+    cursor: pointer;
+    transition: color 0.15s ease;
+  }
+
+  .vim-tab:hover {
+    color: var(--gray-200);
+  }
+
+  .vim-tab.active {
+    background: var(--gray-900);
+    color: var(--gray-100);
+  }
+
+  .tab-content {
+    display: none;
+  }
+
+  .tab-content.active {
+    display: block;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  .link {
+    color: var(--accent-light);
+    text-decoration: none;
+  }
+
+  .link:hover {
+    text-decoration: underline;
+  }
+
+  .vim-body {
+    display: flex;
+    padding: 0.75rem;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+
+  .vim-lines {
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+    color: var(--gray-500);
+    font-size: var(--text-sm);
+    line-height: 1.5;
+    user-select: none;
+    padding-right: 0.5rem;
+    border-right: 1px solid var(--gray-700);
+  }
+
+  .line-nr {
+    min-width: 1.2em;
+  }
+
+  .vim-code {
+    flex: 1;
+    font-size: var(--text-sm);
+    line-height: 1.5;
+    min-height: calc(6 * 1.5em);
+  }
+
+  .line {
+    min-height: 1.5em;
+  }
+
+  .comment {
+    color: var(--gray-400);
+    font-style: italic;
+  }
+
+  .keyword {
+    color: var(--accent-light);
+  }
+
+  .string {
+    color: #e9c46a;
+  }
+
+  .output {
+    color: var(--gray-100);
+    font-weight: 600;
+  }
+
+  .cursor {
+    display: inline-block;
+    width: 0.6em;
+    height: 1.2em;
+    background: var(--accent-light);
+    animation: blink 1s step-end infinite;
+    vertical-align: text-bottom;
+  }
+
+  @keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+
+  .profile-img {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--accent-regular);
+    flex-shrink: 0;
+  }
+
+  .vim-statusline {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.2rem 0.5rem;
+    background: var(--accent-dark);
+    font-size: var(--text-sm);
+    color: var(--gray-100);
+  }
+
+  .vim-mode {
+    font-weight: 700;
+    background: var(--gray-900);
+    padding: 0.1rem 0.4rem;
+    border-radius: 0.2rem;
+    font-size: var(--text-sm);
+  }
+
+  .vim-file {
+    color: var(--gray-200);
+  }
+
+  .vim-position {
+    color: var(--gray-200);
+  }
+
+  @media (min-width: 50em) {
+    .vim-hero {
+      padding: 1.5rem 0 2.5rem;
+    }
+
+    .vim-body {
+      padding: 1rem;
+    }
+
+    .vim-code,
+    .vim-lines {
+      font-size: var(--text-base);
+    }
+
+    .profile-img {
+      width: 90px;
+      height: 90px;
+    }
+
+    .vim-output {
+      padding: 0.6rem 1rem;
+      font-size: var(--text-base);
+    }
+  }
+</style>

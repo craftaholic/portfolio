@@ -1,7 +1,7 @@
 ---
 import { SITE } from '../config';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Hero from '../components/sections/Hero.astro';
+import VimHero from '../components/sections/VimHero.astro';
 import PageContainer from '../components/layout/PageContainer.astro';
 import Section from '../components/sections/Section.astro';
 import BioSection from '../components/sections/BioSection.astro';
@@ -14,14 +14,11 @@ import LinksList from '../components/ui/LinksList.astro';
 <BaseLayout>
 	<PageContainer>
 
-		<Hero greeting={`Hi, I'm ${SITE.author}. ${SITE.description}.`}>
-			<img
-				slot="image"
-				src="/assets/images/profile.webp"
-				alt={SITE.author}
-				style="width: 100%; border-radius: 50%;"
-			/>
-		</Hero>
+		<VimHero
+			name={SITE.author}
+			role={SITE.description}
+			imageSrc="/assets/images/profile.webp"
+		/>
 
 		<Section title="About">
 			<BioSection>
