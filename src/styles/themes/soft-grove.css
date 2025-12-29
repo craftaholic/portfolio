@@ -6,6 +6,10 @@
 
 /* Dark Mode */
 :root.theme-dark {
+	/* RGB base colors for rgba() usage */
+	--accent-light-rgb: 169, 215, 140;
+	--shadow-color-rgb: 169, 215, 140;
+
 	/* Backgrounds - warm dark with visible borders */
 	--gray-0: #e8e5e0;
 	--gray-50: #e8e4dd;
@@ -45,25 +49,36 @@
 
 	/* Shadows - soft green tint */
 	--shadow-sm:
-		0px 6px 3px rgba(169, 215, 140, 0.01), 0px 4px 2px rgba(169, 215, 140, 0.01),
-		0px 2px 2px rgba(169, 215, 140, 0.02), 0px 0px 1px rgba(169, 215, 140, 0.03);
+		0px 6px 3px rgba(var(--shadow-color-rgb), 0.01), 0px 4px 2px rgba(var(--shadow-color-rgb), 0.01),
+		0px 2px 2px rgba(var(--shadow-color-rgb), 0.02), 0px 0px 1px rgba(var(--shadow-color-rgb), 0.03);
 	--shadow-md:
-		0px 28px 11px rgba(169, 215, 140, 0.01), 0px 16px 10px rgba(169, 215, 140, 0.03),
-		0px 7px 7px rgba(169, 215, 140, 0.05), 0px 2px 4px rgba(169, 215, 140, 0.06);
+		0px 28px 11px rgba(var(--shadow-color-rgb), 0.01), 0px 16px 10px rgba(var(--shadow-color-rgb), 0.03),
+		0px 7px 7px rgba(var(--shadow-color-rgb), 0.05), 0px 2px 4px rgba(var(--shadow-color-rgb), 0.06);
 	--shadow-lg:
-		0px 62px 25px rgba(169, 215, 140, 0.01), 0px 35px 21px rgba(169, 215, 140, 0.05),
-		0px 16px 16px rgba(169, 215, 140, 0.1), 0px 4px 9px rgba(169, 215, 140, 0.12);
+		0px 62px 25px rgba(var(--shadow-color-rgb), 0.01), 0px 35px 21px rgba(var(--shadow-color-rgb), 0.05),
+		0px 16px 16px rgba(var(--shadow-color-rgb), 0.1), 0px 4px 9px rgba(var(--shadow-color-rgb), 0.12);
 
 	/* Component: Terminal */
 	--terminal-bg: var(--gray-800);
 	--terminal-header-bg: var(--gray-700);
 	--terminal-border: var(--gray-500);
-	--terminal-glow-color: rgba(169, 215, 140, 0.3);
-	--terminal-glow-color-strong: rgba(169, 215, 140, 0.45);
+	--terminal-glow-color: rgba(var(--accent-light-rgb), 0.3);
+	--terminal-glow-color-strong: rgba(var(--accent-light-rgb), 0.45);
 
 	/* Component: 3D Model */
-	--model-glow-color: rgba(169, 215, 140, 0.5);
-	--model-glow-color-subtle: rgba(169, 215, 140, 0.3);
+	--model-glow-color: rgba(var(--accent-light-rgb), 0.5);
+	--model-glow-color-subtle: rgba(var(--accent-light-rgb), 0.3);
+
+	/* Component: Overlay */
+	--overlay-bg: rgba(0, 0, 0, 0.85);
+
+	/* Component: Status badges */
+	--status-mature-bg: rgba(52, 211, 153, 0.15);
+	--status-mature-text: rgb(52, 211, 153);
+	--status-wip-bg: rgba(251, 191, 36, 0.15);
+	--status-wip-text: rgb(251, 191, 36);
+	--status-archived-bg: rgba(156, 163, 175, 0.15);
+	--status-archived-text: rgb(156, 163, 175);
 
 	/* Component: Code syntax */
 	--syntax-comment: var(--gray-300);
@@ -73,6 +88,10 @@
 
 /* Light Mode */
 :root {
+	/* RGB base colors for rgba() usage */
+	--accent-light-rgb: 77, 124, 50;
+	--shadow-color-rgb: 26, 26, 46;
+
 	/* Backgrounds - soft warm white */
 	--gray-0: #1a1a2e;
 	--gray-50: #2d2d44;
@@ -112,25 +131,36 @@
 
 	/* Shadows - subtle warm */
 	--shadow-sm:
-		0px 6px 3px rgba(26, 26, 46, 0.02), 0px 4px 2px rgba(26, 26, 46, 0.02),
-		0px 2px 2px rgba(26, 26, 46, 0.03), 0px 0px 1px rgba(26, 26, 46, 0.04);
+		0px 6px 3px rgba(var(--shadow-color-rgb), 0.02), 0px 4px 2px rgba(var(--shadow-color-rgb), 0.02),
+		0px 2px 2px rgba(var(--shadow-color-rgb), 0.03), 0px 0px 1px rgba(var(--shadow-color-rgb), 0.04);
 	--shadow-md:
-		0px 28px 11px rgba(26, 26, 46, 0.02), 0px 16px 10px rgba(26, 26, 46, 0.04),
-		0px 7px 7px rgba(26, 26, 46, 0.06), 0px 2px 4px rgba(26, 26, 46, 0.08);
+		0px 28px 11px rgba(var(--shadow-color-rgb), 0.02), 0px 16px 10px rgba(var(--shadow-color-rgb), 0.04),
+		0px 7px 7px rgba(var(--shadow-color-rgb), 0.06), 0px 2px 4px rgba(var(--shadow-color-rgb), 0.08);
 	--shadow-lg:
-		0px 62px 25px rgba(26, 26, 46, 0.02), 0px 35px 21px rgba(26, 26, 46, 0.06),
-		0px 16px 16px rgba(26, 26, 46, 0.12), 0px 4px 9px rgba(26, 26, 46, 0.14);
+		0px 62px 25px rgba(var(--shadow-color-rgb), 0.02), 0px 35px 21px rgba(var(--shadow-color-rgb), 0.06),
+		0px 16px 16px rgba(var(--shadow-color-rgb), 0.12), 0px 4px 9px rgba(var(--shadow-color-rgb), 0.14);
 
 	/* Component: Terminal */
 	--terminal-bg: #ffffff;
 	--terminal-header-bg: var(--gray-700);
 	--terminal-border: var(--gray-500);
-	--terminal-glow-color: rgba(77, 124, 50, 0.15);
-	--terminal-glow-color-strong: rgba(77, 124, 50, 0.25);
+	--terminal-glow-color: rgba(var(--accent-light-rgb), 0.15);
+	--terminal-glow-color-strong: rgba(var(--accent-light-rgb), 0.25);
 
 	/* Component: 3D Model */
-	--model-glow-color: rgba(77, 124, 50, 0.3);
-	--model-glow-color-subtle: rgba(77, 124, 50, 0.15);
+	--model-glow-color: rgba(var(--accent-light-rgb), 0.3);
+	--model-glow-color-subtle: rgba(var(--accent-light-rgb), 0.15);
+
+	/* Component: Overlay */
+	--overlay-bg: rgba(0, 0, 0, 0.75);
+
+	/* Component: Status badges */
+	--status-mature-bg: rgba(22, 163, 74, 0.15);
+	--status-mature-text: rgb(22, 163, 74);
+	--status-wip-bg: rgba(180, 130, 10, 0.2);
+	--status-wip-text: rgb(160, 110, 0);
+	--status-archived-bg: rgba(100, 110, 120, 0.15);
+	--status-archived-text: rgb(100, 110, 120);
 
 	/* Component: Code syntax */
 	--syntax-comment: var(--gray-300);
