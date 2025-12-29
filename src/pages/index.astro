@@ -9,9 +9,12 @@ import Timeline from '../components/sections/Timeline.astro';
 import TimelineItem from '../components/sections/TimelineItem.astro';
 import SimpleText from '../components/ui/SimpleText.astro';
 import LinksList from '../components/ui/LinksList.astro';
+import JsonLd from '../components/seo/JsonLd.astro';
 ---
 
 <BaseLayout>
+	<JsonLd type="Person" />
+	<JsonLd type="WebSite" />
 	<PageContainer>
 
 		<VimHero

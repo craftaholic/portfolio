@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://craftaholic.sh/sitemap-index.xml

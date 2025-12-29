@@ -14,14 +14,26 @@ interface Props {
 	title?: string | undefined;
 	description?: string | undefined;
 	hideModel?: boolean;
+	// Article-specific props
+	articleDate?: Date | undefined;
+	articleModifiedDate?: Date | null | undefined;
+	articleAuthor?: string | undefined;
+	articleTags?: string[] | undefined;
 }
 
-const { title, description, hideModel = false } = Astro.props;
+const { title, description, hideModel = false, articleDate, articleModifiedDate, articleAuthor, articleTags } = Astro.props;
 ---
 
 <html lang="en" class="theme-dark">
 	<head>
-		<MainHead title={title} description={description} />
+		<MainHead
+			title={title}
+			description={description}
+			articleDate={articleDate}
+			articleModifiedDate={articleModifiedDate}
+			articleAuthor={articleAuthor}
+			articleTags={articleTags}
+		/>
 		<ViewTransitions />
 		<script is:inline>
 			function applyTheme() {

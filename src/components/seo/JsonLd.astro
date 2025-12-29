@@ -1,0 +1,73 @@
+---
+import { SITE } from '../../config';
+
+interface Props {
+  type: 'Person' | 'Article' | 'WebSite';
+  // Article specific
+  title?: string;
+  description?: string;
+  pubDate?: Date;
+  modDate?: Date | null;
+  author?: string;
+  image?: string;
+  url?: string;
+}
+
+const { type, title, description, pubDate, modDate, author, image, url } = Astro.props;
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: SITE.author,
+  url: SITE.website,
+  jobTitle: 'Senior Cloud/DevOps/Platform Engineer',
+  worksFor: {
+    '@type': 'Organization',
+    name: 'TymeX',
+  },
+  sameAs: SITE.socialLinks.map(link => link.href),
+};
+
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: SITE.title,
+  url: SITE.website,
+  description: SITE.description,
+  author: {
+    '@type': 'Person',
+    name: SITE.author,
+  },
+};
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  description: description,
+  image: image ? new URL(image, SITE.website).toString() : undefined,
+  url: url,
+  datePublished: pubDate?.toISOString(),
+  dateModified: (modDate ?? pubDate)?.toISOString(),
+  author: {
+    '@type': 'Person',
+    name: author ?? SITE.author,
+    url: SITE.website,
+  },
+  publisher: {
+    '@type': 'Person',
+    name: SITE.author,
+    url: SITE.website,
+  },
+};
+
+const schemas = {
+  Person: personSchema,
+  WebSite: websiteSchema,
+  Article: articleSchema,
+};
+
+const schema = schemas[type];
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />

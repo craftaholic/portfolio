@@ -6,6 +6,11 @@ interface Props {
 	title?: string | undefined;
 	description?: string | undefined;
 	image?: string | undefined;
+	// Article-specific props
+	articleDate?: Date | undefined;
+	articleModifiedDate?: Date | null | undefined;
+	articleAuthor?: string | undefined;
+	articleTags?: string[] | undefined;
 }
 
 const canonicalURL = new URL(Astro.url.pathname, SITE.website);
@@ -13,8 +18,13 @@ const {
 	title = `${SITE.author}: Personal Site`,
 	description = SITE.description,
 	image = '/og-image.png',
+	articleDate,
+	articleModifiedDate,
+	articleAuthor,
+	articleTags,
 } = Astro.props;
 const ogImageURL = new URL(image, SITE.website);
+const isArticle = !!articleDate;
 ---
 
 <!-- Primary Meta Tags -->
@@ -28,13 +38,22 @@ const ogImageURL = new URL(image, SITE.website);
 <title>{title}</title>
 
 <!-- Open Graph / Facebook -->
-<meta property="og:type" content="website" />
+<meta property="og:type" content={isArticle ? 'article' : 'website'} />
 <meta property="og:url" content={canonicalURL} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:image" content={ogImageURL} />
 <meta property="og:site_name" content={SITE.title} />
 <meta property="og:locale" content={SITE.locale} />
+
+{isArticle && (
+	<>
+		<meta property="article:published_time" content={articleDate.toISOString()} />
+		{articleModifiedDate && <meta property="article:modified_time" content={articleModifiedDate.toISOString()} />}
+		<meta property="article:author" content={articleAuthor ?? SITE.author} />
+		{articleTags?.map(tag => <meta property="article:tag" content={tag} />)}
+	</>
+)}
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image" />
@@ -43,7 +62,14 @@ const ogImageURL = new URL(image, SITE.website);
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={ogImageURL} />
 
+<!-- Favicons -->
+<link rel="icon" href="/favicon.ico" sizes="32x32" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+<link rel="manifest" href="/site.webmanifest" />
+<meta name="theme-color" content="#0d1117" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link
