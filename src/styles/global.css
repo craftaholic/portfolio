@@ -1,8 +1,9 @@
 /* Import active dark theme - swap file to change theme */
+@import './themes/gruvbox.css';
 /* @import './themes/cyberpunk-muted.css'; */
 /* @import './themes/original.css'; */
 /* @import './themes/nord.css'; */
-@import './themes/tokyo-night.css';
+/* @import './themes/tokyo-night.css'; */
 
 /* Global variables */
 :root {

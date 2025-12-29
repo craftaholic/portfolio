@@ -1,0 +1,71 @@
+/*
+ * Gruvbox Dark Theme
+ * Warm, retro terminal aesthetic
+ * Based on gruvbox by morhetz
+ */
+
+:root.theme-dark {
+	/* Dark backgrounds with warm undertones */
+	--gray-0: #ebdbb2;
+	--gray-50: #d5c4a1;
+	--gray-100: #bdae93;
+	--gray-200: #a89984;
+	--gray-300: #928374;
+	--gray-400: #7c6f64;
+	--gray-500: #504945;
+	--gray-600: #3c3836;
+	--gray-700: #32302f;
+	--gray-800: #282828;
+	--gray-900: #1d2021;
+	--gray-999-basis: 0, 5%, 11%;
+	--gray-999: #1d2021;
+
+	/* Accent - aqua/green */
+	--accent-light: #98c379;
+	--accent-regular: #7dab6d;
+	--accent-dark: #3d6b4f;
+	--accent-overlay: hsla(108, 26%, 62%, 0.22);
+	--accent-subtle-overlay: hsla(108, 26%, 50%, 0.15);
+	--accent-text-over: var(--gray-0);
+	--accent-secondary: #fabd2f;
+
+	--link-color: var(--accent-light);
+
+	/* Gradients */
+	--gradient-stop-1: var(--accent-light);
+	--gradient-subtle: linear-gradient(150deg, var(--gray-900) 19%, var(--gray-999) 81%);
+	--gradient-accent-orange: linear-gradient(
+		150deg,
+		var(--accent-secondary),
+		#fe8019,
+		#d65d0e
+	);
+	--gradient-stroke: linear-gradient(180deg, var(--gray-600), var(--gray-800));
+
+	/* Shadows - warm tint */
+	--shadow-sm:
+		0px 6px 3px rgba(142, 192, 124, 0.01), 0px 4px 2px rgba(142, 192, 124, 0.01),
+		0px 2px 2px rgba(142, 192, 124, 0.02), 0px 0px 1px rgba(142, 192, 124, 0.03);
+	--shadow-md:
+		0px 28px 11px rgba(142, 192, 124, 0.01), 0px 16px 10px rgba(142, 192, 124, 0.03),
+		0px 7px 7px rgba(142, 192, 124, 0.05), 0px 2px 4px rgba(142, 192, 124, 0.06);
+	--shadow-lg:
+		0px 62px 25px rgba(142, 192, 124, 0.01), 0px 35px 21px rgba(142, 192, 124, 0.05),
+		0px 16px 16px rgba(142, 192, 124, 0.1), 0px 4px 9px rgba(142, 192, 124, 0.12);
+
+	/* Component: Terminal */
+	--terminal-bg: var(--gray-800);
+	--terminal-header-bg: var(--gray-700);
+	--terminal-border: var(--gray-600);
+	--terminal-glow-color: rgba(184, 230, 163, 0.35);
+	--terminal-glow-color-strong: rgba(184, 230, 163, 0.5);
+
+	/* Component: 3D Model */
+	--model-glow-color: rgba(184, 230, 163, 0.55);
+	--model-glow-color-subtle: rgba(184, 230, 163, 0.35);
+
+	/* Component: Code syntax */
+	--syntax-comment: var(--gray-300);
+	--syntax-keyword: #fb4934;
+	--syntax-string: var(--accent-secondary);
+}
