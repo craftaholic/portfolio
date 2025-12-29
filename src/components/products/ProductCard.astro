@@ -84,16 +84,31 @@ const statusLabels = {
   }
 
   .status-mature {
+    background: rgba(22, 163, 74, 0.15);
+    color: rgb(22, 163, 74);
+  }
+
+  .status-wip {
+    background: rgba(180, 130, 10, 0.2);
+    color: rgb(160, 110, 0);
+  }
+
+  .status-archived {
+    background: rgba(100, 110, 120, 0.15);
+    color: rgb(100, 110, 120);
+  }
+
+  :global(.theme-dark) .status-mature {
     background: rgba(52, 211, 153, 0.15);
     color: rgb(52, 211, 153);
   }
 
-  .status-wip {
+  :global(.theme-dark) .status-wip {
     background: rgba(251, 191, 36, 0.15);
     color: rgb(251, 191, 36);
   }
 
-  .status-archived {
+  :global(.theme-dark) .status-archived {
     background: rgba(156, 163, 175, 0.15);
     color: rgb(156, 163, 175);
   }
