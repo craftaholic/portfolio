@@ -38,7 +38,9 @@ const {
           <div class="line"><span class="output">{role}</span></div>
         </div>
       </div>
-      <img src={imageSrc} alt={imageAlt} class="profile-img" />
+      <button class="profile-btn" aria-label="View full profile image">
+        <img src={imageSrc} alt={imageAlt} class="profile-img" />
+      </button>
     </div>
     <div class="vim-statusline">
       <span class="vim-mode">NORMAL</span>
@@ -48,7 +50,49 @@ const {
   </div>
 </div>
 
+<!-- Lightbox modal -->
+<div class="lightbox" id="profile-lightbox" aria-hidden="true">
+  <div class="lightbox-backdrop"></div>
+  <div class="lightbox-content">
+    <img src={imageSrc} alt={imageAlt} class="lightbox-img" />
+  </div>
+</div>
+
 <script>
+  function initLightbox() {
+    const profileBtn = document.querySelector('.profile-btn');
+    const lightbox = document.getElementById('profile-lightbox');
+    const backdrop = lightbox?.querySelector('.lightbox-backdrop');
+    const content = lightbox?.querySelector('.lightbox-content');
+
+    if (!profileBtn || !lightbox || !backdrop || !content) return;
+
+    function openLightbox() {
+      lightbox.classList.add('active');
+      lightbox.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove('active');
+      lightbox.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+
+    profileBtn.addEventListener('click', openLightbox);
+    backdrop.addEventListener('click', closeLightbox);
+    content.addEventListener('click', closeLightbox);
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+        closeLightbox();
+      }
+    });
+  }
+
+  initLightbox();
+  document.addEventListener('astro:after-swap', initLightbox);
+
   function initVimTabs() {
     const tabs = document.querySelectorAll('.vim-tab');
     const contents = document.querySelectorAll('.tab-content');
@@ -226,6 +270,24 @@ const {
     51%, 100% { opacity: 0; }
   }
 
+  .profile-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    flex-shrink: 0;
+    border-radius: 50%;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .profile-btn:hover {
+    transform: scale(1.08);
+  }
+
+  .profile-btn:hover .profile-img {
+    box-shadow: 0 0 20px rgba(77, 184, 176, 0.4);
+  }
+
   .profile-img {
     width: 90px;
     height: 90px;
@@ -233,7 +295,64 @@ const {
     object-fit: cover;
     object-position: center 20%;
     border: 2px solid var(--accent-regular);
-    flex-shrink: 0;
+    display: block;
+    transition: box-shadow 0.2s ease;
+  }
+
+  /* Lightbox styles */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+
+  .lightbox.active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .lightbox-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+  }
+
+  .lightbox-content {
+    position: relative;
+    z-index: 1;
+    cursor: pointer;
+    animation: lightbox-zoom 0.3s ease;
+  }
+
+  .lightbox.active .lightbox-content {
+    animation: lightbox-zoom 0.3s ease forwards;
+  }
+
+  @keyframes lightbox-zoom {
+    from {
+      transform: scale(0.8);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  .lightbox-img {
+    max-width: 90vw;
+    max-height: 80vh;
+    border-radius: 1rem;
+    object-fit: contain;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    border: 3px solid var(--accent-regular);
   }
 
   .vim-statusline {
