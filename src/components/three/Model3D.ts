@@ -25,6 +25,8 @@ export class Model3D {
   private targetLift = 0;
   private currentLift = 0;
   private baseModelY = 0;
+  private isDragging = false;
+  private isHovered = false;
 
   constructor(container: HTMLElement, options: Model3DOptions = {}) {
     this.container = container;
@@ -84,6 +86,12 @@ export class Model3D {
     // Handle hover events
     container.addEventListener('mouseenter', this.onMouseEnter);
     container.addEventListener('mouseleave', this.onMouseLeave);
+
+    // Handle drag events for glow effect
+    container.addEventListener('mousedown', this.onDragStart);
+    container.addEventListener('touchstart', this.onDragStart, { passive: true });
+    window.addEventListener('mouseup', this.onDragEnd);
+    window.addEventListener('touchend', this.onDragEnd);
   }
 
   private createCamera(container: HTMLElement): { camera: THREE.OrthographicCamera; scale: number } {
@@ -225,14 +233,34 @@ export class Model3D {
     this.renderer.setSize(w, h);
   };
 
+  private updateGlowState(): void {
+    if (this.isHovered || this.isDragging) {
+      this.targetLift = 0.3;
+      this.container.classList.add('hovered');
+    } else {
+      this.targetLift = 0;
+      this.container.classList.remove('hovered');
+    }
+  }
+
   private onMouseEnter = (): void => {
-    this.targetLift = 0.3;
-    this.container.classList.add('hovered');
+    this.isHovered = true;
+    this.updateGlowState();
   };
 
   private onMouseLeave = (): void => {
-    this.targetLift = 0;
-    this.container.classList.remove('hovered');
+    this.isHovered = false;
+    this.updateGlowState();
+  };
+
+  private onDragStart = (): void => {
+    this.isDragging = true;
+    this.updateGlowState();
+  };
+
+  private onDragEnd = (): void => {
+    this.isDragging = false;
+    this.updateGlowState();
   };
 
   private animate = (): void => {
@@ -266,6 +294,10 @@ export class Model3D {
     window.removeEventListener('resize', this.onResize);
     this.container.removeEventListener('mouseenter', this.onMouseEnter);
     this.container.removeEventListener('mouseleave', this.onMouseLeave);
+    this.container.removeEventListener('mousedown', this.onDragStart);
+    this.container.removeEventListener('touchstart', this.onDragStart);
+    window.removeEventListener('mouseup', this.onDragEnd);
+    window.removeEventListener('touchend', this.onDragEnd);
     if (this.animationFrameId !== null) {
       cancelAnimationFrame(this.animationFrameId);
     }
