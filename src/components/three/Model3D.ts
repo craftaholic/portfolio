@@ -87,22 +87,22 @@ export class Model3D {
     // Handle resize
     window.addEventListener('resize', this.onResize);
 
-    // Handle hover/active state - use drag zone for interaction, container for hover
-    const interactionTarget = this.dragZone || container;
+    // Handle hover/active state - use drag zone for rotation, container for glow
+    const dragTarget = this.dragZone || container;
 
-    // Hover on container (whole area)
+    // Hover on container (desktop only)
     container.addEventListener('pointerenter', this.onActivate);
     container.addEventListener('pointerleave', this.onDeactivate);
 
-    // Drag on drag zone only
-    interactionTarget.addEventListener('pointerdown', this.onActivate);
+    // Pointer/mouse drag on drag zone
+    dragTarget.addEventListener('pointerdown', this.onActivate);
     window.addEventListener('pointerup', this.onDeactivate);
     window.addEventListener('pointercancel', this.onDeactivate);
 
-    // Fallback for touch devices
-    interactionTarget.addEventListener('touchstart', this.onActivate, { passive: true });
-    interactionTarget.addEventListener('touchend', this.onDeactivate);
-    interactionTarget.addEventListener('touchcancel', this.onDeactivate);
+    // Touch events - use capture phase to get events before OrbitControls
+    dragTarget.addEventListener('touchstart', this.onActivate, { passive: true, capture: true });
+    window.addEventListener('touchend', this.onDeactivate, { capture: true });
+    window.addEventListener('touchcancel', this.onDeactivate, { capture: true });
   }
 
   private createCamera(container: HTMLElement): { camera: THREE.OrthographicCamera; scale: number } {
@@ -284,17 +284,17 @@ export class Model3D {
   };
 
   public dispose(): void {
-    const interactionTarget = this.dragZone || this.container;
+    const dragTarget = this.dragZone || this.container;
 
     window.removeEventListener('resize', this.onResize);
     this.container.removeEventListener('pointerenter', this.onActivate);
     this.container.removeEventListener('pointerleave', this.onDeactivate);
-    interactionTarget.removeEventListener('pointerdown', this.onActivate);
+    dragTarget.removeEventListener('pointerdown', this.onActivate);
     window.removeEventListener('pointerup', this.onDeactivate);
     window.removeEventListener('pointercancel', this.onDeactivate);
-    interactionTarget.removeEventListener('touchstart', this.onActivate);
-    interactionTarget.removeEventListener('touchend', this.onDeactivate);
-    interactionTarget.removeEventListener('touchcancel', this.onDeactivate);
+    dragTarget.removeEventListener('touchstart', this.onActivate);
+    window.removeEventListener('touchend', this.onDeactivate);
+    window.removeEventListener('touchcancel', this.onDeactivate);
     if (this.animationFrameId !== null) {
       cancelAnimationFrame(this.animationFrameId);
     }
