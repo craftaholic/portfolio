@@ -1,17 +1,98 @@
 ---
 import Hero from '../components/sections/Hero.astro';
+import Section from '../components/sections/Section.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageContainer from '../components/layout/PageContainer.astro';
-import Placeholder from '../components/blog/Placeholder.astro';
+import AwardItem from '../components/awards/AwardItem.astro';
+import AwardGrid from '../components/awards/AwardGrid.astro';
 ---
 
-<BaseLayout title="Awards" description="Awards and achievements">
+<BaseLayout title="Awards" description="Awards, certifications, and achievements">
 	<PageContainer>
 		<Hero
 			title="Awards"
-			tagline="Recognition and achievements."
+			tagline="Certifications, recognition, and achievements."
 			align="start"
 		/>
-		<Placeholder>Awards will be listed here...</Placeholder>
+
+		<Section title="Certifications">
+			<AwardGrid>
+				<AwardItem
+					title="Certified Kubernetes Administrator (CKA)"
+					organization="Linux Foundation"
+					link="https://www.credly.com/badges/1e4c8afb-3f91-4168-b796-066b0a91fc60"
+				/>
+				<AwardItem
+					title="AWS Solutions Architect Associate"
+					organization="Amazon Web Services"
+					link="https://www.credly.com/badges/56c8810f-57c5-4c13-8f29-456c9c73def3"
+				/>
+				<AwardItem
+					title="AWS Developer Associate"
+					organization="Amazon Web Services"
+					link="https://www.credly.com/badges/e946c86e-dc45-4e9e-b58a-c55ab4da775e"
+				/>
+				<AwardItem
+					title="TOEIC English Certificate"
+					organization="ETS"
+					score="945/990"
+				/>
+			</AwardGrid>
+		</Section>
+
+		<Section title="Professional Recognition">
+			<AwardGrid>
+				<AwardItem
+					title="FHN Best Performer"
+					organization="FPT Software Hanoi"
+					year="2023"
+				/>
+				<AwardItem
+					title="Rookie of the Year (ROYT)"
+					organization="FPT Software Business Unit"
+				/>
+			</AwardGrid>
+		</Section>
+
+		<Section title="Academic">
+			<AwardGrid>
+				<AwardItem
+					title="Engineers' Degree in Information Technology"
+					organization="Hanoi University of Science and Technology"
+					score="GPA 3.2/4.0"
+				/>
+				<AwardItem
+					title="Salutatorian in University Entrance Exam"
+					organization="High School"
+				/>
+				<AwardItem
+					title="Gold Medal - Physics Olympiad"
+					organization="BaDinh-TayHo District"
+					year="2017"
+				/>
+				<AwardItem
+					title="Gold Medal - Physics Olympiad"
+					organization="BaDinh-TayHo District"
+					year="2018"
+				/>
+				<AwardItem
+					title="Silver Medal - Physics Olympiad"
+					organization="Hanoi City"
+				/>
+			</AwardGrid>
+		</Section>
+
+		<Section title="Competitions">
+			<AwardGrid>
+				<AwardItem
+					title="Silver Medal in Basketball"
+					organization="Hanoi City"
+				/>
+				<AwardItem
+					title="Bronze Medal in Basketball"
+					organization="ASA"
+				/>
+			</AwardGrid>
+		</Section>
 	</PageContainer>
 </BaseLayout>
