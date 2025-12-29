@@ -11,7 +11,7 @@ export const collections = {
 			tags: z.array(z.string()).default([]),
 			github: z.string().optional(),
 			demo: z.string().optional(),
-			status: z.enum(['active', 'archived', 'wip']).default('active'),
+			status: z.enum(['mature', 'wip', 'archived']).default('wip'),
 			icon: z.string().optional(),
 			// Accordion sections
 			features: z.array(z.string()).optional(),
