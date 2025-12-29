@@ -5,6 +5,7 @@ import PageContainer from '../../components/layout/PageContainer.astro';
 import BackLink from '../../components/ui/BackLink.astro';
 import Pill from '../../components/ui/Pill.astro';
 import Accordion from '../../components/ui/Accordion.astro';
+import Comments from '../../components/blog/Comments.astro';
 
 interface Props {
   entry: CollectionEntry<'products'>;
@@ -99,6 +100,8 @@ const statusColors = {
           </Accordion>
         )}
       </div>
+
+      <Comments />
     </article>
   </PageContainer>
 </BaseLayout>
