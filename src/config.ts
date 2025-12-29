@@ -24,3 +24,12 @@ export const NAV_LINKS = [
   { label: 'Awards', href: '/awards/' },
   { label: 'Products', href: '/products/' },
 ] as const;
+
+// Giscus comments configuration
+// Get these values from https://giscus.app after enabling GitHub Discussions
+export const GISCUS = {
+  repo: 'craftaholic/portfolio',
+  repoId: 'R_kgDOQlOa6w',
+  category: 'Blog Comments',
+  categoryId: 'DIC_kwDOQlOa684C0WJt',
+} as const;

@@ -1,6 +1,7 @@
 ---
 import { type CollectionEntry, getCollection, render } from 'astro:content';
 
+import Comments from '../../components/blog/Comments.astro';
 import ContentArticle from '../../components/blog/ContentArticle.astro';
 import RelatedPosts from '../../components/blog/RelatedPosts.astro';
 import TableOfContents from '../../components/blog/TableOfContents.astro';
@@ -41,6 +42,7 @@ const relatedPosts = getRelatedPosts(entry, allPosts, 3);
 	>
 		<TableOfContents headings={headings} />
 		<Content />
+		<Comments slot="after" />
 		<RelatedPosts slot="after" posts={relatedPosts} />
 	</ContentArticle>
 </BaseLayout>

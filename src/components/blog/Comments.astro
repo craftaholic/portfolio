@@ -1,0 +1,85 @@
+---
+/**
+ * Giscus comment component
+ *
+ * Setup required:
+ * 1. Go to https://giscus.app
+ * 2. Enable GitHub Discussions on your repo
+ * 3. Install the Giscus app on your repo
+ * 4. Configure and get your repo, repoId, category, categoryId
+ * 5. Update GISCUS config in src/config.ts
+ */
+import { GISCUS } from '../../config';
+---
+
+<section class="comments">
+	<h2 class="comments-title">Comments</h2>
+	<div class="giscus-wrapper">
+		<script
+			src="https://giscus.app/client.js"
+			data-repo={GISCUS.repo}
+			data-repo-id={GISCUS.repoId}
+			data-category={GISCUS.category}
+			data-category-id={GISCUS.categoryId}
+			data-mapping="pathname"
+			data-strict="0"
+			data-reactions-enabled="1"
+			data-emit-metadata="0"
+			data-input-position="top"
+			data-theme="dark"
+			data-lang="en"
+			data-loading="lazy"
+			crossorigin="anonymous"
+			async
+		></script>
+	</div>
+</section>
+
+<script>
+	// Update Giscus theme when site theme changes
+	function updateGiscusTheme() {
+		const theme = document.documentElement.classList.contains('theme-dark') ? 'dark' : 'light';
+		const iframe = document.querySelector<HTMLIFrameElement>('iframe.giscus-frame');
+		if (iframe) {
+			iframe.contentWindow?.postMessage(
+				{ giscus: { setConfig: { theme } } },
+				'https://giscus.app'
+			);
+		}
+	}
+
+	// Watch for theme changes
+	const observer = new MutationObserver((mutations) => {
+		mutations.forEach((mutation) => {
+			if (mutation.attributeName === 'class') {
+				updateGiscusTheme();
+			}
+		});
+	});
+
+	observer.observe(document.documentElement, { attributes: true });
+
+	// Handle Astro view transitions
+	document.addEventListener('astro:page-load', updateGiscusTheme);
+</script>
+
+<style>
+	.comments {
+		margin-top: 3rem;
+		padding-top: 2rem;
+		border-top: 1px solid var(--gray-800);
+	}
+
+	.comments-title {
+		font-size: 1rem;
+		font-weight: 600;
+		color: var(--gray-0);
+		margin-bottom: 1.5rem;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+
+	.giscus-wrapper {
+		min-height: 150px;
+	}
+</style>
