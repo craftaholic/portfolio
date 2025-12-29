@@ -1,85 +1,73 @@
 ---
 /**
- * 3D Island scene with loading indicator
+ * 3D Model scene with loading indicator
  * Shows a spinning loader while Three.js initializes
  */
 ---
 
-<div id="island-3d-container" class="island-container">
-  <div id="island-loader" class="loader">
+<div id="model-3d-container" class="model-container">
+  <div id="model-loader" class="loader">
     <div class="spinner"></div>
     <span class="loader-text">Loading 3D scene...</span>
   </div>
 </div>
 
 <script>
-  import { Island3D } from './Island3D';
+  import { Model3D } from './Model3D';
 
-  // Use a global to persist across View Transitions
   declare global {
     interface Window {
-      __island3D?: Island3D | null;
+      __model3D?: Model3D | null;
     }
   }
 
-  function initIsland3D() {
-    const container = document.getElementById('island-3d-container');
-    const loader = document.getElementById('island-loader');
+  function initModel3D() {
+    const container = document.getElementById('model-3d-container');
+    const loader = document.getElementById('model-loader');
 
     if (!container) return null;
 
-    // Check if canvas already exists in DOM (element was properly persisted)
     const existingCanvas = container.querySelector('canvas');
-    if (existingCanvas && window.__island3D) {
-      // Canvas is present and instance exists - just hide loader
+    if (existingCanvas && window.__model3D) {
       if (loader) {
         loader.classList.add('hidden');
       }
-      return window.__island3D;
+      return window.__model3D;
     }
 
-    // If we have a stale reference but no canvas, clean it up
-    if (window.__island3D && !existingCanvas) {
-      window.__island3D.dispose();
-      window.__island3D = null;
+    if (window.__model3D && !existingCanvas) {
+      window.__model3D.dispose();
+      window.__model3D = null;
     }
 
-    // Wait for container to have dimensions (may be 0 during prefetch)
     if (container.clientWidth === 0 || container.clientHeight === 0) {
-      // Retry after a short delay
-      requestAnimationFrame(() => initIsland3D());
+      requestAnimationFrame(() => initModel3D());
       return null;
     }
 
-    let island3D: Island3D | null = null;
-
-    island3D = new Island3D(container, {
+    const model3D = new Model3D(container, {
       onLoad: () => {
-        // Hide loader when scene is ready
         if (loader) {
           loader.classList.add('hidden');
         }
       },
     });
-    // Store globally
-    window.__island3D = island3D;
 
-    return island3D;
+    window.__model3D = model3D;
+    return model3D;
   }
 
-  // Initialize on first load
-  initIsland3D();
+  initModel3D();
 
-  // Re-initialize after page swap if needed (when returning from hideIsland pages)
   document.addEventListener('astro:after-swap', () => {
     requestAnimationFrame(() => {
-      initIsland3D();
+      initModel3D();
     });
   });
 </script>
 
 <style>
-  .island-container {
+  .model-container {
     width: 100%;
     max-width: 500px;
     margin: 0 auto;
@@ -89,19 +77,19 @@
     background: transparent;
     cursor: grab;
     position: relative;
-    transition: filter 0.4s ease;
+    transition: filter var(--transition-normal);
   }
 
-  .island-container.hovered {
-    filter: drop-shadow(0 0 20px rgba(77, 184, 176, 0.5))
-            drop-shadow(0 0 40px rgba(77, 184, 176, 0.3));
+  .model-container.hovered {
+    filter: drop-shadow(0 0 20px var(--model-glow-color))
+            drop-shadow(0 0 40px var(--model-glow-color-subtle));
   }
 
-  .island-container:active {
+  .model-container:active {
     cursor: grabbing;
   }
 
-  .island-container canvas {
+  .model-container canvas {
     display: block;
     width: 100%;
     height: 100%;
@@ -109,10 +97,7 @@
 
   .loader {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -120,7 +105,7 @@
     gap: 1rem;
     background: transparent;
     border-radius: inherit;
-    transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
+    transition: opacity var(--transition-normal), visibility var(--transition-normal);
     z-index: 10;
   }
 
@@ -149,9 +134,8 @@
     }
   }
 
-  /* Scale down for very small screens */
   @media (max-width: 400px) {
-    .island-container {
+    .model-container {
       height: 260px;
       border-radius: 1.25rem;
     }
@@ -167,7 +151,7 @@
   }
 
   @media (max-width: 340px) {
-    .island-container {
+    .model-container {
       height: 220px;
       border-radius: 1rem;
     }
@@ -179,7 +163,7 @@
   }
 
   @media (min-width: 50em) {
-    .island-container {
+    .model-container {
       height: 380px;
       border-radius: 4.5rem;
     }

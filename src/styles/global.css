@@ -76,8 +76,27 @@
 
 	/* Transitions */
 	--theme-transition: 0.2s ease-in-out;
+	--transition-fast: 0.15s ease;
+	--transition-normal: 0.3s ease;
+	--transition-slow: 0.4s ease;
 	--nav-easing: cubic-bezier(0.4, 0, 0.2, 1);
 	--nav-transition: 0.3s var(--nav-easing);
+
+	/* Component: Terminal (VimHero) */
+	--terminal-bg: var(--gray-100);
+	--terminal-header-bg: var(--gray-200);
+	--terminal-border: var(--gray-300);
+	--terminal-glow-color: rgba(92, 211, 204, 0.3);
+	--terminal-glow-color-strong: rgba(92, 211, 204, 0.4);
+
+	/* Component: 3D Model */
+	--model-glow-color: rgba(92, 211, 204, 0.5);
+	--model-glow-color-subtle: rgba(92, 211, 204, 0.3);
+
+	/* Component: Code syntax */
+	--syntax-comment: var(--gray-400);
+	--syntax-keyword: var(--accent-light);
+	--syntax-string: #e9c46a;
 }
 
 :root.theme-dark {
@@ -123,6 +142,22 @@
 	--shadow-lg:
 		0px 62px 25px rgba(255, 255, 255, 0.01), 0px 35px 21px rgba(255, 255, 255, 0.05),
 		0px 16px 16px rgba(255, 255, 255, 0.1), 0px 4px 9px rgba(255, 255, 255, 0.12);
+
+	/* Component: Terminal (VimHero) */
+	--terminal-bg: var(--gray-900);
+	--terminal-header-bg: var(--gray-800);
+	--terminal-border: var(--gray-700);
+	--terminal-glow-color: rgba(126, 226, 219, 0.3);
+	--terminal-glow-color-strong: rgba(126, 226, 219, 0.4);
+
+	/* Component: 3D Model */
+	--model-glow-color: rgba(126, 226, 219, 0.5);
+	--model-glow-color-subtle: rgba(126, 226, 219, 0.3);
+
+	/* Component: Code syntax */
+	--syntax-comment: var(--gray-400);
+	--syntax-keyword: var(--accent-light);
+	--syntax-string: #f4d35e;
 }
 
 html,

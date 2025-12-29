@@ -27,7 +27,7 @@ const allPosts = await getCollection('blog');
 const relatedPosts = getRelatedPosts(entry, allPosts, 3);
 ---
 
-<BaseLayout title={entry.data.title} description={entry.data.description} hideIsland>
+<BaseLayout title={entry.data.title} description={entry.data.description} hideModel>
 	<ReadingProgressBar />
 	<ContentArticle
 		title={entry.data.title}

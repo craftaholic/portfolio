@@ -2,11 +2,11 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-export interface Island3DOptions {
+export interface Model3DOptions {
   onLoad?: () => void;
 }
 
-export class Island3D {
+export class Model3D {
   private scene: THREE.Scene;
   private camera: THREE.OrthographicCamera;
   private renderer: THREE.WebGLRenderer;
@@ -26,7 +26,7 @@ export class Island3D {
   private currentLift = 0;
   private baseModelY = 0;
 
-  constructor(container: HTMLElement, options: Island3DOptions = {}) {
+  constructor(container: HTMLElement, options: Model3DOptions = {}) {
     this.container = container;
 
     // Detect mobile device

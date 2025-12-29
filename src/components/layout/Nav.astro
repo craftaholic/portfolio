@@ -3,13 +3,13 @@ import { SITE } from '../../config';
 import Icon from '../ui/Icon.astro';
 import type { iconPaths } from '../ui/IconPaths';
 import ThemeToggle from '../ui/ThemeToggle.astro';
-import Island3DScene from '../three/Island3DScene.astro';
+import Model3DScene from '../three/Model3DScene.astro';
 
 interface Props {
-	hideIsland?: boolean;
+	hideModel?: boolean;
 }
 
-const { hideIsland = false } = Astro.props;
+const { hideModel = false } = Astro.props;
 
 /** Icon links to social media */
 const iconLinks: { label: string; href: string; icon: keyof typeof iconPaths }[] = [
@@ -37,9 +37,9 @@ const iconLinks: { label: string; href: string; icon: keyof typeof iconPaths }[]
 			<ThemeToggle />
 		</div>
 	</div>
-	{!hideIsland && (
-		<div class="island-wrapper" transition:persist="island3d" transition:animate="none">
-			<Island3DScene />
+	{!hideModel && (
+		<div class="model-wrapper" transition:persist="model3d" transition:animate="none">
+			<Model3DScene />
 		</div>
 	)}
 </nav>
@@ -65,7 +65,7 @@ const iconLinks: { label: string; href: string; icon: keyof typeof iconPaths }[]
 		padding: 0.75rem 1rem;
 	}
 
-	.island-wrapper {
+	.model-wrapper {
 		max-width: 500px;
 		margin: 0 auto;
 		padding: 0 1rem;

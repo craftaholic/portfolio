@@ -13,10 +13,10 @@ import BackToTop from '../components/ui/BackToTop.astro';
 interface Props {
 	title?: string | undefined;
 	description?: string | undefined;
-	hideIsland?: boolean;
+	hideModel?: boolean;
 }
 
-const { title, description, hideIsland = false } = Astro.props;
+const { title, description, hideModel = false } = Astro.props;
 ---
 
 <html lang="en" class="theme-dark">
@@ -41,7 +41,7 @@ const { title, description, hideIsland = false } = Astro.props;
 		</script>
 	</head>
 	<body>
-		<Nav hideIsland={hideIsland} />
+		<Nav hideModel={hideModel} />
 		<div class="stack backgrounds">
 			<main class="main-content">
 				<slot />

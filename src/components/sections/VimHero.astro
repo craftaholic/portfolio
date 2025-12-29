@@ -149,26 +149,26 @@ const {
   .vim-window {
     width: 100%;
     max-width: 500px;
-    background: var(--gray-900);
+    background: var(--terminal-bg);
     border-radius: 0.5rem;
     overflow: hidden;
     box-shadow: var(--shadow-lg);
-    border: 1px solid var(--gray-700);
-    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+    border: 1px solid var(--terminal-border);
+    transition: box-shadow var(--transition-normal), border-color var(--transition-normal);
   }
 
   .vim-window:hover {
     box-shadow:
       var(--shadow-lg),
-      0 0 30px rgba(77, 184, 176, 0.3),
-      0 0 60px rgba(77, 184, 176, 0.15);
+      0 0 30px var(--terminal-glow-color),
+      0 0 60px var(--terminal-glow-color-strong);
     border-color: var(--accent-regular);
   }
 
   .vim-header {
     display: flex;
-    background: var(--gray-800);
-    border-bottom: 1px solid var(--gray-700);
+    background: var(--terminal-header-bg);
+    border-bottom: 1px solid var(--terminal-border);
   }
 
   .vim-tab {
@@ -178,9 +178,9 @@ const {
     color: var(--gray-400);
     background: transparent;
     border: none;
-    border-right: 1px solid var(--gray-700);
+    border-right: 1px solid var(--terminal-border);
     cursor: pointer;
-    transition: color 0.15s ease;
+    transition: color var(--transition-fast);
   }
 
   .vim-tab:hover {
@@ -188,7 +188,7 @@ const {
   }
 
   .vim-tab.active {
-    background: var(--gray-900);
+    background: var(--terminal-bg);
     color: var(--gray-100);
   }
 
@@ -198,19 +198,6 @@ const {
 
   .tab-content.active {
     display: block;
-  }
-
-  .hidden {
-    display: none;
-  }
-
-  .link {
-    color: var(--accent-light);
-    text-decoration: none;
-  }
-
-  .link:hover {
-    text-decoration: underline;
   }
 
   .vim-body {
@@ -229,7 +216,7 @@ const {
     line-height: 1.5;
     user-select: none;
     padding-right: 0.5rem;
-    border-right: 1px solid var(--gray-700);
+    border-right: 1px solid var(--terminal-border);
   }
 
   .line-nr {
@@ -248,16 +235,16 @@ const {
   }
 
   .comment {
-    color: var(--gray-400);
+    color: var(--syntax-comment);
     font-style: italic;
   }
 
   .keyword {
-    color: var(--accent-light);
+    color: var(--syntax-keyword);
   }
 
   .string {
-    color: #e9c46a;
+    color: var(--syntax-string);
   }
 
   .output {
@@ -286,7 +273,7 @@ const {
     cursor: pointer;
     flex-shrink: 0;
     border-radius: 50%;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
   }
 
   .profile-btn:hover {
@@ -294,7 +281,7 @@ const {
   }
 
   .profile-btn:hover .profile-img {
-    box-shadow: 0 0 20px rgba(77, 184, 176, 0.4);
+    box-shadow: 0 0 20px var(--terminal-glow-color-strong);
   }
 
   .profile-img {
@@ -305,7 +292,7 @@ const {
     object-position: center 20%;
     border: 2px solid var(--accent-regular);
     display: block;
-    transition: box-shadow 0.2s ease;
+    transition: box-shadow var(--transition-fast);
   }
 
   /* Lightbox styles */
@@ -318,7 +305,7 @@ const {
     justify-content: center;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
+    transition: opacity var(--transition-normal), visibility var(--transition-normal);
   }
 
   .lightbox.active {
@@ -337,11 +324,11 @@ const {
     position: relative;
     z-index: 1;
     cursor: pointer;
-    animation: lightbox-zoom 0.3s ease;
+    animation: lightbox-zoom var(--transition-normal);
   }
 
   .lightbox.active .lightbox-content {
-    animation: lightbox-zoom 0.3s ease forwards;
+    animation: lightbox-zoom var(--transition-normal) forwards;
   }
 
   @keyframes lightbox-zoom {
@@ -376,7 +363,7 @@ const {
 
   .vim-mode {
     font-weight: 700;
-    background: var(--gray-900);
+    background: var(--terminal-bg);
     padding: 0.1rem 0.4rem;
     border-radius: 0.2rem;
     font-size: var(--text-sm);
