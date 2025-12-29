@@ -11,7 +11,7 @@ tags:
   - Platform Engineering
 role: TechLead & Product Owner
 company: FPT Software
-duration: Jun 2022 - Present
+duration: 2024 - 2025
 highlight: Built platform engineering from scratch
 location: Vietnam
 ---

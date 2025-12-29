@@ -1,0 +1,139 @@
+/*
+ * Frost Terminal Theme
+ * Cool cyan/blue - clean, professional, terminal aesthetic
+ * High contrast for readability
+ */
+
+/* Dark Mode */
+:root.theme-dark {
+	/* Backgrounds - cool blue-gray */
+	--gray-0: #e6edf3;
+	--gray-50: #d0d7de;
+	--gray-100: #afb8c1;
+	--gray-200: #8b949e;
+	--gray-300: #6e7681;
+	--gray-400: #484f58;
+	--gray-500: #30363d;
+	--gray-600: #21262d;
+	--gray-700: #161b22;
+	--gray-800: #0d1117;
+	--gray-900: #010409;
+	--gray-999-basis: 215, 21%, 4%;
+	--gray-999: #0d1117;
+
+	/* Accent - bright blue */
+	--accent-light: #58a6ff;
+	--accent-regular: #388bfd;
+	--accent-dark: #1f6feb;
+	--accent-overlay: hsla(212, 100%, 67%, 0.2);
+	--accent-subtle-overlay: hsla(212, 100%, 50%, 0.12);
+	--accent-text-over: var(--gray-999);
+	--accent-secondary: #3fb950;
+
+	--link-color: var(--accent-light);
+
+	/* Gradients */
+	--gradient-stop-1: var(--accent-light);
+	--gradient-subtle: linear-gradient(150deg, var(--gray-800) 19%, var(--gray-999) 81%);
+	--gradient-accent-orange: linear-gradient(
+		150deg,
+		var(--accent-secondary),
+		var(--accent-light),
+		var(--accent-dark)
+	);
+	--gradient-stroke: linear-gradient(180deg, var(--gray-500), var(--gray-700));
+
+	/* Shadows - blue tinted */
+	--shadow-sm:
+		0px 6px 3px rgba(88, 166, 255, 0.01), 0px 4px 2px rgba(88, 166, 255, 0.01),
+		0px 2px 2px rgba(88, 166, 255, 0.02), 0px 0px 1px rgba(88, 166, 255, 0.03);
+	--shadow-md:
+		0px 28px 11px rgba(88, 166, 255, 0.01), 0px 16px 10px rgba(88, 166, 255, 0.03),
+		0px 7px 7px rgba(88, 166, 255, 0.05), 0px 2px 4px rgba(88, 166, 255, 0.06);
+	--shadow-lg:
+		0px 62px 25px rgba(88, 166, 255, 0.01), 0px 35px 21px rgba(88, 166, 255, 0.05),
+		0px 16px 16px rgba(88, 166, 255, 0.1), 0px 4px 9px rgba(88, 166, 255, 0.12);
+
+	/* Component: Terminal */
+	--terminal-bg: var(--gray-800);
+	--terminal-header-bg: var(--gray-700);
+	--terminal-border: var(--gray-500);
+	--terminal-glow-color: rgba(88, 166, 255, 0.3);
+	--terminal-glow-color-strong: rgba(88, 166, 255, 0.45);
+
+	/* Component: 3D Model */
+	--model-glow-color: rgba(88, 166, 255, 0.5);
+	--model-glow-color-subtle: rgba(88, 166, 255, 0.3);
+
+	/* Component: Code syntax */
+	--syntax-comment: var(--gray-300);
+	--syntax-keyword: var(--accent-light);
+	--syntax-string: var(--accent-secondary);
+}
+
+/* Light Mode */
+:root {
+	/* Backgrounds - clean white/gray */
+	--gray-0: #1f2328;
+	--gray-50: #32383f;
+	--gray-100: #424a53;
+	--gray-200: #57606a;
+	--gray-300: #656d76;
+	--gray-400: #818b98;
+	--gray-500: #afb8c1;
+	--gray-600: #d0d7de;
+	--gray-700: #e6edf3;
+	--gray-800: #f0f6fc;
+	--gray-900: #f6f8fa;
+	--gray-999-basis: 210, 25%, 98%;
+	--gray-999: #f6f8fa;
+
+	/* Accent - deeper blue for light bg */
+	--accent-light: #0969da;
+	--accent-regular: #0550ae;
+	--accent-dark: #033d8b;
+	--accent-overlay: hsla(212, 92%, 45%, 0.15);
+	--accent-subtle-overlay: hsla(212, 92%, 35%, 0.1);
+	--accent-text-over: #ffffff;
+	--accent-secondary: #1a7f37;
+
+	--link-color: var(--accent-light);
+
+	/* Gradients */
+	--gradient-stop-1: var(--accent-light);
+	--gradient-subtle: linear-gradient(150deg, var(--gray-800) 19%, var(--gray-999) 81%);
+	--gradient-accent-orange: linear-gradient(
+		150deg,
+		var(--accent-secondary),
+		var(--accent-light),
+		var(--accent-dark)
+	);
+	--gradient-stroke: linear-gradient(180deg, var(--gray-500), var(--gray-700));
+
+	/* Shadows - subtle blue */
+	--shadow-sm:
+		0px 6px 3px rgba(31, 35, 40, 0.02), 0px 4px 2px rgba(31, 35, 40, 0.02),
+		0px 2px 2px rgba(31, 35, 40, 0.03), 0px 0px 1px rgba(31, 35, 40, 0.04);
+	--shadow-md:
+		0px 28px 11px rgba(31, 35, 40, 0.02), 0px 16px 10px rgba(31, 35, 40, 0.04),
+		0px 7px 7px rgba(31, 35, 40, 0.06), 0px 2px 4px rgba(31, 35, 40, 0.08);
+	--shadow-lg:
+		0px 62px 25px rgba(31, 35, 40, 0.02), 0px 35px 21px rgba(31, 35, 40, 0.06),
+		0px 16px 16px rgba(31, 35, 40, 0.12), 0px 4px 9px rgba(31, 35, 40, 0.14);
+
+	/* Component: Terminal */
+	--terminal-bg: #ffffff;
+	--terminal-header-bg: var(--gray-700);
+	--terminal-border: var(--gray-500);
+	--terminal-glow-color: rgba(9, 105, 218, 0.15);
+	--terminal-glow-color-strong: rgba(9, 105, 218, 0.25);
+
+	/* Component: 3D Model */
+	--model-glow-color: rgba(9, 105, 218, 0.3);
+	--model-glow-color-subtle: rgba(9, 105, 218, 0.15);
+
+	/* Component: Code syntax */
+	--syntax-comment: var(--gray-300);
+	--syntax-keyword: var(--accent-light);
+	--syntax-string: var(--accent-secondary);
+}
