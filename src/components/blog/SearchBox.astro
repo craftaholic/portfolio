@@ -170,13 +170,19 @@ const searchData = posts.map((post) => ({
     gap: 0.75rem;
     padding: 0.75rem 1rem;
     background: var(--gray-900);
-    border: 1px solid var(--gray-800);
+    border: 1px solid var(--gray-600);
     border-radius: 0.5rem;
-    transition: border-color var(--theme-transition);
+    transition: border-color var(--theme-transition), box-shadow var(--theme-transition);
+  }
+
+  .search-input-wrapper:hover {
+    border-color: var(--gray-500);
+    box-shadow: 0 0 15px var(--terminal-glow-color), 0 0 30px var(--terminal-glow-color-strong);
   }
 
   .search-input-wrapper:focus-within {
     border-color: var(--accent-regular);
+    box-shadow: 0 0 20px var(--terminal-glow-color), 0 0 40px var(--terminal-glow-color-strong);
   }
 
   .search-input-wrapper :global(svg) {

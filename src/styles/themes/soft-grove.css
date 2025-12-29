@@ -6,20 +6,20 @@
 
 /* Dark Mode */
 :root.theme-dark {
-	/* Backgrounds - Midnight Teal's deep blue-black */
-	--gray-0: #d5dae0;
-	--gray-50: #c0c8d0;
-	--gray-100: #a9b1bc;
-	--gray-200: #8892a2;
-	--gray-300: #636d7d;
-	--gray-400: #4a5262;
-	--gray-500: #353b48;
-	--gray-600: #252a35;
-	--gray-700: #22222e;
-	--gray-800: #1a1a24;
-	--gray-900: #16161e;
-	--gray-999-basis: 240, 18%, 10%;
-	--gray-999: #16161e;
+	/* Backgrounds - warm dark with visible borders */
+	--gray-0: #f5f2ed;
+	--gray-50: #e8e4dd;
+	--gray-100: #dad5cc;
+	--gray-200: #c9c2b6;
+	--gray-300: #8a8478;
+	--gray-400: #7a7468;
+	--gray-500: #3d3830;
+	--gray-600: #302c26;
+	--gray-700: #282520;
+	--gray-800: #211f1a;
+	--gray-900: #1c1a15;
+	--gray-999-basis: 40, 20%, 9%;
+	--gray-999: #18160f;
 
 	/* Accent - Gruvbox green, softened */
 	--accent-light: #a9d78c;
