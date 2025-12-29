@@ -15,8 +15,6 @@ description: This blog is for sharing knownledge and how to archive CI Agnostic
 # canonicalURL: https://example.org/my-article-was-already-posted-here
 ---
 
-## Table of contents
-
 ## I. Recommended Background Knowledge
 
 - You are DevOps or Developer

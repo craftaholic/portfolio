@@ -101,6 +101,14 @@ const { title, description, tags, backLink, wide = false, pubDate, slug } = Astr
 		box-sizing: border-box;
 	}
 
+	.content :global(h2),
+	.content :global(h3),
+	.content :global(h4),
+	.content :global(h5),
+	.content :global(h6) {
+		scroll-margin-top: 1.5rem;
+	}
+
 	.content :global(h2) {
 		font-size: 1.15rem;
 		color: var(--gray-0);
@@ -229,7 +237,7 @@ const { title, description, tags, backLink, wide = false, pubDate, slug } = Astr
 		max-width: 100%;
 		height: auto;
 		border-radius: 0.5rem;
-		margin: 1.5rem 0;
+		margin: 1.5rem auto;
 		display: block;
 	}
 

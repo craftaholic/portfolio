@@ -1,0 +1,77 @@
+---
+interface Heading {
+	depth: number;
+	slug: string;
+	text: string;
+}
+
+interface Props {
+	headings: Heading[];
+}
+
+const { headings } = Astro.props;
+
+// Filter to h2 and h3 only
+const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
+---
+
+{tocHeadings.length > 0 && (
+	<nav class="toc">
+		<h2 class="toc-title">Table of Contents</h2>
+		<ul class="toc-list">
+			{tocHeadings.map((heading) => (
+				<li class:list={['toc-item', `depth-${heading.depth}`]}>
+					<a href={`#${heading.slug}`}>{heading.text}</a>
+				</li>
+			))}
+		</ul>
+	</nav>
+)}
+
+<style>
+	.toc {
+		background-color: var(--gray-900);
+		border: 1px solid var(--gray-800);
+		border-radius: 0.5rem;
+		padding: 1.25rem 1.5rem;
+		margin-bottom: 2rem;
+	}
+
+	.toc-title {
+		font-size: 0.875rem;
+		font-weight: 600;
+		color: var(--gray-0);
+		margin-bottom: 0.75rem;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+
+	.toc-list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+
+	.toc-item {
+		margin-bottom: 0.5rem;
+	}
+
+	.toc-item:last-child {
+		margin-bottom: 0;
+	}
+
+	.toc-item.depth-3 {
+		padding-left: 1rem;
+	}
+
+	.toc-item a {
+		color: var(--gray-300);
+		text-decoration: none;
+		font-size: 0.9rem;
+		transition: color var(--theme-transition);
+	}
+
+	.toc-item a:hover {
+		color: var(--accent-regular);
+	}
+</style>
