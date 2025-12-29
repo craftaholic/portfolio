@@ -9,63 +9,8 @@
 /* @import './themes/nord.css'; */
 /* @import './themes/tokyo-night.css'; */
 
-/* Global variables */
+/* Global variables - non-color only, colors come from theme files */
 :root {
-	/* Colors - Light mode (warm, cream tones) */
-	--gray-0: #1a1a1a;
-	--gray-50: #2d2d2d;
-	--gray-100: #3a3a3a;
-	--gray-200: #525252;
-	--gray-300: #6b6b6b;
-	--gray-400: #8a8a8a;
-	--gray-500: #a0a0a0;
-	--gray-600: #b8b8b8;
-	--gray-700: #d4d4d4;
-	--gray-800: #e8e8e8;
-	--gray-900: #f0eadb;
-	--gray-999-basis: 40, 38%, 93%;
-	--gray-999_40: hsla(var(--gray-999-basis), 0.4);
-	--gray-999: #f1ebdb;
-
-	--accent-light: #5cd3cc;
-	--accent-regular: #319795;
-	--accent-dark: #1a5856;
-	--accent-overlay: hsla(178, 60%, 60%, 0.33);
-	--accent-subtle-overlay: var(--accent-overlay);
-	--accent-text-over: var(--gray-999);
-
-	--link-color: var(--accent-regular);
-
-	/* Gradients */
-	--gradient-stop-1: var(--accent-light);
-	--gradient-stop-2: var(--accent-regular);
-	--gradient-stop-3: var(--accent-dark);
-	--gradient-subtle: linear-gradient(150deg, var(--gray-900) 19%, var(--gray-999) 150%);
-	--gradient-accent: linear-gradient(
-		150deg,
-		var(--gradient-stop-1),
-		var(--gradient-stop-2),
-		var(--gradient-stop-3)
-	);
-	--gradient-accent-orange: linear-gradient(
-		150deg,
-		#ca7879,
-		var(--accent-regular),
-		var(--accent-dark)
-	);
-	--gradient-stroke: linear-gradient(180deg, var(--gray-900), var(--gray-700));
-
-	/* Shadows */
-	--shadow-sm:
-		0px 6px 3px rgba(9, 11, 17, 0.01), 0px 4px 2px rgba(9, 11, 17, 0.01),
-		0px 2px 2px rgba(9, 11, 17, 0.02), 0px 0px 1px rgba(9, 11, 17, 0.03);
-	--shadow-md:
-		0px 28px 11px rgba(9, 11, 17, 0.01), 0px 16px 10px rgba(9, 11, 17, 0.03),
-		0px 7px 7px rgba(9, 11, 17, 0.05), 0px 2px 4px rgba(9, 11, 17, 0.06);
-	--shadow-lg:
-		0px 62px 25px rgba(9, 11, 17, 0.01), 0px 35px 21px rgba(9, 11, 17, 0.05),
-		0px 16px 16px rgba(9, 11, 17, 0.1), 0px 4px 9px rgba(9, 11, 17, 0.12);
-
 	/* Text Sizes */
 	--text-sm: 0.875rem;
 	--text-base: 1rem;
@@ -92,22 +37,6 @@
 	--transition-slow: 0.4s ease;
 	--nav-easing: cubic-bezier(0.4, 0, 0.2, 1);
 	--nav-transition: 0.3s var(--nav-easing);
-
-	/* Component: Terminal (VimHero) */
-	--terminal-bg: var(--gray-100);
-	--terminal-header-bg: var(--gray-200);
-	--terminal-border: var(--gray-300);
-	--terminal-glow-color: rgba(92, 211, 204, 0.3);
-	--terminal-glow-color-strong: rgba(92, 211, 204, 0.4);
-
-	/* Component: 3D Model */
-	--model-glow-color: rgba(92, 211, 204, 0.5);
-	--model-glow-color-subtle: rgba(92, 211, 204, 0.3);
-
-	/* Component: Code syntax */
-	--syntax-comment: var(--gray-400);
-	--syntax-keyword: var(--accent-light);
-	--syntax-string: #e9c46a;
 }
 
 html,
