@@ -15,6 +15,7 @@ export class Model3D {
   private groundPlane: THREE.Mesh | null = null;
   private animationFrameId: number | null = null;
   private container: HTMLElement;
+  private dragZone: HTMLElement | null = null;
   private isMobile: boolean;
 
   // Spin-in animation state
@@ -58,8 +59,12 @@ export class Model3D {
     this.renderer.domElement.style.transition = 'opacity 0.3s ease-in';
     container.appendChild(this.renderer.domElement);
 
-    // OrbitControls setup
-    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    // Get drag zone element (center area for touch rotation)
+    this.dragZone = container.querySelector('#model-drag-zone');
+
+    // OrbitControls setup - attach to drag zone if available, otherwise canvas
+    const controlsTarget = this.dragZone || this.renderer.domElement;
+    this.controls = new OrbitControls(this.camera, controlsTarget);
     this.controls.autoRotate = true;
     this.controls.autoRotateSpeed = 1.5;
     this.controls.enableZoom = true;
@@ -82,12 +87,22 @@ export class Model3D {
     // Handle resize
     window.addEventListener('resize', this.onResize);
 
-    // Handle hover/active state with pointer events (unified mouse + touch)
+    // Handle hover/active state - use drag zone for interaction, container for hover
+    const interactionTarget = this.dragZone || container;
+
+    // Hover on container (whole area)
     container.addEventListener('pointerenter', this.onActivate);
     container.addEventListener('pointerleave', this.onDeactivate);
-    container.addEventListener('pointerdown', this.onActivate);
+
+    // Drag on drag zone only
+    interactionTarget.addEventListener('pointerdown', this.onActivate);
     window.addEventListener('pointerup', this.onDeactivate);
     window.addEventListener('pointercancel', this.onDeactivate);
+
+    // Fallback for touch devices
+    interactionTarget.addEventListener('touchstart', this.onActivate, { passive: true });
+    interactionTarget.addEventListener('touchend', this.onDeactivate);
+    interactionTarget.addEventListener('touchcancel', this.onDeactivate);
   }
 
   private createCamera(container: HTMLElement): { camera: THREE.OrthographicCamera; scale: number } {
@@ -269,12 +284,17 @@ export class Model3D {
   };
 
   public dispose(): void {
+    const interactionTarget = this.dragZone || this.container;
+
     window.removeEventListener('resize', this.onResize);
     this.container.removeEventListener('pointerenter', this.onActivate);
     this.container.removeEventListener('pointerleave', this.onDeactivate);
-    this.container.removeEventListener('pointerdown', this.onActivate);
+    interactionTarget.removeEventListener('pointerdown', this.onActivate);
     window.removeEventListener('pointerup', this.onDeactivate);
     window.removeEventListener('pointercancel', this.onDeactivate);
+    interactionTarget.removeEventListener('touchstart', this.onActivate);
+    interactionTarget.removeEventListener('touchend', this.onDeactivate);
+    interactionTarget.removeEventListener('touchcancel', this.onDeactivate);
     if (this.animationFrameId !== null) {
       cancelAnimationFrame(this.animationFrameId);
     }

@@ -6,6 +6,7 @@
 ---
 
 <div id="model-3d-container" class="model-container">
+  <div id="model-drag-zone" class="drag-zone"></div>
   <div id="model-loader" class="loader">
     <div class="spinner"></div>
     <span class="loader-text">Loading 3D scene...</span>
@@ -93,6 +94,26 @@
     display: block;
     width: 100%;
     height: 100%;
+    pointer-events: none;
+  }
+
+  .drag-zone {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60%;
+    height: 60%;
+    z-index: 5;
+    cursor: grab;
+    border-radius: 50%;
+    /* Uncomment to debug:
+    background: rgba(255, 0, 0, 0.1);
+    */
+  }
+
+  .drag-zone:active {
+    cursor: grabbing;
   }
 
   .loader {

@@ -137,6 +137,27 @@ const {
 
   initVimTabs();
   document.addEventListener('astro:after-swap', initVimTabs);
+
+  // Handle touch glow effect (CSS :hover gets stuck on touch devices)
+  function initTouchGlow() {
+    const vimWindow = document.querySelector('.vim-window');
+    if (!vimWindow) return;
+
+    vimWindow.addEventListener('touchstart', () => {
+      vimWindow.classList.add('touch-active');
+    }, { passive: true });
+
+    vimWindow.addEventListener('touchend', () => {
+      vimWindow.classList.remove('touch-active');
+    });
+
+    vimWindow.addEventListener('touchcancel', () => {
+      vimWindow.classList.remove('touch-active');
+    });
+  }
+
+  initTouchGlow();
+  document.addEventListener('astro:after-swap', initTouchGlow);
 </script>
 
 <style>
@@ -157,7 +178,19 @@ const {
     transition: box-shadow var(--transition-normal), border-color var(--transition-normal);
   }
 
-  .vim-window:hover {
+  /* Hover glow - only on devices with mouse/pointer */
+  @media (hover: hover) {
+    .vim-window:hover {
+      box-shadow:
+        var(--shadow-lg),
+        0 0 30px var(--terminal-glow-color),
+        0 0 60px var(--terminal-glow-color-strong);
+      border-color: var(--accent-regular);
+    }
+  }
+
+  /* Touch glow - controlled via JS */
+  .vim-window.touch-active {
     box-shadow:
       var(--shadow-lg),
       0 0 30px var(--terminal-glow-color),
