@@ -7,7 +7,7 @@
 /* Dark Mode */
 :root.theme-dark {
 	/* Backgrounds - warm dark with visible borders */
-	--gray-0: #f5f2ed;
+	--gray-0: #e8e5e0;
 	--gray-50: #e8e4dd;
 	--gray-100: #dad5cc;
 	--gray-200: #c9c2b6;
@@ -80,13 +80,13 @@
 	--gray-200: #5c6370;
 	--gray-300: #7a8291;
 	--gray-400: #9ca3af;
-	--gray-500: #d1d5db;
-	--gray-600: #e5e7eb;
-	--gray-700: #f1f3f5;
-	--gray-800: #f8f9fa;
-	--gray-900: #fafbfc;
-	--gray-999-basis: 210, 20%, 99%;
-	--gray-999: #f8f9fa;
+	--gray-500: #a8adb6;
+	--gray-600: #b8bdc4;
+	--gray-700: #c2c7ce;
+	--gray-800: #cdd0d5;
+	--gray-900: #d5d2cc;
+	--gray-999-basis: 40, 20%, 88%;
+	--gray-999: #e3dfd8;
 
 	/* Accent - deeper green for light bg */
 	--accent-light: #4d7c32;
