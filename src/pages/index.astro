@@ -1,7 +1,7 @@
 ---
 import { SITE } from '../config';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import TerminalHero from '../components/sections/TerminalHero.astro';
+import Hero from '../components/sections/Hero.astro';
 import PageContainer from '../components/layout/PageContainer.astro';
 import Section from '../components/sections/Section.astro';
 import BioSection from '../components/sections/BioSection.astro';
@@ -14,10 +14,14 @@ import LinksList from '../components/ui/LinksList.astro';
 <BaseLayout>
 	<PageContainer>
 
-		<TerminalHero
-			name={SITE.author}
-			title={SITE.description}
-		/>
+		<Hero greeting={`Hi, I'm ${SITE.author}. ${SITE.description}.`}>
+			<img
+				slot="image"
+				src="/assets/images/profile.webp"
+				alt={SITE.author}
+				style="width: 100%; border-radius: 50%;"
+			/>
+		</Hero>
 
 		<Section title="About">
 			<BioSection>

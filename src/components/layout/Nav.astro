@@ -12,7 +12,7 @@ const iconLinks: { label: string; href: string; icon: keyof typeof iconPaths }[]
 
 <nav>
 	<a href="/" class="site-title">
-		<img src="/assets/images/profile.png" alt="" class="nav-profile-image" />
+		<Icon icon="motorcycle-helmet" size="1.4em" />
 		{SITE.author}
 	</a>
 	<div class="nav-actions">
@@ -58,13 +58,6 @@ const iconLinks: { label: string; href: string; icon: keyof typeof iconPaths }[]
 		text-decoration: none;
 	}
 
-	.nav-profile-image {
-		width: 1.8em;
-		height: 1.8em;
-		border-radius: 50%;
-		object-fit: cover;
-		border: 2px solid var(--accent-regular);
-	}
 
 	.nav-actions {
 		display: flex;

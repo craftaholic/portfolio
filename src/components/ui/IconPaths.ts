@@ -11,6 +11,7 @@
  *    (or add `stroke="none"` on shapes with no `fill` or `stroke` specified).
  */
 export const iconPaths = {
+	'motorcycle-helmet': `<path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="16" d="M208 144v24a16 16 0 0 1-16 16H64a16 16 0 0 1-16-16v-24c0-52.9 42.5-96 95-96h1c52.5 0 64 43.1 64 96Z"/><path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="16" d="M48 144h160"/><path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="16" d="M208 144c16 0 24 8 24 24v8a16 16 0 0 1-16 16h-8m-160-48c-16 0-24 8-24 24v8a16 16 0 0 0 16 16h8"/>`,
 	'magnifying-glass': `<circle cx="112" cy="112" r="80" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="16" d="m168.6 168.6 48.3 48.3"/>`,
 	'terminal-window': `<path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="16" d="m80 96 40 32-40 32m56 0h40"/><rect width="192" height="160" x="32" y="48" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="16.97" rx="8.5"/>`,
 	trophy: `<path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="16" d="M56 56v55.1c0 39.7 31.8 72.6 71.5 72.9a72 72 0 0 0 72.5-72V56a8 8 0 0 0-8-8H64a8 8 0 0 0-8 8Zm40 168h64m-32-40v40"/><path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="16" d="M198.2 128h9.8a32 32 0 0 0 32-32V80a8 8 0 0 0-8-8h-32M58 128H47.9a32 32 0 0 1-32-32V80a8 8 0 0 1 8-8h32"/>`,
