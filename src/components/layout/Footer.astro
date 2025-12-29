@@ -10,7 +10,7 @@ const currentYear = new Date().getFullYear();
 	</div>
 	<p class="socials">
 		{SITE.socialLinks.map(({ href, label }) => (
-			<a href={href}>{label}</a>
+			<a href={href} target="_blank" rel="noopener noreferrer">{label}</a>
 		))}
 	</p>
 </footer>

@@ -1,7 +1,11 @@
 ---
+import Icon from './Icon.astro';
+import type { iconPaths } from './IconPaths';
+
 interface Link {
 	href: string;
 	label: string;
+	icon?: keyof typeof iconPaths;
 }
 
 interface Props {
@@ -14,6 +18,12 @@ const { links } = Astro.props;
 <div class="links-list">
 	{links.map(link => (
 		<a href={link.href} class="link-item" target="_blank" rel="noopener noreferrer">
+			<span class="arrow">▸</span>
+			{link.icon && (
+				<span class="icon">
+					<Icon icon={link.icon} />
+				</span>
+			)}
 			{link.label}
 		</a>
 	))}
@@ -36,12 +46,22 @@ const { links } = Astro.props;
 		gap: 0.5rem;
 	}
 
-	.link-item::before {
-		content: '▸';
+	.arrow {
 		color: var(--accent-light);
+		transition: transform var(--transition-fast);
+	}
+
+	.icon {
+		display: inline-flex;
+		align-items: center;
+		font-size: 1.1em;
 	}
 
 	.link-item:hover {
 		color: var(--accent-light);
+	}
+
+	.link-item:hover .arrow {
+		transform: translateX(3px);
 	}
 </style>

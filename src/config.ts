@@ -11,8 +11,9 @@ export const SITE = {
 
   // Social links
   socialLinks: [
-    { href: 'https://github.com/craftaholic', label: 'GitHub' },
-    { href: 'https://www.linkedin.com/in/tranthangportfolio/', label: 'LinkedIn' },
+    { href: 'https://github.com/craftaholic', label: 'GitHub', icon: 'github-logo' },
+    { href: 'https://www.linkedin.com/in/tranthangportfolio/', label: 'LinkedIn', icon: 'linkedin-logo' },
+    { href: 'https://www.instagram.com/tommy_tran.28/', label: 'Instagram', icon: 'instagram-logo' },
   ],
 } as const;
 
