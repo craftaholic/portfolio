@@ -21,12 +21,11 @@ export class Model3D {
   private frame = 0;
   private readonly spinInFrames = 120;
 
-  // Hover effect state
+  // Hover/active effect state
   private targetLift = 0;
   private currentLift = 0;
   private baseModelY = 0;
-  private isDragging = false;
-  private isHovered = false;
+  private isActive = false; // true when hovering OR holding
 
   constructor(container: HTMLElement, options: Model3DOptions = {}) {
     this.container = container;
@@ -83,15 +82,12 @@ export class Model3D {
     // Handle resize
     window.addEventListener('resize', this.onResize);
 
-    // Handle hover events
-    container.addEventListener('mouseenter', this.onMouseEnter);
-    container.addEventListener('mouseleave', this.onMouseLeave);
-
-    // Handle drag events for glow effect
-    container.addEventListener('mousedown', this.onDragStart);
-    container.addEventListener('touchstart', this.onDragStart, { passive: true });
-    window.addEventListener('mouseup', this.onDragEnd);
-    window.addEventListener('touchend', this.onDragEnd);
+    // Handle hover/active state with pointer events (unified mouse + touch)
+    container.addEventListener('pointerenter', this.onActivate);
+    container.addEventListener('pointerleave', this.onDeactivate);
+    container.addEventListener('pointerdown', this.onActivate);
+    window.addEventListener('pointerup', this.onDeactivate);
+    window.addEventListener('pointercancel', this.onDeactivate);
   }
 
   private createCamera(container: HTMLElement): { camera: THREE.OrthographicCamera; scale: number } {
@@ -233,34 +229,16 @@ export class Model3D {
     this.renderer.setSize(w, h);
   };
 
-  private updateGlowState(): void {
-    if (this.isHovered || this.isDragging) {
-      this.targetLift = 0.3;
-      this.container.classList.add('hovered');
-    } else {
-      this.targetLift = 0;
-      this.container.classList.remove('hovered');
-    }
-  }
-
-  private onMouseEnter = (): void => {
-    this.isHovered = true;
-    this.updateGlowState();
+  private onActivate = (): void => {
+    this.isActive = true;
+    this.targetLift = 0.3;
+    this.container.classList.add('hovered');
   };
 
-  private onMouseLeave = (): void => {
-    this.isHovered = false;
-    this.updateGlowState();
-  };
-
-  private onDragStart = (): void => {
-    this.isDragging = true;
-    this.updateGlowState();
-  };
-
-  private onDragEnd = (): void => {
-    this.isDragging = false;
-    this.updateGlowState();
+  private onDeactivate = (): void => {
+    this.isActive = false;
+    this.targetLift = 0;
+    this.container.classList.remove('hovered');
   };
 
   private animate = (): void => {
@@ -292,12 +270,11 @@ export class Model3D {
 
   public dispose(): void {
     window.removeEventListener('resize', this.onResize);
-    this.container.removeEventListener('mouseenter', this.onMouseEnter);
-    this.container.removeEventListener('mouseleave', this.onMouseLeave);
-    this.container.removeEventListener('mousedown', this.onDragStart);
-    this.container.removeEventListener('touchstart', this.onDragStart);
-    window.removeEventListener('mouseup', this.onDragEnd);
-    window.removeEventListener('touchend', this.onDragEnd);
+    this.container.removeEventListener('pointerenter', this.onActivate);
+    this.container.removeEventListener('pointerleave', this.onDeactivate);
+    this.container.removeEventListener('pointerdown', this.onActivate);
+    window.removeEventListener('pointerup', this.onDeactivate);
+    window.removeEventListener('pointercancel', this.onDeactivate);
     if (this.animationFrameId !== null) {
       cancelAnimationFrame(this.animationFrameId);
     }
