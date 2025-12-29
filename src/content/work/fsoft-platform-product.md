@@ -1,5 +1,5 @@
 ---
-title: Fsoft Platform Product Solution
+title: Platform Product Solution
 description: Led development of an internal developer platform using Backstage and cloud-native tools for a Japanese automotive client.
 publishDate: 2024-12-01
 tags:

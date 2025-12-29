@@ -28,8 +28,8 @@ const href = `/work/${id}`;
     </div>
 
     <a href={href} class="project-link">
-      <h3 class="role">{data.role}</h3>
-      <p class="company">{data.company} — {data.title}</p>
+      <h3 class="title">{data.company} — {data.title}</h3>
+      <p class="role">{data.role}</p>
     </a>
 
     <p class="description">{data.description}</p>
@@ -124,11 +124,11 @@ const href = `/work/${id}`;
     margin-bottom: 0.75rem;
   }
 
-  .project-link:hover .role {
+  .project-link:hover .title {
     color: var(--accent-regular);
   }
 
-  .role {
+  .title {
     font-size: var(--text-lg);
     font-weight: 600;
     color: var(--gray-0);
@@ -136,7 +136,7 @@ const href = `/work/${id}`;
     transition: color var(--theme-transition);
   }
 
-  .company {
+  .role {
     font-size: var(--text-sm);
     color: var(--gray-400);
     margin: 0;
@@ -188,7 +188,7 @@ const href = `/work/${id}`;
       gap: 2rem;
     }
 
-    .role {
+    .title {
       font-size: var(--text-xl);
     }
 

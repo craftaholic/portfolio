@@ -1,5 +1,5 @@
 ---
-title: Fsoft Internal Platform
+title: Internal Platform
 description: Led team of 5 to build cloud infrastructure self-service for internal IdP using KubeVela and Kubernetes.
 publishDate: 2024-06-01
 tags:
