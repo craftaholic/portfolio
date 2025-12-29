@@ -12,7 +12,7 @@ const iconLinks: { label: string; href: string; icon: keyof typeof iconPaths }[]
 
 <nav>
 	<a href="/" class="site-title">
-		<Icon icon="motorcycle-helmet" size="1.4em" />
+		<Icon icon="code" size="1.4em" />
 		{SITE.author}
 	</a>
 	<div class="nav-actions">
@@ -56,6 +56,15 @@ const iconLinks: { label: string; href: string; icon: keyof typeof iconPaths }[]
 		line-height: 1.1;
 		color: var(--gray-0);
 		text-decoration: none;
+	}
+
+	.site-title :global(svg) {
+		transition: transform 0.2s ease, color 0.2s ease;
+	}
+
+	.site-title:hover :global(svg) {
+		transform: scale(1.15);
+		color: var(--accent-light);
 	}
 
 
