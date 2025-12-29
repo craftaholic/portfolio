@@ -53,18 +53,18 @@ const { title, organization, year, score, link, highlight = false } = Astro.prop
   .award-link {
     display: inline-block;
     font-size: var(--text-sm);
-    color: var(--accent-regular);
+    color: var(--gray-400);
     text-decoration: none;
     margin-top: 0.5rem;
     padding: 0.25rem 0.5rem;
-    border: 1px solid var(--accent-regular);
+    border: 1px solid var(--gray-700);
     border-radius: 0.25rem;
-    transition: background-color var(--theme-transition), color var(--theme-transition);
+    transition: border-color var(--theme-transition), color var(--theme-transition);
   }
 
   .award-link:hover {
-    background-color: var(--accent-regular);
-    color: var(--accent-text-over);
+    border-color: var(--accent-regular);
+    color: var(--accent-regular);
   }
 
   .award-score {
