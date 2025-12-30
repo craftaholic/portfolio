@@ -88,6 +88,7 @@ src/
 ├── layouts/            # Page layouts
 ├── pages/              # Route pages (pure composition, no CSS)
 ├── styles/             # Global CSS only
+├── types/              # TypeScript type declarations
 ├── utils/              # Utility functions
 ├── config.ts           # Site-wide constants and configuration (SINGLE SOURCE OF TRUTH)
 └── content.config.ts   # Content collection schemas
@@ -141,6 +142,7 @@ Components are organized by purpose into subfolders:
 - **LinksList.astro**: List of links with arrow indicators
 - **SimpleText.astro**: Text with consistent styling
 - **ReadingProgressBar.astro**: Scroll progress indicator for blog posts
+- **MarkdownContent.astro**: Shared markdown styling wrapper (headings, code, tables, blockquotes)
 
 **Section Components** (`src/components/sections/`):
 - **Hero.astro**: Hero section (supports greeting or title/tagline patterns)
@@ -157,14 +159,17 @@ Components are organized by purpose into subfolders:
 - **Island3D.ts**: Three.js scene implementation with low-poly island
 
 **Blog Components** (`src/components/blog/`):
-- **ContentArticle.astro**: Shared layout for blog/work detail pages with markdown styling
-  - Props: `title`, `description`, `tags`, `backLink`, `wide`
-  - Includes all markdown content styling (headings, code, tables, blockquotes, etc.)
+- **ContentArticle.astro**: Shared layout for blog/work detail pages
+  - Props: `title`, `description`, `tags`, `backLink`, `wide`, `pubDate`, `slug`
+  - Uses `MarkdownContent` for consistent markdown styling
 - **PortfolioPreview.astro**: Card preview for work/blog items
 - **Placeholder.astro**: "Coming soon" placeholder text
 - **Comments.astro**: Giscus comments integration
 
 **Product Components** (`src/components/products/`):
+- **ProductArticle.astro**: Product detail page layout with header, links, accordions
+  - Props: `title`, `description`, `tags`, `status`, `icon`, `github`, `demo`, `opensource`, `features`, `journals`
+  - Uses `MarkdownContent` for consistent markdown styling
 - **JournalOverlay.astro**: Lightbox overlay for displaying journal entry details
 - **ProductCard.astro**: Card preview for product items with GitHub stars
 
@@ -190,29 +195,39 @@ export const SITE = {
   title: 'Tommy Tran',
   description: 'Senior Cloud/DevOps/Platform Engineer based in Vietnam',
   locale: 'en-US',
+  terminalUser: 'tommy',
+  jobTitle: 'Senior Cloud/DevOps/Platform Engineer',
+  currentCompany: 'TymeX',
   postPerPage: 5,
   socialLinks: [
-    { href: 'https://github.com/craftaholic', label: 'GitHub' },
-    { href: 'https://www.linkedin.com/in/tranthangportfolio/', label: 'LinkedIn' },
+    { href: 'https://github.com/craftaholic', label: 'GitHub', icon: 'github-logo' },
+    { href: 'https://www.linkedin.com/in/tranthangportfolio/', label: 'LinkedIn', icon: 'linkedin-logo' },
   ],
 } as const;
 
-export const NAV_LINKS = [
-  { label: 'Home', href: '/' },
-  { label: 'Work', href: '/work/' },
-  { label: 'Blog', href: '/blog/' },
-  { label: 'Awards', href: '/awards/' },
-  { label: 'Products', href: '/products/' },
+export const NAV_LINKS = [...] as const;
+
+export const GISCUS = {...} as const;
+
+export const WORK_HISTORY = [
+  { year: '2025', text: `${SITE.currentCompany} - Started as Senior Platform Engineer...` },
+  // ... timeline entries
 ] as const;
 ```
 
 **Usage in components**:
 ```astro
 ---
-import { SITE, NAV_LINKS } from '../config';
+import { SITE, NAV_LINKS, WORK_HISTORY } from '../config';
 ---
-<!-- Use SITE.socialLinks, NAV_LINKS, SITE.author, etc. -->
+<!-- Use SITE.socialLinks, NAV_LINKS, SITE.jobTitle, WORK_HISTORY, etc. -->
 ```
+
+### Type Declarations
+
+**Window Extensions** (`src/types/window.d.ts`):
+- Provides TypeScript interface for global window functions
+- `window.openJournalOverlay` for journal lightbox
 
 ### Styling
 
@@ -249,7 +264,7 @@ All pages are pure component composition with ZERO CSS:
 - **`src/pages/blog/[...slug].astro`**: Individual blog post pages (uses `ContentArticle` with `wide` prop, includes `ReadingProgressBar`)
 - **`src/pages/awards.astro`**: Awards page (placeholder)
 - **`src/pages/products.astro`**: Products listing with pinned items and grid
-- **`src/pages/products/[...slug].astro`**: Individual product pages with journal accordion and lightbox
+- **`src/pages/products/[...slug].astro`**: Individual product pages (uses `ProductArticle` with journal accordion and lightbox)
 - **`src/pages/404.astro`**: Custom 404 error page
 
 ### Blog Features
