@@ -19,7 +19,7 @@ const date = data.modDatetime ?? data.pubDatetime;
   <div class="card-content">
     <div class="meta">
       <time datetime={date.toISOString()}>{formatDateShort(date)}</time>
-      {data.featured && <span class="featured">Featured</span>}
+      {data.pinned && <span class="pinned">Pinned</span>}
     </div>
     <h3 class="title">{data.title}</h3>
     {!compact && (
@@ -66,11 +66,11 @@ const date = data.modDatetime ?? data.pubDatetime;
     color: var(--gray-400);
   }
 
-  .featured {
+  .pinned {
     padding: 0.125rem 0.5rem;
-    background-color: var(--accent-regular);
-    color: var(--accent-text-over);
-    border-radius: 0.25rem;
+    background-color: var(--gray-700);
+    color: var(--gray-300);
+    border-radius: 999rem;
     font-size: 0.75rem;
     font-weight: 600;
     text-transform: uppercase;

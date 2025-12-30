@@ -11,6 +11,7 @@ tags:
 github: https://github.com/craftaholic/portfolio
 status: wip
 opensource: true
+pinned: true
 icon: "🏝️"
 features:
   - "Interactive 3D Island: Low-poly Three.js scene with mouse/touch controls and auto-rotation"

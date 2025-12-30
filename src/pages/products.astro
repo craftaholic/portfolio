@@ -6,9 +6,14 @@ import PageContainer from '../components/layout/PageContainer.astro';
 import Placeholder from '../components/blog/Placeholder.astro';
 import ProductGrid from '../components/products/ProductGrid.astro';
 
-const products = (await getCollection('products')).sort(
-	(a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf(),
-);
+const products = (await getCollection('products')).sort((a, b) => {
+	// Pinned products come first
+	if (a.data.pinned && !b.data.pinned) return -1;
+	if (!a.data.pinned && b.data.pinned) return 1;
+
+	// Then sort by date
+	return b.data.publishDate.valueOf() - a.data.publishDate.valueOf();
+});
 ---
 
 <BaseLayout title="Products" description="Products I've built">

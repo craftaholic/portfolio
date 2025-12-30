@@ -3,7 +3,7 @@ title: Look Like A Pro With Neovim
 author: Tommy Tran Duc Thang
 pubDatetime: 2024-11-03T01:18:29Z
 slug: nvim-like-pro
-featured: true
+pinned: true
 # ogImage: ""
 draft: false
 tags:

@@ -4,7 +4,7 @@ author: Sat Naing
 pubDatetime: 2023-07-21T10:11:06.130Z
 modDatetime: 2024-01-03T14:53:25Z
 slug: how-to-add-estimated-reading-time
-featured: false
+pinned: false
 draft: true
 tags:
   - FAQ

@@ -8,6 +8,7 @@ tags:
   - Modeling
 github: https://github.com/craftaholic/vox-3d-model
 status: wip
+opensource: true
 icon: "🎨"
 features: []
 journey: []

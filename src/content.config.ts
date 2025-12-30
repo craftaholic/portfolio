@@ -13,6 +13,7 @@ export const collections = {
 			demo: z.string().optional(),
 			status: z.enum(['mature', 'wip', 'archived']).default('wip'),
 			opensource: z.boolean().default(false),
+			pinned: z.boolean().default(false),
 			icon: z.string().optional(),
 			// Accordion sections
 			features: z.array(z.string()).optional(),
@@ -49,8 +50,8 @@ export const collections = {
 			pubDatetime: z.coerce.date(),
 			modDatetime: z.coerce.date().optional().nullable(),
 			title: z.string(),
-			featured: z.boolean().optional(),
 			draft: z.boolean().optional(),
+			pinned: z.boolean().default(false),
 			tags: z.array(z.string()).default(['others']),
 			description: z.string(),
 			canonicalURL: z.string().optional(),

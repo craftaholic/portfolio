@@ -3,7 +3,7 @@ title: Intro To Agnostic Dev Environment
 author: Tommy Tran Duc Thang
 pubDatetime: 2024-11-03T01:18:29Z
 slug: intro-agnostic-dev-env
-featured: true
+pinned: true
 # ogImage: ""
 draft: false
 tags:
