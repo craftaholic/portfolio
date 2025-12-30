@@ -4,6 +4,8 @@ My personal portfolio at [craftaholic.sh](https://craftaholic.sh), built with As
 
 Feel free to use this as a template for your own portfolio!
 
+![Portfolio Screenshot](docs/screenshot.png)
+
 ![Astro](https://img.shields.io/badge/Astro-5.x-ff5d01?style=flat-square&logo=astro)
 ![Three.js](https://img.shields.io/badge/Three.js-0.181-black?style=flat-square&logo=three.js)
 ![Bun](https://img.shields.io/badge/Bun-1.x-fbf0df?style=flat-square&logo=bun)
