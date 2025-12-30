@@ -40,7 +40,7 @@ Established platform engineering capability within the organization from the gro
 - **Cloud**: AWS (EKS, RDS, S3, Lambda)
 
 ## Impact
-- Established FPT Software's first platform engineering practice
-- Delivered production-ready IdP for major automotive client
+- Established FPT Software's platform engineering practice
+- Delivered IdP solution for major automotive client
 - Created reusable platform components for future projects
 - Mentored team members on platform engineering best practices

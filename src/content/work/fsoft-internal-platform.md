@@ -29,7 +29,7 @@ Led a team of 5 engineers to build a cloud infrastructure self-service platform 
 
 - **Team Leadership**: Managed and mentored a team of 5 engineers
 - **IaC Solution**: Designed and implemented Infrastructure as Code solution using KubeVela and Kubernetes
-- **Open Source Contribution**: Customized KubeVela open source code to meet enterprise security standards
+- **Work With Open Source**: Customized KubeVela open source code to meet enterprise security standards
 - **Security Compliance**: Passed all quality gates and penetration tests
 - **IP Registration**: Co-author on officially registered intellectual property for the project
 
@@ -41,7 +41,6 @@ Led a team of 5 engineers to build a cloud infrastructure self-service platform 
 - **Architecture**: Clean Architecture, Ports & Adapters
 
 ## Impact
-- Enabled self-service infrastructure provisioning for 100+ internal developers
-- Reduced infrastructure provisioning time from days to minutes
-- Established GitOps best practices across the organization
+- Enabled self-service infrastructure provisioning
+- Reduced infrastructure provisioning time to minutes
 - Created reusable IaC templates for common cloud patterns
