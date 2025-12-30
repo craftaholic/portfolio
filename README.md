@@ -126,27 +126,30 @@ publishDate: 2024-01-01
 tags: [Go, Docker]
 github: https://github.com/you/project
 status: mature
-journey:
-  - date: "15-03-2024"
-    title: "v2.0 Release"
-    content: "Major update with new features."
+opensource: true
+pinned: false
+icon: "🚀"
+features:
+  - "Feature one description"
+  - "Feature two description"
 ---
 
 About the project...
 ```
 
-**Development journals** - `src/content/journals/{product-name}/{date}.md`:
+**Development journals** - `src/content/journals/{product-slug}/{date}.md`:
 
 ```markdown
 ---
 title: Working on new feature
 date: 2024-03-15
+overview: Short summary shown in the journal list.
 ---
 
 Detailed journal entry about your development progress...
 ```
 
-Journals link to products via matching `date` field in the product's `journey` array.
+Journals are automatically linked to products via the directory name (e.g., `journals/my-project/` links to `products/my-project.md`).
 
 ### 4. Customize Theme
 

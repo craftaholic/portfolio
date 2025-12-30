@@ -20,16 +20,6 @@ features:
   - "Single-Command Setup: make setup or task setup to get everything running"
   - "Extensive Neovim configuration with Lua-based plugins"
   - "WSL support with clipboard integration"
-journey:
-  - date: "15-12-2024"
-    title: "Added Claude AI integration"
-    content: "Integrated Claude context configuration for AI-assisted development workflow."
-  - date: "20-10-2024"
-    title: "Migrated to Devbox"
-    content: "Replaced manual package management with Devbox for consistent versions across machines."
-  - date: "10-06-2024"
-    title: "Neovim overhaul"
-    content: "Rewrote entire Neovim config in Lua, added LSP support and modern plugin ecosystem."
 ---
 
 A framework for declaratively managing local machine environment configurations across multiple platforms and machines. Uses GNU Stow to manage symlinks and Devbox to maintain consistent package versions.

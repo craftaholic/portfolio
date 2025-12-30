@@ -11,7 +11,6 @@ status: wip
 opensource: true
 icon: "🎨"
 features: []
-journey: []
 ---
 
 A voxel-based 3D modeling project.

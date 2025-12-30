@@ -17,11 +17,7 @@ export const collections = {
 			icon: z.string().optional(),
 			// Accordion sections
 			features: z.array(z.string()).optional(),
-			journey: z.array(z.object({
-				date: z.string(),
-				title: z.string(),
-				content: z.string(),
-			})).optional(),
+			// Journal entries are now in src/content/journals/{product-slug}/*.md
 		}),
 	}),
 	journals: defineCollection({
@@ -31,6 +27,7 @@ export const collections = {
 		schema: z.object({
 			title: z.string(),
 			date: z.coerce.date(),
+			overview: z.string(), // Short summary shown in journey list
 		}),
 	}),
 	work: defineCollection({

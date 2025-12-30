@@ -19,7 +19,6 @@ features:
   - "Scalable architecture: Designed to grow with organizational needs"
   - "NATS message queues for async operations"
   - "Git provider integrations"
-journey: []
 ---
 
 A self-service platform enabling teams to manage infrastructure-as-code pipelines through a unified interface. Applies GitOps principles to automate and version-control infrastructure changes across multiple IaC tools.

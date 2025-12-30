@@ -14,6 +14,7 @@ interface JournalEntry {
   id: string;
   date: string;
   title: string;
+  overview: string;
   Content: any;
 }
 
@@ -43,6 +44,7 @@ export async function getStaticPaths() {
           year: 'numeric',
         }).replace(/\//g, '-'),
         title: journal.data.title,
+        overview: journal.data.overview,
         Content,
       };
     }));
@@ -57,11 +59,6 @@ export async function getStaticPaths() {
 const { entry, journals } = Astro.props;
 const { Content } = await render(entry);
 const { data } = entry;
-
-// Check if journal exists for a given frontmatter journey entry
-function findJournalForDate(journeyDate: string): JournalEntry | undefined {
-  return journals.find(j => j.date === journeyDate);
-}
 ---
 
 <BaseLayout title={data.title} description={data.description} hideModel>
@@ -113,36 +110,29 @@ function findJournalForDate(journeyDate: string): JournalEntry | undefined {
       </header>
 
       <div class="sections">
-        {data.journey && data.journey.length > 0 && (
+        {journals.length > 0 && (
           <Accordion title="Development Journal" variant="featured">
             <Icon slot="icon" icon="notebook" size="1.25em" />
             <div class="journey">
-              {data.journey.map((journeyEntry) => {
-                const journal = findJournalForDate(journeyEntry.date);
-                const hasDetail = !!journal;
-                return (
-                  <button
-                    class:list={['journey-entry', { 'has-detail': hasDetail }]}
-                    data-journal-id={journal?.id}
-                    disabled={!hasDetail}
-                    type="button"
-                  >
-                    <div class="journey-header">
-                      <span class="journey-date">{journeyEntry.date}</span>
-                      <span class="journey-title">{journeyEntry.title}</span>
-                    </div>
-                    <p class="journey-content">{journeyEntry.content}</p>
-                    {hasDetail && (
-                      <span class="view-detail">
-                        View details
-                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-                          <path d="M5 12h14M12 5l7 7-7 7"/>
-                        </svg>
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
+              {journals.map((journal) => (
+                <button
+                  class="journey-entry has-detail"
+                  data-journal-id={journal.id}
+                  type="button"
+                >
+                  <div class="journey-header">
+                    <span class="journey-date">{journal.date}</span>
+                    <span class="journey-title">{journal.title}</span>
+                  </div>
+                  <p class="journey-content">{journal.overview}</p>
+                  <span class="view-detail">
+                    View details
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                  </span>
+                </button>
+              ))}
             </div>
           </Accordion>
         )}
@@ -337,32 +327,23 @@ function findJournalForDate(journeyDate: string): JournalEntry | undefined {
     border-radius: 0.5rem;
     text-align: left;
     font-family: inherit;
-    cursor: default;
-    transition: none;
-  }
-
-  .journey-entry.has-detail {
     cursor: pointer;
     transition: border-color var(--transition-fast), background var(--transition-fast), transform var(--transition-fast);
   }
 
-  .journey-entry.has-detail:hover {
+  .journey-entry:hover {
     border-color: var(--accent-regular);
     background: var(--gray-900);
     transform: translateX(4px);
   }
 
-  .journey-entry.has-detail:hover .view-detail {
+  .journey-entry:hover .view-detail {
     opacity: 1;
     transform: translateX(0);
   }
 
-  .journey-entry.has-detail:hover .journey-date {
+  .journey-entry:hover .journey-date {
     color: var(--accent-light);
-  }
-
-  .journey-entry:disabled {
-    opacity: 0.7;
   }
 
   .journey-header {

@@ -78,9 +78,12 @@ src/
 │   ├── ui/             # Reusable UI elements
 │   ├── sections/       # Page section components
 │   ├── three/          # 3D graphics components
-│   └── blog/           # Blog-specific components
+│   ├── blog/           # Blog-specific components
+│   └── products/       # Product-specific components
 ├── content/            # Content collections (Markdown)
 │   ├── blog/           # Blog posts
+│   ├── journals/       # Development journals (per product)
+│   ├── products/       # Product showcases
 │   └── work/           # Work experience entries
 ├── layouts/            # Page layouts
 ├── pages/              # Route pages (pure composition, no CSS)
@@ -95,15 +98,28 @@ src/
 Content is managed through Astro's content collections system:
 
 **Work Collection** (`src/content/work/*.md`):
-- Schema: `title`, `description`, `publishDate`, `tags`, `img`, `img_alt`
+- Schema: `title`, `description`, `publishDate`, `tags`, `role`, `company`, `duration`, `highlight`, `location`
 - Auto-sorted by publish date (descending)
 - Queried using `getCollection('work')`
 
 **Blog Collection** (`src/content/blog/**/*.md`):
-- Schema: `title`, `description`, `pubDatetime`, `modDatetime`, `tags`, `author`, `draft`, `featured`
+- Schema: `title`, `description`, `pubDatetime`, `modDatetime`, `tags`, `author`, `draft`, `pinned`
 - Filters out drafts in production
 - Auto-sorted by modified/publish date (descending)
 - Queried using `getCollection('blog')`
+
+**Products Collection** (`src/content/products/*.md`):
+- Schema: `title`, `description`, `publishDate`, `tags`, `github`, `demo`, `status`, `opensource`, `pinned`, `icon`, `features`
+- Status options: `mature`, `wip`, `archived`
+- Queried using `getCollection('products')`
+
+**Journals Collection** (`src/content/journals/{product-slug}/*.md`):
+- Schema: `title`, `date`, `overview`
+- Linked to products via directory name (e.g., `journals/portfolio/` → `products/portfolio.md`)
+- `overview` field provides short summary shown in the accordion list
+- Full markdown content shown in lightbox overlay
+- Auto-sorted by date (descending)
+- Queried using `getCollection('journals')`
 
 ### Component System
 
@@ -146,6 +162,11 @@ Components are organized by purpose into subfolders:
   - Includes all markdown content styling (headings, code, tables, blockquotes, etc.)
 - **PortfolioPreview.astro**: Card preview for work/blog items
 - **Placeholder.astro**: "Coming soon" placeholder text
+- **Comments.astro**: Giscus comments integration
+
+**Product Components** (`src/components/products/`):
+- **JournalOverlay.astro**: Lightbox overlay for displaying journal entry details
+- **ProductCard.astro**: Card preview for product items with GitHub stars
 
 ### Utility Functions
 
@@ -156,6 +177,8 @@ Components are organized by purpose into subfolders:
 - **getUniqueTags.ts**: Extract unique tags from posts
 - **getPostsByTag.ts**: Filter posts by tag
 - **dateFormat.ts**: Date formatting utilities
+- **github-stars.ts**: Fetch and cache GitHub repository stars
+- **product-status.ts**: Product status labels and CSS classes
 
 ### Configuration (Single Source of Truth)
 
@@ -225,7 +248,8 @@ All pages are pure component composition with ZERO CSS:
 - **`src/pages/blog.astro`**: Blog posts listing with grid
 - **`src/pages/blog/[...slug].astro`**: Individual blog post pages (uses `ContentArticle` with `wide` prop, includes `ReadingProgressBar`)
 - **`src/pages/awards.astro`**: Awards page (placeholder)
-- **`src/pages/products.astro`**: Products page (placeholder)
+- **`src/pages/products.astro`**: Products listing with pinned items and grid
+- **`src/pages/products/[...slug].astro`**: Individual product pages with journal accordion and lightbox
 - **`src/pages/404.astro`**: Custom 404 error page
 
 ### Blog Features
@@ -244,6 +268,32 @@ All pages are pure component composition with ZERO CSS:
 - `getUniqueTags()` - Extract all unique tags
 - `getPostsByTag()` - Filter posts by tag
 - `slugify()` - URL-safe slug generation
+
+### Product Journal System
+
+Products can have development journals that document progress over time:
+
+**Structure:**
+- Journals live in `src/content/journals/{product-slug}/` directory
+- Each journal is a markdown file named `{YYYY-MM-DD}.md`
+- Journals are automatically linked to products by matching directory name to product slug
+
+**Schema:**
+```yaml
+---
+title: Feature implementation
+date: 2024-12-30
+overview: Short summary for the accordion list
+---
+
+Full markdown content shown in lightbox...
+```
+
+**Display:**
+- Journal accordion in product detail page shows all entries sorted by date (newest first)
+- `overview` field shown as summary in the list
+- Clicking an entry opens a lightbox overlay with full content
+- JournalOverlay component handles the lightbox UI
 
 ## Development Notes
 
