@@ -123,24 +123,8 @@ function findJournalForDate(journeyDate: string): JournalEntry | undefined {
       </header>
 
       <div class="sections">
-        <Accordion title="Overview" defaultOpen>
-          <div class="content">
-            <Content />
-          </div>
-        </Accordion>
-
-        {data.features && data.features.length > 0 && (
-          <Accordion title="Features">
-            <ul class="features-list">
-              {data.features.map((feature) => (
-                <li>{feature}</li>
-              ))}
-            </ul>
-          </Accordion>
-        )}
-
         {data.journey && data.journey.length > 0 && (
-          <Accordion title="Development Journey">
+          <Accordion title="Development Journal" variant="featured" icon="📓">
             <div class="journey">
               {data.journey.map((journeyEntry) => {
                 const journal = findJournalForDate(journeyEntry.date);
@@ -166,6 +150,22 @@ function findJournalForDate(journeyDate: string): JournalEntry | undefined {
                 );
               })}
             </div>
+          </Accordion>
+        )}
+
+        <Accordion title="Overview" defaultOpen>
+          <div class="content">
+            <Content />
+          </div>
+        </Accordion>
+
+        {data.features && data.features.length > 0 && (
+          <Accordion title="Features">
+            <ul class="features-list">
+              {data.features.map((feature) => (
+                <li>{feature}</li>
+              ))}
+            </ul>
           </Accordion>
         )}
       </div>

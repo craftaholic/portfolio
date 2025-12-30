@@ -2,14 +2,19 @@
 interface Props {
   title: string;
   defaultOpen?: boolean;
+  variant?: 'default' | 'featured';
+  icon?: string;
 }
 
-const { title, defaultOpen = false } = Astro.props;
+const { title, defaultOpen = false, variant = 'default', icon } = Astro.props;
 ---
 
-<details class="accordion" open={defaultOpen}>
+<details class:list={['accordion', variant === 'featured' && 'accordion-featured']} open={defaultOpen}>
   <summary class="accordion-header">
-    <span class="accordion-title">{title}</span>
+    <span class="accordion-title">
+      {icon && <span class="accordion-title-icon">{icon}</span>}
+      {title}
+    </span>
     <span class="accordion-icon"></span>
   </summary>
   <div class="accordion-content">
@@ -45,9 +50,49 @@ const { title, defaultOpen = false } = Astro.props;
   }
 
   .accordion-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     font-size: var(--text-base);
     font-weight: 600;
     color: var(--gray-0);
+  }
+
+  .accordion-title-icon {
+    font-size: 1.1em;
+  }
+
+  /* Featured variant - stands out with accent styling */
+  .accordion-featured {
+    border: 1px solid var(--accent-regular);
+    background: var(--accent-overlay);
+    position: relative;
+  }
+
+  .accordion-featured::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: 0 0 24px var(--accent-overlay), inset 0 0 12px var(--accent-overlay);
+    pointer-events: none;
+  }
+
+  .accordion-featured .accordion-header:hover {
+    background: var(--accent-overlay);
+  }
+
+  .accordion-featured .accordion-title {
+    color: var(--accent-light);
+  }
+
+  .accordion-featured .accordion-icon::before,
+  .accordion-featured .accordion-icon::after {
+    background: var(--accent-regular);
+  }
+
+  .accordion-featured[open] .accordion-header {
+    border-bottom-color: var(--accent-regular);
   }
 
   .accordion-icon {
