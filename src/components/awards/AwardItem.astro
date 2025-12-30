@@ -20,7 +20,11 @@ const { title, organization, year, score, link, highlight = false } = Astro.prop
   {score && <span class="award-score">{score}</span>}
   {link && (
     <a href={link} target="_blank" rel="noopener noreferrer" class="award-link">
-      View Badge
+      <span class="link-arrow">▸</span>
+      Verify credential
+      <svg class="external-icon" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/>
+      </svg>
     </a>
   )}
 </div>
@@ -31,11 +35,21 @@ const { title, organization, year, score, link, highlight = false } = Astro.prop
     background: var(--gray-900);
     border: 1px solid var(--gray-800);
     border-radius: 0.5rem;
-    transition: border-color var(--theme-transition);
+    transition: border-color var(--theme-transition), background var(--theme-transition);
+  }
+
+  :root.theme-dark .award-item {
+    background: var(--gray-800);
+    border-color: var(--gray-700);
   }
 
   .award-item:hover {
     border-color: var(--gray-700);
+  }
+
+  :root.theme-dark .award-item:hover {
+    border-color: var(--gray-600);
+    background: var(--gray-900);
   }
 
   .award-item.highlight {
@@ -51,20 +65,36 @@ const { title, organization, year, score, link, highlight = false } = Astro.prop
   }
 
   .award-link {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
     font-size: var(--text-sm);
-    color: var(--gray-400);
+    color: var(--accent-regular);
     text-decoration: none;
-    margin-top: 0.5rem;
-    padding: 0.25rem 0.5rem;
-    border: 1px solid var(--gray-700);
-    border-radius: 0.25rem;
-    transition: border-color var(--theme-transition), color var(--theme-transition);
+    margin-top: 0.625rem;
+    transition: color var(--transition-fast);
   }
 
   .award-link:hover {
-    border-color: var(--accent-regular);
-    color: var(--accent-regular);
+    color: var(--accent-light);
+  }
+
+  .link-arrow {
+    color: var(--accent-light);
+    transition: transform var(--transition-fast);
+  }
+
+  .award-link:hover .link-arrow {
+    transform: translateX(3px);
+  }
+
+  .external-icon {
+    opacity: 0.6;
+    transition: opacity var(--transition-fast);
+  }
+
+  .award-link:hover .external-icon {
+    opacity: 1;
   }
 
   .award-score {
