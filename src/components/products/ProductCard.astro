@@ -4,7 +4,7 @@
  * Shows title, description, status badge, and tags
  */
 import type { CollectionEntry } from 'astro:content';
-import Pill from '../ui/Pill.astro';
+import ExpandableTags from '../ui/ExpandableTags.astro';
 import { STATUS_LABELS, STATUS_CLASSES } from '../../utils/product-status';
 
 interface Props {
@@ -46,14 +46,7 @@ const href = `/products/${id}`;
   <h3 class="card-title">{data.title}</h3>
   <p class="card-description">{data.description}</p>
   {data.tags.length > 0 && (
-    <div class="card-tags">
-      {data.tags.slice(0, 3).map((tag) => (
-        <Pill size="sm">{tag}</Pill>
-      ))}
-      {data.tags.length > 3 && (
-        <span class="more-tags">+{data.tags.length - 3}</span>
-      )}
-    </div>
+    <ExpandableTags tags={data.tags} maxTags={3} preventNavigation />
   )}
 </a>
 
@@ -180,17 +173,6 @@ const href = `/products/${id}`;
     flex: 1;
   }
 
-  .card-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.375rem;
-    align-items: center;
-  }
-
-  .more-tags {
-    font-size: var(--text-sm);
-    color: var(--gray-500);
-  }
 </style>
 
 <script>

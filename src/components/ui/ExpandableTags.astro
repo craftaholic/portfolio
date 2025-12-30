@@ -1,0 +1,138 @@
+---
+/**
+ * Expandable tags component with "+N" button to show all tags
+ * Used in WorkTimelineItem, BlogCard, ProductCard, and TagsFilter
+ */
+import Pill from './Pill.astro';
+
+interface TagItem {
+  /** Display text */
+  label: string;
+  /** Optional link href */
+  href?: string;
+}
+
+interface Props {
+  /** Array of tag strings or tag objects with label/href */
+  tags: string[] | TagItem[];
+  /** Max tags to show before collapse */
+  maxTags?: number;
+  /** Prevent parent link navigation on expand (for cards wrapped in <a>) */
+  preventNavigation?: boolean;
+}
+
+const { tags, maxTags = 5, preventNavigation = false } = Astro.props;
+
+// Normalize to TagItem format
+const normalizedTags: TagItem[] = tags.map((tag) =>
+  typeof tag === 'string' ? { label: tag } : tag
+);
+
+const visibleTags = normalizedTags.slice(0, maxTags);
+const hiddenTags = normalizedTags.slice(maxTags);
+const hasMore = hiddenTags.length > 0;
+---
+
+<div
+  class="expandable-tags"
+  data-expanded="false"
+  data-prevent-navigation={preventNavigation.toString()}
+>
+  {visibleTags.map(({ label, href }) =>
+    href ? (
+      <a href={href} class="tag-link">
+        <Pill size="sm">{label}</Pill>
+      </a>
+    ) : (
+      <Pill size="sm">{label}</Pill>
+    )
+  )}
+  {hiddenTags.map(({ label, href }) => (
+    <span class="hidden-tag">
+      {href ? (
+        <a href={href} class="tag-link">
+          <Pill size="sm">{label}</Pill>
+        </a>
+      ) : (
+        <Pill size="sm">{label}</Pill>
+      )}
+    </span>
+  ))}
+  {hasMore && (
+    <button type="button" class="more-tags-btn">
+      +{hiddenTags.length}
+    </button>
+  )}
+</div>
+
+<style>
+  .expandable-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    align-items: center;
+  }
+
+  .tag-link {
+    text-decoration: none;
+    transition: transform var(--theme-transition);
+  }
+
+  .tag-link:hover {
+    transform: translateY(-2px);
+  }
+
+  .more-tags-btn {
+    font-size: var(--text-sm);
+    color: var(--gray-500);
+    background: var(--gray-800);
+    border: 1px solid var(--gray-700);
+    border-radius: 0.375rem;
+    padding: 0.125rem 0.5rem;
+    cursor: pointer;
+    transition: all var(--theme-transition);
+  }
+
+  .more-tags-btn:hover {
+    color: var(--accent-regular);
+    border-color: var(--accent-regular);
+  }
+
+  .hidden-tag {
+    display: none;
+  }
+
+  .expandable-tags[data-expanded='true'] .hidden-tag {
+    display: inline-flex;
+  }
+
+  .expandable-tags[data-expanded='true'] .more-tags-btn {
+    display: none;
+  }
+</style>
+
+<script>
+  function initExpandableTags() {
+    document.querySelectorAll('.expandable-tags .more-tags-btn').forEach((btn) => {
+      // Skip if already initialized
+      if (btn.hasAttribute('data-initialized')) return;
+      btn.setAttribute('data-initialized', 'true');
+
+      btn.addEventListener('click', (e) => {
+        const container = btn.closest('.expandable-tags');
+        if (!container) return;
+
+        // Prevent navigation if inside a link
+        if (container.getAttribute('data-prevent-navigation') === 'true') {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+
+        container.setAttribute('data-expanded', 'true');
+      });
+    });
+  }
+
+  initExpandableTags();
+  document.addEventListener('astro:after-swap', initExpandableTags);
+</script>

@@ -1,7 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import { formatDateShort } from '../../utils/dateFormat';
-import Pill from '../ui/Pill.astro';
+import ExpandableTags from '../ui/ExpandableTags.astro';
 
 interface Props {
   post: CollectionEntry<'blog'>;
@@ -25,14 +25,7 @@ const date = data.modDatetime ?? data.pubDatetime;
     {!compact && (
       <p class="description">{data.description}</p>
     )}
-    <div class="tags">
-      {data.tags.slice(0, 3).map((tag) => (
-        <Pill size="sm">{tag}</Pill>
-      ))}
-      {data.tags.length > 3 && (
-        <span class="more-tags">+{data.tags.length - 3}</span>
-      )}
-    </div>
+    <ExpandableTags tags={data.tags} maxTags={3} preventNavigation />
   </div>
 </a>
 
@@ -95,18 +88,6 @@ const date = data.modDatetime ?? data.pubDatetime;
     overflow: hidden;
   }
 
-  .tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    align-items: center;
-  }
-
-  .more-tags {
-    font-size: var(--text-sm);
-    color: var(--gray-400);
-  }
-
   /* Compact variant */
   .blog-card.compact {
     padding: 1rem;
@@ -116,7 +97,7 @@ const date = data.modDatetime ?? data.pubDatetime;
     font-size: var(--text-base);
   }
 
-  .blog-card.compact .tags {
+  .blog-card.compact :global(.expandable-tags) {
     display: none;
   }
 
