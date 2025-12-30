@@ -1,66 +1,137 @@
 ---
-/**
- * Giscus comment component
- *
- * Setup required:
- * 1. Go to https://giscus.app
- * 2. Enable GitHub Discussions on your repo
- * 3. Install the Giscus app on your repo
- * 4. Configure and get your repo, repoId, category, categoryId
- * 5. Update GISCUS config in src/config.ts
- */
 import { GISCUS } from '../../config';
 ---
 
+<link rel="preconnect" href="https://giscus.app" crossorigin />
+
 <section class="comments">
 	<h2 class="comments-title">Comments</h2>
-	<div class="giscus-wrapper">
-		<script
-			src="https://giscus.app/client.js"
-			data-repo={GISCUS.repo}
-			data-repo-id={GISCUS.repoId}
-			data-category={GISCUS.category}
-			data-category-id={GISCUS.categoryId}
-			data-mapping="pathname"
-			data-strict="0"
-			data-reactions-enabled="1"
-			data-emit-metadata="0"
-			data-input-position="top"
-			data-theme="dark"
-			data-lang="en"
-			data-loading="lazy"
-			crossorigin="anonymous"
-			async
-		></script>
+	<div
+		class="giscus-wrapper"
+		id="giscus-container"
+		data-repo={GISCUS.repo}
+		data-repo-id={GISCUS.repoId}
+		data-category={GISCUS.category}
+		data-category-id={GISCUS.categoryId}
+	>
+		<div class="giscus-loading" id="giscus-loading">
+			<span class="loading-spinner"></span>
+			<span>Loading comments...</span>
+		</div>
+		<div class="giscus-error" id="giscus-error">
+			<p>Failed to load comments.</p>
+			<button type="button" id="giscus-retry">Retry</button>
+		</div>
+		<div class="giscus"></div>
 	</div>
 </section>
 
 <script>
-	// Update Giscus theme when site theme changes
-	function updateGiscusTheme() {
-		const theme = document.documentElement.classList.contains('theme-dark') ? 'dark' : 'light';
-		const iframe = document.querySelector<HTMLIFrameElement>('iframe.giscus-frame');
-		if (iframe) {
-			iframe.contentWindow?.postMessage(
-				{ giscus: { setConfig: { theme } } },
-				'https://giscus.app'
-			);
-		}
+	const GISCUS_URL = 'https://giscus.app';
+	const MAX_RETRIES = 3;
+	const RETRY_DELAY = 2000;
+	const IFRAME_TIMEOUT = 10000;
+
+	const $ = (selector: string) => document.querySelector(selector);
+	const $id = (id: string) => document.getElementById(id);
+
+	const getTheme = () =>
+		document.documentElement.classList.contains('theme-dark') ? 'dark' : 'light';
+
+	function setLoadingState(state: 'loading' | 'error' | 'ready') {
+		const loading = $id('giscus-loading');
+		const error = $id('giscus-error');
+		if (loading) loading.style.display = state === 'loading' ? 'flex' : 'none';
+		if (error) error.style.display = state === 'error' ? 'flex' : 'none';
 	}
 
-	// Watch for theme changes
-	const observer = new MutationObserver((mutations) => {
-		mutations.forEach((mutation) => {
-			if (mutation.attributeName === 'class') {
-				updateGiscusTheme();
+	function cleanup() {
+		$('script[src*="giscus.app/client.js"]')?.remove();
+		$('iframe.giscus-frame')?.remove();
+		const giscusDiv = $('.giscus');
+		if (giscusDiv) giscusDiv.innerHTML = '';
+	}
+
+	function loadGiscus(retryCount = 0) {
+		const container = $id('giscus-container');
+		if (!container) return;
+
+		setLoadingState('loading');
+		cleanup();
+
+		const script = document.createElement('script');
+		script.src = `${GISCUS_URL}/client.js`;
+		script.async = true;
+		script.crossOrigin = 'anonymous';
+
+		const attrs = {
+			'data-repo': container.dataset.repo,
+			'data-repo-id': container.dataset.repoId,
+			'data-category': container.dataset.category,
+			'data-category-id': container.dataset.categoryId,
+			'data-mapping': 'pathname',
+			'data-strict': '0',
+			'data-reactions-enabled': '1',
+			'data-emit-metadata': '0',
+			'data-input-position': 'top',
+			'data-theme': getTheme(),
+			'data-lang': 'en',
+		};
+		Object.entries(attrs).forEach(([key, val]) => script.setAttribute(key, val || ''));
+
+		const retry = () => {
+			if (retryCount < MAX_RETRIES) {
+				setTimeout(() => loadGiscus(retryCount + 1), RETRY_DELAY);
+			} else {
+				setLoadingState('error');
 			}
-		});
-	});
+		};
 
-	observer.observe(document.documentElement, { attributes: true });
+		script.onload = () => {
+			const checkIframe = setInterval(() => {
+				if ($('iframe.giscus-frame')) {
+					clearInterval(checkIframe);
+					setLoadingState('ready');
+				}
+			}, 100);
 
-	// Handle Astro view transitions
-	document.addEventListener('astro:page-load', updateGiscusTheme);
+			setTimeout(() => {
+				clearInterval(checkIframe);
+				if (!$('iframe.giscus-frame')) retry();
+			}, IFRAME_TIMEOUT);
+		};
+
+		script.onerror = retry;
+		document.body.appendChild(script);
+	}
+
+	function updateTheme() {
+		const iframe = $<HTMLIFrameElement>('iframe.giscus-frame');
+		iframe?.contentWindow?.postMessage(
+			{ giscus: { setConfig: { theme: getTheme() } } },
+			GISCUS_URL
+		);
+	}
+
+	function init() {
+		if (!$id('giscus-container')) return;
+		$id('giscus-retry')?.addEventListener('click', () => loadGiscus(0));
+		loadGiscus();
+	}
+
+	new MutationObserver((mutations) => {
+		if (mutations.some((m) => m.attributeName === 'class')) updateTheme();
+	}).observe(document.documentElement, { attributes: true });
+
+	document.addEventListener('astro:page-load', init);
+
+	// Load immediately - don't wait for DOMContentLoaded
+	// Use queueMicrotask to run as soon as possible while still allowing DOM to be ready
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', init, { once: true });
+	} else {
+		queueMicrotask(init);
+	}
 </script>
 
 <style>
@@ -80,6 +151,60 @@ import { GISCUS } from '../../config';
 	}
 
 	.giscus-wrapper {
+		position: relative;
 		min-height: 150px;
+	}
+
+	.giscus-loading,
+	.giscus-error {
+		position: absolute;
+		inset: 0;
+		display: none;
+		align-items: center;
+		justify-content: center;
+		gap: 0.75rem;
+		min-height: 150px;
+		color: var(--gray-300);
+		font-size: 0.875rem;
+	}
+
+	.giscus-error {
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	.giscus-error p {
+		margin: 0;
+	}
+
+	.loading-spinner {
+		width: 1.25rem;
+		height: 1.25rem;
+		border: 2px solid var(--gray-700);
+		border-top-color: var(--accent-regular);
+		border-radius: 50%;
+		animation: spin 0.8s linear infinite;
+	}
+
+	@keyframes spin {
+		to {
+			transform: rotate(360deg);
+		}
+	}
+
+	#giscus-retry {
+		padding: 0.5rem 1rem;
+		background: var(--gray-800);
+		border: 1px solid var(--gray-700);
+		border-radius: 0.375rem;
+		color: var(--gray-200);
+		font-size: 0.875rem;
+		cursor: pointer;
+		transition: background 0.15s ease, border-color 0.15s ease;
+	}
+
+	#giscus-retry:hover {
+		background: var(--gray-700);
+		border-color: var(--gray-600);
 	}
 </style>
