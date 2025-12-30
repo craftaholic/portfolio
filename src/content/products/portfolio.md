@@ -18,6 +18,7 @@ features:
   - "Terminal-style Hero: Vim-inspired aesthetic with typing animations"
   - "9 Color Themes: Tokyo Night, Nord, Gruvbox, and more"
   - "Blog System: Full-text search, tags, reading progress bar, Giscus comments"
+  - "Product Development Journal: Diary for product development"
   - "Static Site Generation: Lighthouse scores 95+ across all metrics"
   - "Mobile-first Design: Responsive layout with bottom navigation on mobile"
 ---
