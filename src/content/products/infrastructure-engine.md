@@ -10,6 +10,7 @@ tags:
   - CloudFormation
 github: https://github.com/craftaholic/infrastructure-engine
 status: wip
+opensource: true
 icon: "⚙️"
 features:
   - "Multi-tool support: Works with Terraform, Ansible, and CloudFormation"

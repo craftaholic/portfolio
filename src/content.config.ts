@@ -12,6 +12,7 @@ export const collections = {
 			github: z.string().optional(),
 			demo: z.string().optional(),
 			status: z.enum(['mature', 'wip', 'archived']).default('wip'),
+			opensource: z.boolean().default(false),
 			icon: z.string().optional(),
 			// Accordion sections
 			features: z.array(z.string()).optional(),

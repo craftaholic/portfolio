@@ -10,6 +10,7 @@ tags:
   - GNU Stow
 github: https://github.com/craftaholic/dotfiles
 status: mature
+opensource: true
 icon: "🛠️"
 features:
   - "Unified Configuration Management: GNU Stow manages symlinks from home directory to config files"

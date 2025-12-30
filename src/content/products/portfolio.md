@@ -10,6 +10,7 @@ tags:
   - Bun
 github: https://github.com/craftaholic/portfolio
 status: wip
+opensource: true
 icon: "🏝️"
 features:
   - "Interactive 3D Island: Low-poly Three.js scene with mouse/touch controls and auto-rotation"
