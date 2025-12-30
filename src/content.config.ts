@@ -24,6 +24,15 @@ export const collections = {
 			})).optional(),
 		}),
 	}),
+	journals: defineCollection({
+		// Journal entries: src/content/journals/{product-slug}/{date}.md
+		// Product is derived from directory name (e.g., journals/portfolio/2024-12-29.md -> product: portfolio)
+		loader: glob({ base: './src/content/journals', pattern: '**/*.md' }),
+		schema: z.object({
+			title: z.string(),
+			date: z.coerce.date(),
+		}),
+	}),
 	work: defineCollection({
 		// Load Markdown files in the src/content/work directory.
 		loader: glob({ base: './src/content/work', pattern: '**/*.md' }),

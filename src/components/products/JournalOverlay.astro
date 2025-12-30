@@ -1,0 +1,254 @@
+---
+/**
+ * Lightbox-style overlay for displaying journal entries
+ * Similar to profile image lightbox in VimHero
+ */
+---
+
+<div class="journal-overlay" id="journal-overlay" aria-hidden="true">
+  <div class="overlay-backdrop"></div>
+  <div class="overlay-content">
+    <button class="close-btn" aria-label="Close journal">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M18 6L6 18M6 6l12 12"/>
+      </svg>
+    </button>
+    <div class="journal-header">
+      <span class="journal-date"></span>
+      <h2 class="journal-title"></h2>
+    </div>
+    <div class="journal-body"></div>
+  </div>
+</div>
+
+<script>
+  interface JournalData {
+    date: string;
+    title: string;
+    content: string;
+  }
+
+  function initJournalOverlay() {
+    const overlay = document.getElementById('journal-overlay');
+    const backdrop = overlay?.querySelector('.overlay-backdrop');
+    const closeBtn = overlay?.querySelector('.close-btn');
+    const content = overlay?.querySelector('.overlay-content');
+    const dateEl = overlay?.querySelector('.journal-date');
+    const titleEl = overlay?.querySelector('.journal-title');
+    const bodyEl = overlay?.querySelector('.journal-body');
+
+    if (!overlay || !backdrop || !closeBtn || !content || !dateEl || !titleEl || !bodyEl) return;
+
+    function openOverlay(data: JournalData) {
+      dateEl.textContent = data.date;
+      titleEl.textContent = data.title;
+      bodyEl.innerHTML = data.content;
+      overlay.classList.add('active');
+      overlay.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeOverlay() {
+      overlay.classList.remove('active');
+      overlay.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+
+    backdrop.addEventListener('click', closeOverlay);
+    closeBtn.addEventListener('click', closeOverlay);
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && overlay.classList.contains('active')) {
+        closeOverlay();
+      }
+    });
+
+    // Expose open function globally for journey buttons
+    (window as any).openJournalOverlay = openOverlay;
+  }
+
+  initJournalOverlay();
+  document.addEventListener('astro:after-swap', initJournalOverlay);
+</script>
+
+<style>
+  .journal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition-normal), visibility var(--transition-normal);
+  }
+
+  .journal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .overlay-backdrop {
+    position: absolute;
+    inset: 0;
+    background: var(--overlay-bg);
+    backdrop-filter: blur(8px);
+  }
+
+  .overlay-content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 700px;
+    max-height: 85vh;
+    background: var(--gray-900);
+    border: 1px solid var(--gray-700);
+    border-radius: 1rem;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    animation: overlay-zoom var(--transition-normal);
+  }
+
+  .journal-overlay.active .overlay-content {
+    animation: overlay-zoom var(--transition-normal) forwards;
+  }
+
+  @keyframes overlay-zoom {
+    from {
+      transform: scale(0.9) translateY(20px);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+    }
+  }
+
+  .close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: var(--gray-800);
+    border: 1px solid var(--gray-700);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    color: var(--gray-400);
+    cursor: pointer;
+    transition: color var(--transition-fast), border-color var(--transition-fast);
+    z-index: 2;
+  }
+
+  .close-btn:hover {
+    color: var(--gray-0);
+    border-color: var(--gray-600);
+  }
+
+  .journal-header {
+    padding: 1.5rem 3.5rem 1.5rem 1.5rem;
+    border-bottom: 1px solid var(--gray-800);
+    flex-shrink: 0;
+  }
+
+  .journal-date {
+    display: inline-block;
+    font-size: var(--text-sm);
+    color: var(--accent-regular);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+
+  .journal-title {
+    font-size: var(--text-xl);
+    color: var(--gray-0);
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .journal-body {
+    padding: 1.5rem;
+    overflow-y: auto;
+    line-height: 1.7;
+  }
+
+  /* Markdown content styles */
+  .journal-body :global(h2) {
+    font-size: 1.1rem;
+    color: var(--gray-0);
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+  }
+
+  .journal-body :global(h2:first-child) {
+    margin-top: 0;
+  }
+
+  .journal-body :global(h3) {
+    font-size: 1rem;
+    color: var(--gray-100);
+    margin-top: 1.25rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+
+  .journal-body :global(p) {
+    color: var(--gray-300);
+    margin-bottom: 1rem;
+  }
+
+  .journal-body :global(ul),
+  .journal-body :global(ol) {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+    color: var(--gray-300);
+  }
+
+  .journal-body :global(li) {
+    margin-bottom: 0.375rem;
+  }
+
+  .journal-body :global(strong) {
+    color: var(--gray-0);
+    font-weight: 600;
+  }
+
+  .journal-body :global(code) {
+    background-color: var(--gray-800);
+    color: var(--accent-regular);
+    padding: 0.15rem 0.35rem;
+    border-radius: 0.25rem;
+    font-size: 0.875em;
+  }
+
+  .journal-body :global(pre) {
+    background-color: var(--gray-800);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin: 1rem 0;
+  }
+
+  .journal-body :global(pre code) {
+    background-color: transparent;
+    padding: 0;
+    color: var(--gray-200);
+    font-size: var(--text-sm);
+  }
+
+  @media (min-width: 50em) {
+    .journal-header {
+      padding: 2rem 4rem 2rem 2rem;
+    }
+
+    .journal-body {
+      padding: 2rem;
+    }
+
+    .journal-title {
+      font-size: var(--text-2xl);
+    }
+  }
+</style>

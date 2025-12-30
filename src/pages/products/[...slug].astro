@@ -6,20 +6,53 @@ import BackLink from '../../components/ui/BackLink.astro';
 import Pill from '../../components/ui/Pill.astro';
 import Accordion from '../../components/ui/Accordion.astro';
 import Comments from '../../components/blog/Comments.astro';
+import JournalOverlay from '../../components/products/JournalOverlay.astro';
+
+interface JournalEntry {
+  id: string;
+  date: string;
+  title: string;
+  Content: any;
+}
 
 interface Props {
   entry: CollectionEntry<'products'>;
+  journals: JournalEntry[];
 }
 
 export async function getStaticPaths() {
   const products = await getCollection('products');
-  return products.map((entry) => ({
-    params: { slug: entry.id },
-    props: { entry },
+  const allJournals = await getCollection('journals');
+
+  return await Promise.all(products.map(async (entry) => {
+    // Get journals for this product (derived from directory: journals/{product}/{date}.md)
+    const productJournals = allJournals
+      .filter(j => j.id.startsWith(entry.id + '/'))
+      .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+    // Render each journal's markdown content
+    const journals = await Promise.all(productJournals.map(async (journal) => {
+      const { Content } = await render(journal);
+      return {
+        id: journal.id,
+        date: journal.data.date.toLocaleDateString('en-GB', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+        }).replace(/\//g, '-'),
+        title: journal.data.title,
+        Content,
+      };
+    }));
+
+    return {
+      params: { slug: entry.id },
+      props: { entry, journals },
+    };
   }));
 }
 
-const { entry } = Astro.props;
+const { entry, journals } = Astro.props;
 const { Content } = await render(entry);
 const { data } = entry;
 
@@ -34,6 +67,11 @@ const statusColors = {
   wip: 'status-wip',
   archived: 'status-archived',
 };
+
+// Check if journal exists for a given frontmatter journey entry
+function findJournalForDate(journeyDate: string): JournalEntry | undefined {
+  return journals.find(j => j.date === journeyDate);
+}
 ---
 
 <BaseLayout title={data.title} description={data.description} hideModel>
@@ -104,15 +142,29 @@ const statusColors = {
         {data.journey && data.journey.length > 0 && (
           <Accordion title="Development Journey">
             <div class="journey">
-              {data.journey.map((entry) => (
-                <div class="journey-entry">
-                  <div class="journey-header">
-                    <span class="journey-date">{entry.date}</span>
-                    <span class="journey-title">{entry.title}</span>
+              {data.journey.map((journeyEntry) => {
+                const journal = findJournalForDate(journeyEntry.date);
+                return (
+                  <div class="journey-entry">
+                    <div class="journey-header">
+                      <span class="journey-date">{journeyEntry.date}</span>
+                      <span class="journey-title">{journeyEntry.title}</span>
+                      {journal && (
+                        <button
+                          class="expand-btn"
+                          data-journal-id={journal.id}
+                          aria-label="View detailed journal entry"
+                        >
+                          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M15 3h6v6M14 10l6.1-6.1M9 21H3v-6M10 14l-6.1 6.1"/>
+                          </svg>
+                        </button>
+                      )}
+                    </div>
+                    <p class="journey-content">{journeyEntry.content}</p>
                   </div>
-                  <p class="journey-content">{entry.content}</p>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </Accordion>
         )}
@@ -120,7 +172,16 @@ const statusColors = {
 
       <Comments />
     </article>
+
+    <!-- Hidden journal content containers for overlay -->
+    {journals.map((journal) => (
+      <template data-journal-content={journal.id} data-date={journal.date} data-title={journal.title}>
+        <journal.Content />
+      </template>
+    ))}
   </PageContainer>
+
+  <JournalOverlay />
 </BaseLayout>
 
 <style>
@@ -283,6 +344,7 @@ const statusColors = {
     align-items: center;
     gap: 0.75rem;
     margin-bottom: 0.5rem;
+    flex-wrap: wrap;
   }
 
   .journey-date {
@@ -295,6 +357,26 @@ const statusColors = {
     font-size: var(--text-base);
     color: var(--gray-0);
     font-weight: 600;
+    flex: 1;
+  }
+
+  .expand-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.375rem;
+    background: var(--gray-800);
+    border: 1px solid var(--gray-700);
+    border-radius: 0.375rem;
+    color: var(--gray-400);
+    cursor: pointer;
+    transition: color var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast);
+  }
+
+  .expand-btn:hover {
+    color: var(--accent-regular);
+    border-color: var(--accent-regular);
+    background: var(--gray-900);
   }
 
   .journey-content {
@@ -481,6 +563,34 @@ const statusColors = {
     }
   }
 
+  function initJournalButtons() {
+    const expandBtns = document.querySelectorAll('.expand-btn[data-journal-id]');
+
+    expandBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const journalId = btn.getAttribute('data-journal-id');
+        if (!journalId) return;
+
+        const template = document.querySelector(`template[data-journal-content="${journalId}"]`) as HTMLTemplateElement;
+        if (!template) return;
+
+        const date = template.getAttribute('data-date') || '';
+        const title = template.getAttribute('data-title') || '';
+        const content = template.innerHTML;
+
+        // Call the global function from JournalOverlay
+        if (typeof (window as any).openJournalOverlay === 'function') {
+          (window as any).openJournalOverlay({ date, title, content });
+        }
+      });
+    });
+  }
+
   fetchGitHubStars();
-  document.addEventListener('astro:after-swap', fetchGitHubStars);
+  initJournalButtons();
+  document.addEventListener('astro:after-swap', () => {
+    fetchGitHubStars();
+    initJournalButtons();
+  });
 </script>
