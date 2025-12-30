@@ -5,6 +5,7 @@
  */
 import type { CollectionEntry } from 'astro:content';
 import Pill from '../ui/Pill.astro';
+import { STATUS_LABELS, STATUS_CLASSES } from '../../utils/product-status';
 
 interface Props {
   product: CollectionEntry<'products'>;
@@ -13,18 +14,6 @@ interface Props {
 const { product } = Astro.props;
 const { data, id } = product;
 const href = `/products/${id}`;
-
-const statusColors = {
-  mature: 'status-mature',
-  wip: 'status-wip',
-  archived: 'status-archived',
-};
-
-const statusLabels = {
-  mature: 'Mature',
-  wip: 'In Progress',
-  archived: 'Archived',
-};
 ---
 
 <a href={href} class="product-card" data-github={data.github || ''}>
@@ -51,7 +40,7 @@ const statusLabels = {
     </div>
     <div class="card-header-right">
       {data.pinned && <span class="pinned-badge">Pinned</span>}
-      <span class:list={['status-badge', statusColors[data.status]]}>{statusLabels[data.status]}</span>
+      <span class:list={['status-badge', STATUS_CLASSES[data.status]]}>{STATUS_LABELS[data.status]}</span>
     </div>
   </div>
   <h3 class="card-title">{data.title}</h3>
@@ -205,101 +194,8 @@ const statusLabels = {
 </style>
 
 <script>
-  const CACHE_KEY = 'github-stars-cache';
-  const CACHE_TTL = 1000 * 60 * 60; // 1 hour
+  import { initStarsObserver } from '../../utils/github-stars';
 
-  interface StarCache {
-    [repo: string]: { count: number; timestamp: number };
-  }
-
-  function getCache(): StarCache {
-    try {
-      return JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
-    } catch {
-      return {};
-    }
-  }
-
-  function setCache(repo: string, count: number) {
-    const cache = getCache();
-    cache[repo] = { count, timestamp: Date.now() };
-    localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
-  }
-
-  function getCached(repo: string): number | null {
-    const cache = getCache();
-    const entry = cache[repo];
-    if (!entry) return null;
-    if (Date.now() - entry.timestamp > CACHE_TTL) return null;
-    return entry.count;
-  }
-
-  function parseGitHubUrl(url: string): { owner: string; repo: string } | null {
-    const match = url.match(/github\.com\/([^/]+)\/([^/]+)/);
-    if (!match) return null;
-    return { owner: match[1], repo: match[2].replace(/\.git$/, '') };
-  }
-
-  function formatStars(count: number): string {
-    if (count >= 1000) {
-      return (count / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
-    }
-    return count.toString();
-  }
-
-  async function fetchStarsForElement(el: Element) {
-    const repoUrl = el.getAttribute('data-repo');
-    if (!repoUrl) return;
-
-    const parsed = parseGitHubUrl(repoUrl);
-    if (!parsed) return;
-
-    const countEl = el.querySelector('.star-count');
-    if (!countEl) return;
-
-    const repoKey = `${parsed.owner}/${parsed.repo}`;
-
-    // Check cache first
-    const cached = getCached(repoKey);
-    if (cached !== null) {
-      countEl.textContent = formatStars(cached);
-      (el as HTMLElement).hidden = false;
-      return;
-    }
-
-    try {
-      const response = await fetch(`https://api.github.com/repos/${repoKey}`);
-      if (!response.ok) return; // Private repo or not found - keep hidden
-
-      const data = await response.json();
-      const stars = data.stargazers_count;
-      setCache(repoKey, stars);
-      countEl.textContent = formatStars(stars);
-      (el as HTMLElement).hidden = false;
-    } catch {
-      // Keep hidden on error
-    }
-  }
-
-  function initStarsObserver() {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            fetchStarsForElement(entry.target);
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { rootMargin: '100px' }
-    );
-
-    document.querySelectorAll('.github-stars[data-repo]').forEach((el) => {
-      observer.observe(el);
-    });
-  }
-
-  // Run on page load and after Astro view transitions
   initStarsObserver();
   document.addEventListener('astro:after-swap', initStarsObserver);
 </script>
