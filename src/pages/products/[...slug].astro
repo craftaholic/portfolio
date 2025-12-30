@@ -5,6 +5,7 @@ import PageContainer from '../../components/layout/PageContainer.astro';
 import BackLink from '../../components/ui/BackLink.astro';
 import Pill from '../../components/ui/Pill.astro';
 import Accordion from '../../components/ui/Accordion.astro';
+import Icon from '../../components/ui/Icon.astro';
 import Comments from '../../components/blog/Comments.astro';
 import JournalOverlay from '../../components/products/JournalOverlay.astro';
 import { STATUS_LABELS, STATUS_CLASSES } from '../../utils/product-status';
@@ -113,7 +114,8 @@ function findJournalForDate(journeyDate: string): JournalEntry | undefined {
 
       <div class="sections">
         {data.journey && data.journey.length > 0 && (
-          <Accordion title="Development Journal" variant="featured" icon="📓">
+          <Accordion title="Development Journal" variant="featured">
+            <Icon slot="icon" icon="notebook" size="1.25em" />
             <div class="journey">
               {data.journey.map((journeyEntry) => {
                 const journal = findJournalForDate(journeyEntry.date);

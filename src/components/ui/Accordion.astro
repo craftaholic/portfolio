@@ -3,16 +3,16 @@ interface Props {
   title: string;
   defaultOpen?: boolean;
   variant?: 'default' | 'featured';
-  icon?: string;
 }
 
-const { title, defaultOpen = false, variant = 'default', icon } = Astro.props;
+const { title, defaultOpen = false, variant = 'default' } = Astro.props;
+const hasIcon = Astro.slots.has('icon');
 ---
 
 <details class:list={['accordion', variant === 'featured' && 'accordion-featured']} open={defaultOpen}>
   <summary class="accordion-header">
     <span class="accordion-title">
-      {icon && <span class="accordion-title-icon">{icon}</span>}
+      {hasIcon && <span class="accordion-title-icon"><slot name="icon" /></span>}
       {title}
     </span>
     <span class="accordion-icon"></span>

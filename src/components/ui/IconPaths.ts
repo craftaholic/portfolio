@@ -41,4 +41,5 @@ export const iconPaths = {
 	'facebook-logo': `<circle cx="128" cy="128" r="96" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="16" d="M168 88h-24a32 32 0 0 0-32 32v112m-32-64h64"/>`,
 	'x-logo': `<path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="16" d="M214 35 34 220m96-73 84 73H176l-67-58M80 35h38l67 58"/>`,
 	share: `<path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="16" d="m176 104 32-32-32-32m-96 80-32 32 32 32"/><path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="16" d="M208 72h-24a56 56 0 0 0-56 56v8M48 184h24a56 56 0 0 0 56-56v-8"/>`,
+	notebook: `<path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="16" d="M112 112h32m-32 32h32M80 40h96a16 16 0 0 1 16 16v144a16 16 0 0 1-16 16H80a16 16 0 0 1-16-16V56a16 16 0 0 1 16-16Zm-32 40h16m-16 48h16m-16 48h16"/>`,
 };
