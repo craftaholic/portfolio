@@ -113,26 +113,33 @@ const { data } = entry;
         {journals.length > 0 && (
           <Accordion title="Development Journal" variant="featured">
             <Icon slot="icon" icon="notebook" size="1.25em" />
-            <div class="journey">
-              {journals.map((journal) => (
-                <button
-                  class="journey-entry has-detail"
-                  data-journal-id={journal.id}
-                  type="button"
-                >
-                  <div class="journey-header">
-                    <span class="journey-date">{journal.date}</span>
-                    <span class="journey-title">{journal.title}</span>
-                  </div>
-                  <p class="journey-content">{journal.overview}</p>
-                  <span class="view-detail">
-                    View details
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M5 12h14M12 5l7 7-7 7"/>
-                    </svg>
-                  </span>
-                </button>
-              ))}
+            <div class="journey-wrapper">
+              <div class="journey">
+                {journals.map((journal) => (
+                  <button
+                    class="journey-entry has-detail"
+                    data-journal-id={journal.id}
+                    type="button"
+                  >
+                    <div class="journey-header">
+                      <span class="journey-date">{journal.date}</span>
+                      <span class="journey-title">{journal.title}</span>
+                    </div>
+                    <p class="journey-content">{journal.overview}</p>
+                    <span class="view-detail">
+                      View details
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                      </svg>
+                    </span>
+                  </button>
+                ))}
+              </div>
+              <div class="scroll-indicator">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M7 10l5 5 5-5"/>
+                </svg>
+              </div>
             </div>
           </Accordion>
         )}
@@ -312,10 +319,43 @@ const { data } = entry;
     color: var(--gray-200);
   }
 
+  .journey-wrapper {
+    position: relative;
+  }
+
   .journey {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
+    max-height: 600px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .journey::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scroll-indicator {
+    display: none;
+    justify-content: center;
+    padding-top: 0.5rem;
+    color: var(--gray-300);
+  }
+
+  .scroll-indicator svg {
+    animation: bounce 1.5s infinite;
+  }
+
+  .scroll-indicator.visible {
+    display: flex;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(3px); }
   }
 
   .journey-entry {
@@ -504,10 +544,28 @@ const { data } = entry;
     });
   }
 
+  function initScrollIndicator() {
+    const journey = document.querySelector('.journey') as HTMLElement;
+    const indicator = document.querySelector('.scroll-indicator') as HTMLElement;
+    if (!journey || !indicator) return;
+
+    function updateIndicator() {
+      const isScrollable = journey.scrollHeight > journey.clientHeight;
+      const isAtBottom = journey.scrollTop + journey.clientHeight >= journey.scrollHeight - 10;
+      indicator.classList.toggle('visible', isScrollable && !isAtBottom);
+    }
+
+    updateIndicator();
+    journey.addEventListener('scroll', updateIndicator);
+    window.addEventListener('resize', updateIndicator);
+  }
+
   fetchGitHubStars();
   initJournalEntries();
+  initScrollIndicator();
   document.addEventListener('astro:after-swap', () => {
     fetchGitHubStars();
     initJournalEntries();
+    initScrollIndicator();
   });
 </script>
