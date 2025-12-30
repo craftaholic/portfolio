@@ -4,7 +4,12 @@
  * Based on gruvbox by morhetz
  */
 
+/* Dark Mode */
 :root.theme-dark {
+	/* RGB base colors for rgba() usage */
+	--accent-light-rgb: 152, 195, 121;
+	--shadow-color-rgb: 142, 192, 124;
+
 	/* Dark backgrounds with warm undertones */
 	--gray-0: #ebdbb2;
 	--gray-50: #d5c4a1;
@@ -44,28 +49,121 @@
 
 	/* Shadows - warm tint */
 	--shadow-sm:
-		0px 6px 3px rgba(142, 192, 124, 0.01), 0px 4px 2px rgba(142, 192, 124, 0.01),
-		0px 2px 2px rgba(142, 192, 124, 0.02), 0px 0px 1px rgba(142, 192, 124, 0.03);
+		0px 6px 3px rgba(var(--shadow-color-rgb), 0.01), 0px 4px 2px rgba(var(--shadow-color-rgb), 0.01),
+		0px 2px 2px rgba(var(--shadow-color-rgb), 0.02), 0px 0px 1px rgba(var(--shadow-color-rgb), 0.03);
 	--shadow-md:
-		0px 28px 11px rgba(142, 192, 124, 0.01), 0px 16px 10px rgba(142, 192, 124, 0.03),
-		0px 7px 7px rgba(142, 192, 124, 0.05), 0px 2px 4px rgba(142, 192, 124, 0.06);
+		0px 28px 11px rgba(var(--shadow-color-rgb), 0.01), 0px 16px 10px rgba(var(--shadow-color-rgb), 0.03),
+		0px 7px 7px rgba(var(--shadow-color-rgb), 0.05), 0px 2px 4px rgba(var(--shadow-color-rgb), 0.06);
 	--shadow-lg:
-		0px 62px 25px rgba(142, 192, 124, 0.01), 0px 35px 21px rgba(142, 192, 124, 0.05),
-		0px 16px 16px rgba(142, 192, 124, 0.1), 0px 4px 9px rgba(142, 192, 124, 0.12);
+		0px 62px 25px rgba(var(--shadow-color-rgb), 0.01), 0px 35px 21px rgba(var(--shadow-color-rgb), 0.05),
+		0px 16px 16px rgba(var(--shadow-color-rgb), 0.1), 0px 4px 9px rgba(var(--shadow-color-rgb), 0.12);
 
 	/* Component: Terminal */
 	--terminal-bg: var(--gray-800);
 	--terminal-header-bg: var(--gray-700);
 	--terminal-border: var(--gray-600);
-	--terminal-glow-color: rgba(184, 230, 163, 0.35);
-	--terminal-glow-color-strong: rgba(184, 230, 163, 0.5);
+	--terminal-glow-color: rgba(var(--accent-light-rgb), 0.35);
+	--terminal-glow-color-strong: rgba(var(--accent-light-rgb), 0.5);
 
 	/* Component: 3D Model */
-	--model-glow-color: rgba(184, 230, 163, 0.55);
-	--model-glow-color-subtle: rgba(184, 230, 163, 0.35);
+	--model-glow-color: rgba(var(--accent-light-rgb), 0.55);
+	--model-glow-color-subtle: rgba(var(--accent-light-rgb), 0.35);
+
+	/* Component: Overlay */
+	--overlay-bg: rgba(0, 0, 0, 0.85);
+
+	/* Component: Status badges */
+	--status-mature-bg: rgba(152, 195, 121, 0.15);
+	--status-mature-text: rgb(152, 195, 121);
+	--status-wip-bg: rgba(250, 189, 47, 0.15);
+	--status-wip-text: rgb(250, 189, 47);
+	--status-archived-bg: rgba(146, 131, 116, 0.15);
+	--status-archived-text: rgb(146, 131, 116);
 
 	/* Component: Code syntax */
 	--syntax-comment: var(--gray-300);
 	--syntax-keyword: #fb4934;
+	--syntax-string: var(--accent-secondary);
+}
+
+/* Light Mode */
+:root {
+	/* RGB base colors for rgba() usage */
+	--accent-light-rgb: 121, 116, 14;
+	--shadow-color-rgb: 60, 56, 54;
+
+	/* Light backgrounds with warm undertones */
+	--gray-0: #3c3836;
+	--gray-50: #504945;
+	--gray-100: #665c54;
+	--gray-200: #7c6f64;
+	--gray-300: #928374;
+	--gray-400: #a89984;
+	--gray-500: #bdae93;
+	--gray-600: #d5c4a1;
+	--gray-700: #ebdbb2;
+	--gray-800: #f2e5bc;
+	--gray-900: #f9f5d7;
+	--gray-999-basis: 48, 87%, 91%;
+	--gray-999: #fbf1c7;
+
+	/* Accent - deeper green for light bg */
+	--accent-light: #79740e;
+	--accent-regular: #98971a;
+	--accent-dark: #b8bb26;
+	--accent-overlay: hsla(60, 71%, 27%, 0.15);
+	--accent-subtle-overlay: hsla(60, 71%, 20%, 0.1);
+	--accent-text-over: #ffffff;
+	--accent-secondary: #b57614;
+
+	--link-color: var(--accent-light);
+
+	/* Gradients */
+	--gradient-stop-1: var(--accent-light);
+	--gradient-subtle: linear-gradient(150deg, var(--gray-800) 19%, var(--gray-999) 81%);
+	--gradient-accent-orange: linear-gradient(
+		150deg,
+		var(--accent-secondary),
+		var(--accent-regular),
+		var(--accent-dark)
+	);
+	--gradient-stroke: linear-gradient(180deg, var(--gray-500), var(--gray-700));
+
+	/* Shadows - warm tint */
+	--shadow-sm:
+		0px 6px 3px rgba(var(--shadow-color-rgb), 0.02), 0px 4px 2px rgba(var(--shadow-color-rgb), 0.02),
+		0px 2px 2px rgba(var(--shadow-color-rgb), 0.03), 0px 0px 1px rgba(var(--shadow-color-rgb), 0.04);
+	--shadow-md:
+		0px 28px 11px rgba(var(--shadow-color-rgb), 0.02), 0px 16px 10px rgba(var(--shadow-color-rgb), 0.04),
+		0px 7px 7px rgba(var(--shadow-color-rgb), 0.06), 0px 2px 4px rgba(var(--shadow-color-rgb), 0.08);
+	--shadow-lg:
+		0px 62px 25px rgba(var(--shadow-color-rgb), 0.02), 0px 35px 21px rgba(var(--shadow-color-rgb), 0.06),
+		0px 16px 16px rgba(var(--shadow-color-rgb), 0.12), 0px 4px 9px rgba(var(--shadow-color-rgb), 0.14);
+
+	/* Component: Terminal */
+	--terminal-bg: #fbf1c7;
+	--terminal-header-bg: var(--gray-700);
+	--terminal-border: var(--gray-500);
+	--terminal-glow-color: rgba(var(--accent-light-rgb), 0.15);
+	--terminal-glow-color-strong: rgba(var(--accent-light-rgb), 0.25);
+
+	/* Component: 3D Model */
+	--model-glow-color: rgba(var(--accent-light-rgb), 0.3);
+	--model-glow-color-subtle: rgba(var(--accent-light-rgb), 0.15);
+
+	/* Component: Overlay */
+	--overlay-bg: rgba(0, 0, 0, 0.75);
+
+	/* Component: Status badges */
+	--status-mature-bg: rgba(121, 116, 14, 0.15);
+	--status-mature-text: rgb(121, 116, 14);
+	--status-wip-bg: rgba(181, 118, 20, 0.2);
+	--status-wip-text: rgb(181, 118, 20);
+	--status-archived-bg: rgba(124, 111, 100, 0.15);
+	--status-archived-text: rgb(124, 111, 100);
+
+	/* Component: Code syntax */
+	--syntax-comment: var(--gray-300);
+	--syntax-keyword: #9d0006;
 	--syntax-string: var(--accent-secondary);
 }

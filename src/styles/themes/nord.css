@@ -4,7 +4,12 @@
  * Based on nordtheme.com
  */
 
+/* Dark Mode */
 :root.theme-dark {
+	/* RGB base colors for rgba() usage */
+	--accent-light-rgb: 136, 192, 208;
+	--shadow-color-rgb: 136, 192, 208;
+
 	/* Polar Night - dark backgrounds */
 	--gray-0: #eceff4;
 	--gray-50: #e5e9f0;
@@ -44,28 +49,121 @@
 
 	/* Shadows - subtle cool tint */
 	--shadow-sm:
-		0px 6px 3px rgba(136, 192, 208, 0.01), 0px 4px 2px rgba(136, 192, 208, 0.01),
-		0px 2px 2px rgba(136, 192, 208, 0.02), 0px 0px 1px rgba(136, 192, 208, 0.03);
+		0px 6px 3px rgba(var(--shadow-color-rgb), 0.01), 0px 4px 2px rgba(var(--shadow-color-rgb), 0.01),
+		0px 2px 2px rgba(var(--shadow-color-rgb), 0.02), 0px 0px 1px rgba(var(--shadow-color-rgb), 0.03);
 	--shadow-md:
-		0px 28px 11px rgba(136, 192, 208, 0.01), 0px 16px 10px rgba(136, 192, 208, 0.03),
-		0px 7px 7px rgba(136, 192, 208, 0.05), 0px 2px 4px rgba(136, 192, 208, 0.06);
+		0px 28px 11px rgba(var(--shadow-color-rgb), 0.01), 0px 16px 10px rgba(var(--shadow-color-rgb), 0.03),
+		0px 7px 7px rgba(var(--shadow-color-rgb), 0.05), 0px 2px 4px rgba(var(--shadow-color-rgb), 0.06);
 	--shadow-lg:
-		0px 62px 25px rgba(136, 192, 208, 0.01), 0px 35px 21px rgba(136, 192, 208, 0.05),
-		0px 16px 16px rgba(136, 192, 208, 0.1), 0px 4px 9px rgba(136, 192, 208, 0.12);
+		0px 62px 25px rgba(var(--shadow-color-rgb), 0.01), 0px 35px 21px rgba(var(--shadow-color-rgb), 0.05),
+		0px 16px 16px rgba(var(--shadow-color-rgb), 0.1), 0px 4px 9px rgba(var(--shadow-color-rgb), 0.12);
 
 	/* Component: Terminal */
 	--terminal-bg: var(--gray-800);
 	--terminal-header-bg: var(--gray-700);
 	--terminal-border: var(--gray-600);
-	--terminal-glow-color: rgba(136, 192, 208, 0.25);
-	--terminal-glow-color-strong: rgba(136, 192, 208, 0.35);
+	--terminal-glow-color: rgba(var(--accent-light-rgb), 0.25);
+	--terminal-glow-color-strong: rgba(var(--accent-light-rgb), 0.35);
 
 	/* Component: 3D Model */
-	--model-glow-color: rgba(136, 192, 208, 0.4);
-	--model-glow-color-subtle: rgba(136, 192, 208, 0.25);
+	--model-glow-color: rgba(var(--accent-light-rgb), 0.4);
+	--model-glow-color-subtle: rgba(var(--accent-light-rgb), 0.25);
+
+	/* Component: Overlay */
+	--overlay-bg: rgba(0, 0, 0, 0.85);
+
+	/* Component: Status badges */
+	--status-mature-bg: rgba(163, 190, 140, 0.15);
+	--status-mature-text: rgb(163, 190, 140);
+	--status-wip-bg: rgba(235, 203, 139, 0.15);
+	--status-wip-text: rgb(235, 203, 139);
+	--status-archived-bg: rgba(123, 141, 160, 0.15);
+	--status-archived-text: rgb(123, 141, 160);
 
 	/* Component: Code syntax */
 	--syntax-comment: var(--gray-300);
 	--syntax-keyword: var(--accent-light);
 	--syntax-string: #a3be8c;
+}
+
+/* Light Mode - Snow Storm variant */
+:root {
+	/* RGB base colors for rgba() usage */
+	--accent-light-rgb: 94, 129, 172;
+	--shadow-color-rgb: 46, 52, 64;
+
+	/* Snow Storm - light backgrounds */
+	--gray-0: #2e3440;
+	--gray-50: #3b4252;
+	--gray-100: #434c5e;
+	--gray-200: #4c566a;
+	--gray-300: #616e7c;
+	--gray-400: #7b8da0;
+	--gray-500: #a5b3c4;
+	--gray-600: #d8dee9;
+	--gray-700: #e5e9f0;
+	--gray-800: #eceff4;
+	--gray-900: #f0f4f8;
+	--gray-999-basis: 219, 28%, 96%;
+	--gray-999: #eceff4;
+
+	/* Frost - deeper for light bg */
+	--accent-light: #5e81ac;
+	--accent-regular: #81a1c1;
+	--accent-dark: #88c0d0;
+	--accent-overlay: hsla(213, 32%, 52%, 0.15);
+	--accent-subtle-overlay: hsla(213, 32%, 45%, 0.1);
+	--accent-text-over: #ffffff;
+	--accent-secondary: #a3507c;
+
+	--link-color: var(--accent-light);
+
+	/* Gradients */
+	--gradient-stop-1: var(--accent-light);
+	--gradient-subtle: linear-gradient(150deg, var(--gray-800) 19%, var(--gray-999) 81%);
+	--gradient-accent-orange: linear-gradient(
+		150deg,
+		var(--accent-secondary),
+		var(--accent-regular),
+		var(--accent-dark)
+	);
+	--gradient-stroke: linear-gradient(180deg, var(--gray-500), var(--gray-700));
+
+	/* Shadows - subtle cool tint */
+	--shadow-sm:
+		0px 6px 3px rgba(var(--shadow-color-rgb), 0.02), 0px 4px 2px rgba(var(--shadow-color-rgb), 0.02),
+		0px 2px 2px rgba(var(--shadow-color-rgb), 0.03), 0px 0px 1px rgba(var(--shadow-color-rgb), 0.04);
+	--shadow-md:
+		0px 28px 11px rgba(var(--shadow-color-rgb), 0.02), 0px 16px 10px rgba(var(--shadow-color-rgb), 0.04),
+		0px 7px 7px rgba(var(--shadow-color-rgb), 0.06), 0px 2px 4px rgba(var(--shadow-color-rgb), 0.08);
+	--shadow-lg:
+		0px 62px 25px rgba(var(--shadow-color-rgb), 0.02), 0px 35px 21px rgba(var(--shadow-color-rgb), 0.06),
+		0px 16px 16px rgba(var(--shadow-color-rgb), 0.12), 0px 4px 9px rgba(var(--shadow-color-rgb), 0.14);
+
+	/* Component: Terminal */
+	--terminal-bg: #ffffff;
+	--terminal-header-bg: var(--gray-700);
+	--terminal-border: var(--gray-500);
+	--terminal-glow-color: rgba(var(--accent-light-rgb), 0.15);
+	--terminal-glow-color-strong: rgba(var(--accent-light-rgb), 0.25);
+
+	/* Component: 3D Model */
+	--model-glow-color: rgba(var(--accent-light-rgb), 0.3);
+	--model-glow-color-subtle: rgba(var(--accent-light-rgb), 0.15);
+
+	/* Component: Overlay */
+	--overlay-bg: rgba(0, 0, 0, 0.75);
+
+	/* Component: Status badges */
+	--status-mature-bg: rgba(104, 134, 90, 0.15);
+	--status-mature-text: rgb(104, 134, 90);
+	--status-wip-bg: rgba(180, 130, 10, 0.2);
+	--status-wip-text: rgb(160, 110, 0);
+	--status-archived-bg: rgba(76, 86, 106, 0.15);
+	--status-archived-text: rgb(76, 86, 106);
+
+	/* Component: Code syntax */
+	--syntax-comment: var(--gray-300);
+	--syntax-keyword: var(--accent-light);
+	--syntax-string: #687a4d;
 }
