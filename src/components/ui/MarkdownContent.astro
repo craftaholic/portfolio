@@ -1,0 +1,217 @@
+---
+/**
+ * Shared markdown content styling component
+ * Used by ContentArticle, product pages, and journal overlays
+ */
+---
+
+<div class="markdown-content">
+  <slot />
+</div>
+
+<style>
+  .markdown-content {
+    line-height: 1.8;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    max-width: 100%;
+  }
+
+  .markdown-content :global(*) {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .markdown-content :global(h2),
+  .markdown-content :global(h3),
+  .markdown-content :global(h4),
+  .markdown-content :global(h5),
+  .markdown-content :global(h6) {
+    scroll-margin-top: 1.5rem;
+  }
+
+  .markdown-content :global(h2) {
+    font-size: 1.15rem;
+    color: var(--gray-0);
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .markdown-content :global(h3) {
+    font-size: 1.09rem;
+    color: var(--gray-0);
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+
+  .markdown-content :global(h4) {
+    font-size: 1.04rem;
+    color: var(--gray-0);
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+
+  .markdown-content :global(h5) {
+    font-size: 1rem;
+    color: var(--gray-0);
+    margin-top: 0.75rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+
+  .markdown-content :global(h6) {
+    font-size: 1rem;
+    color: var(--gray-200);
+    margin-top: 0.75rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+
+  .markdown-content :global(p) {
+    color: var(--gray-200);
+    margin-bottom: 1rem;
+  }
+
+  .markdown-content :global(ul),
+  .markdown-content :global(ol) {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+    color: var(--gray-200);
+  }
+
+  .markdown-content :global(li) {
+    margin-bottom: 0.5rem;
+  }
+
+  .markdown-content :global(strong) {
+    color: var(--gray-0);
+    font-weight: 600;
+  }
+
+  .markdown-content :global(a) {
+    color: var(--accent-regular);
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+    transition: color var(--theme-transition);
+  }
+
+  .markdown-content :global(a:hover) {
+    color: var(--accent-light);
+  }
+
+  .markdown-content :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 0.875rem;
+    display: block;
+    overflow-x: auto;
+    max-width: 100%;
+  }
+
+  .markdown-content :global(th),
+  .markdown-content :global(td) {
+    border: 1px solid var(--gray-400);
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  .markdown-content :global(th) {
+    background-color: var(--gray-800);
+    color: var(--gray-0);
+    font-weight: 600;
+  }
+
+  .markdown-content :global(tr:nth-child(even)) {
+    background-color: var(--gray-900);
+  }
+
+  .markdown-content :global(code) {
+    background-color: var(--gray-900);
+    color: var(--accent-regular);
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.25rem;
+    font-size: 0.9em;
+  }
+
+  .markdown-content :global(pre) {
+    background-color: var(--gray-900);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin: 1rem 0;
+  }
+
+  .markdown-content :global(pre code) {
+    background-color: transparent;
+    padding: 0;
+    color: var(--gray-200);
+  }
+
+  .markdown-content :global(img) {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    margin: 1.5rem auto;
+    display: block;
+  }
+
+  .markdown-content :global(blockquote) {
+    border-left: 4px solid var(--accent-regular);
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+    color: var(--gray-300);
+    font-style: italic;
+  }
+
+  /* Mobile optimizations */
+  @media (max-width: 50em) {
+    .markdown-content {
+      font-size: 0.95rem;
+    }
+
+    .markdown-content :global(h2) {
+      font-size: 1rem;
+      margin-top: 2rem;
+    }
+
+    .markdown-content :global(h3) {
+      font-size: 0.95rem;
+    }
+
+    .markdown-content :global(pre) {
+      padding: 0.75rem;
+      font-size: 0.85rem;
+    }
+
+    .markdown-content :global(table) {
+      font-size: 0.8rem;
+    }
+
+    .markdown-content :global(th),
+    .markdown-content :global(td) {
+      padding: 0.4rem 0.5rem;
+    }
+  }
+
+  @media (min-width: 50em) {
+    .markdown-content :global(h2) {
+      font-size: 1.29rem;
+    }
+
+    .markdown-content :global(h3) {
+      font-size: 1.21rem;
+    }
+
+    .markdown-content :global(h4) {
+      font-size: 1.15rem;
+    }
+  }
+</style>

@@ -22,12 +22,6 @@
 </div>
 
 <script>
-  interface JournalData {
-    date: string;
-    title: string;
-    content: string;
-  }
-
   function initJournalOverlay() {
     const overlay = document.getElementById('journal-overlay');
     const backdrop = overlay?.querySelector('.overlay-backdrop');
@@ -39,7 +33,7 @@
 
     if (!overlay || !backdrop || !closeBtn || !content || !dateEl || !titleEl || !bodyEl) return;
 
-    function openOverlay(data: JournalData) {
+    function openOverlay(data: JournalOverlayData) {
       dateEl.textContent = data.date;
       titleEl.textContent = data.title;
       bodyEl.innerHTML = data.content;
@@ -64,7 +58,7 @@
     });
 
     // Expose open function globally for journey buttons
-    (window as any).openJournalOverlay = openOverlay;
+    window.openJournalOverlay = openOverlay;
   }
 
   initJournalOverlay();

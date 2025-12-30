@@ -6,6 +6,10 @@ export const SITE = {
   locale: 'en-US',
   terminalUser: 'tommy',
 
+  // Professional info
+  jobTitle: 'Senior Cloud/DevOps/Platform Engineer',
+  currentCompany: 'TymeX',
+
   // Blog settings
   postPerPage: 5,
 
@@ -33,3 +37,12 @@ export const GISCUS = {
   category: 'Blog Comments',
   categoryId: 'DIC_kwDOQlOa684C0WJt',
 } as const;
+
+// Work history for bio timeline
+export const WORK_HISTORY = [
+  { year: '2025', text: `${SITE.currentCompany} - Started as Senior Platform Engineer at fintech unicorn` },
+  { year: '2024', text: 'FPT Software - Promoted to Senior DevOps Engineer' },
+  { year: '', text: "Graduated from Hanoi University of Science and Technology (HUST) - (3.2/4.0 CPA) - Engineer's degree" },
+  { year: '2023', text: 'FPT Software - Received FPT Software Best Performer Award' },
+  { year: '2022', text: 'FPT Software - Started at FPT Software as DevOps Engineer' },
+] as const;

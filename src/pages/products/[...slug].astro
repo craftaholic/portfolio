@@ -1,21 +1,17 @@
 ---
 import { type CollectionEntry, getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import PageContainer from '../../components/layout/PageContainer.astro';
-import BackLink from '../../components/ui/BackLink.astro';
-import Pill from '../../components/ui/Pill.astro';
-import Accordion from '../../components/ui/Accordion.astro';
-import Icon from '../../components/ui/Icon.astro';
+import ProductArticle from '../../components/products/ProductArticle.astro';
 import Comments from '../../components/blog/Comments.astro';
 import JournalOverlay from '../../components/products/JournalOverlay.astro';
-import { STATUS_LABELS, STATUS_CLASSES } from '../../utils/product-status';
+import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
 
 interface JournalEntry {
   id: string;
   date: string;
   title: string;
   overview: string;
-  Content: any;
+  Content: AstroComponentFactory;
 }
 
 interface Props {
@@ -59,470 +55,38 @@ export async function getStaticPaths() {
 const { entry, journals } = Astro.props;
 const { Content } = await render(entry);
 const { data } = entry;
+
+// Prepare journal data for the component (without Content for serialization)
+const journalData = journals.map(({ id, date, title, overview }) => ({ id, date, title, overview }));
 ---
 
 <BaseLayout title={data.title} description={data.description} hideModel>
-  <PageContainer>
-    <article class="product-detail">
-      <BackLink href="/products/" label="Products" />
+  <ProductArticle
+    title={data.title}
+    description={data.description}
+    tags={data.tags}
+    status={data.status}
+    icon={data.icon}
+    github={data.github}
+    demo={data.demo}
+    opensource={data.opensource}
+    features={data.features}
+    journals={journalData}
+  >
+    <Content />
 
-      <header class="header">
-        <div class="header-top">
-          {data.icon && <span class="icon">{data.icon}</span>}
-          <span class:list={['status-badge', STATUS_CLASSES[data.status]]}>{STATUS_LABELS[data.status]}</span>
-        </div>
-        <h1 class="title">{data.title}</h1>
-        <p class="description">{data.description}</p>
+    <Comments slot="after" />
+  </ProductArticle>
 
-        <div class="tags">
-          {data.tags.map((t) => <Pill size="sm">{t}</Pill>)}
-        </div>
-
-        <div class="links">
-          {data.github && (
-            <a href={data.github} target="_blank" rel="noopener noreferrer" class="link-btn">
-              <svg class="link-icon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor">
-                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
-              </svg>
-              {data.opensource ? (
-                <span class="github-stars" data-repo={data.github}>
-                  <svg class="star-icon" viewBox="0 0 16 16" width="14" height="14" fill="currentColor">
-                    <path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25z"/>
-                  </svg>
-                  <span class="star-count">-</span>
-                </span>
-              ) : (
-                <span class="private-badge">
-                  <svg class="lock-icon" viewBox="0 0 16 16" width="12" height="12" fill="currentColor">
-                    <path d="M4 4v2h-.25A1.75 1.75 0 0 0 2 7.75v5.5c0 .966.784 1.75 1.75 1.75h8.5A1.75 1.75 0 0 0 14 13.25v-5.5A1.75 1.75 0 0 0 12.25 6H12V4a4 4 0 1 0-8 0Zm6.5 2V4a2.5 2.5 0 0 0-5 0v2Z"/>
-                  </svg>
-                  Private
-                </span>
-              )}
-            </a>
-          )}
-          {data.demo && (
-            <a href={data.demo} target="_blank" rel="noopener noreferrer" class="link-btn link-btn-primary">
-              Live Demo
-            </a>
-          )}
-        </div>
-      </header>
-
-      <div class="sections">
-        {journals.length > 0 && (
-          <Accordion title="Development Journal" variant="featured">
-            <Icon slot="icon" icon="notebook" size="1.25em" />
-            <div class="journey-wrapper">
-              <div class="journey">
-                {journals.map((journal) => (
-                  <button
-                    class="journey-entry has-detail"
-                    data-journal-id={journal.id}
-                    type="button"
-                  >
-                    <div class="journey-header">
-                      <span class="journey-date">{journal.date}</span>
-                      <span class="journey-title">{journal.title}</span>
-                    </div>
-                    <p class="journey-content">{journal.overview}</p>
-                    <span class="view-detail">
-                      View details
-                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M5 12h14M12 5l7 7-7 7"/>
-                      </svg>
-                    </span>
-                  </button>
-                ))}
-              </div>
-              <div class="scroll-indicator">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M7 10l5 5 5-5"/>
-                </svg>
-              </div>
-            </div>
-          </Accordion>
-        )}
-
-        <Accordion title="Overview" defaultOpen>
-          <div class="content">
-            <Content />
-          </div>
-        </Accordion>
-
-        {data.features && data.features.length > 0 && (
-          <Accordion title="Features">
-            <ul class="features-list">
-              {data.features.map((feature) => (
-                <li>{feature}</li>
-              ))}
-            </ul>
-          </Accordion>
-        )}
-      </div>
-
-      <Comments />
-    </article>
-
-    <!-- Hidden journal content containers for overlay -->
-    {journals.map((journal) => (
-      <template data-journal-content={journal.id} data-date={journal.date} data-title={journal.title}>
-        <journal.Content />
-      </template>
-    ))}
-  </PageContainer>
+  <!-- Hidden journal content containers for overlay -->
+  {journals.map((journal) => (
+    <template data-journal-content={journal.id} data-date={journal.date} data-title={journal.title}>
+      <journal.Content />
+    </template>
+  ))}
 
   <JournalOverlay />
 </BaseLayout>
-
-<style>
-  .header {
-    margin-top: 1rem;
-    margin-bottom: 3rem;
-    padding-bottom: 2rem;
-    border-bottom: 1px solid var(--gray-800);
-  }
-
-  .header-top {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
-  }
-
-  .icon {
-    font-size: 2.5rem;
-  }
-
-  .status-badge {
-    font-size: var(--text-xs);
-    font-weight: 500;
-    padding: 0.25rem 0.625rem;
-    border-radius: 999rem;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-  }
-
-  .status-mature {
-    background: var(--status-mature-bg);
-    color: var(--status-mature-text);
-  }
-
-  .status-wip {
-    background: var(--status-wip-bg);
-    color: var(--status-wip-text);
-  }
-
-  .status-archived {
-    background: var(--status-archived-bg);
-    color: var(--status-archived-text);
-  }
-
-  .title {
-    font-size: var(--text-2xl);
-    color: var(--gray-0);
-    margin-bottom: 1rem;
-  }
-
-  .description {
-    font-size: var(--text-md);
-    color: var(--gray-300);
-    margin-bottom: 1.5rem;
-    line-height: 1.6;
-  }
-
-  .tags {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    margin-bottom: 1.5rem;
-  }
-
-  .links {
-    display: flex;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-  }
-
-  .link-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    font-size: var(--text-sm);
-    font-weight: 500;
-    text-decoration: none;
-    border-radius: 999rem;
-    border: 1px solid var(--gray-700);
-    color: var(--gray-300);
-    transition: border-color var(--theme-transition), color var(--theme-transition);
-  }
-
-  .link-btn:hover {
-    border-color: var(--accent-regular);
-    color: var(--accent-regular);
-  }
-
-  .link-icon {
-    flex-shrink: 0;
-  }
-
-  .github-stars {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25rem;
-    font-size: var(--text-xs);
-    color: var(--gray-400);
-  }
-
-  .star-icon {
-    color: var(--gray-400);
-  }
-
-  .private-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25rem;
-    font-size: var(--text-xs);
-    color: var(--gray-500);
-  }
-
-  .lock-icon {
-    color: var(--gray-500);
-  }
-
-  .link-btn-primary {
-    background: var(--accent-regular);
-    border-color: var(--accent-regular);
-    color: var(--accent-text-over);
-  }
-
-  .link-btn-primary:hover {
-    background: var(--accent-light);
-    border-color: var(--accent-light);
-    color: var(--accent-text-over);
-  }
-
-  .sections {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .features-list {
-    padding-left: 1.25rem;
-    margin: 0;
-  }
-
-  .features-list li {
-    margin-bottom: 0.5rem;
-    color: var(--gray-200);
-  }
-
-  .journey-wrapper {
-    position: relative;
-  }
-
-  .journey {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    max-height: 600px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-
-  .journey::-webkit-scrollbar {
-    display: none;
-  }
-
-  .scroll-indicator {
-    display: none;
-    justify-content: center;
-    padding-top: 0.5rem;
-    color: var(--gray-300);
-  }
-
-  .scroll-indicator svg {
-    animation: bounce 1.5s infinite;
-  }
-
-  .scroll-indicator.visible {
-    display: flex;
-  }
-
-  @keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(3px); }
-  }
-
-  .journey-entry {
-    display: block;
-    width: 100%;
-    padding: 1rem 1.25rem;
-    background: var(--gray-800);
-    border: 1px solid var(--gray-700);
-    border-radius: 0.5rem;
-    text-align: left;
-    font-family: inherit;
-    cursor: pointer;
-    transition: border-color var(--transition-fast), background var(--transition-fast), transform var(--transition-fast);
-  }
-
-  .journey-entry:hover {
-    border-color: var(--accent-regular);
-    background: var(--gray-900);
-    transform: translateX(4px);
-  }
-
-  .journey-entry:hover .view-detail {
-    opacity: 1;
-    transform: translateX(0);
-  }
-
-  .journey-entry:hover .journey-date {
-    color: var(--accent-light);
-  }
-
-  .journey-header {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 0.5rem;
-    flex-wrap: wrap;
-  }
-
-  .journey-date {
-    font-size: var(--text-sm);
-    color: var(--accent-regular);
-    font-weight: 500;
-    transition: color var(--transition-fast);
-  }
-
-  .journey-title {
-    font-size: var(--text-base);
-    color: var(--gray-0);
-    font-weight: 600;
-    flex: 1;
-  }
-
-  .journey-content {
-    font-size: var(--text-sm);
-    color: var(--gray-300);
-    margin: 0;
-    line-height: 1.6;
-  }
-
-  .view-detail {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.375rem;
-    margin-top: 0.75rem;
-    font-size: var(--text-sm);
-    font-weight: 500;
-    color: var(--accent-regular);
-    opacity: 0.7;
-    transform: translateX(-4px);
-    transition: opacity var(--transition-fast), transform var(--transition-fast);
-  }
-
-  /* Content markdown styles */
-  .content {
-    line-height: 1.8;
-  }
-
-  .content :global(h2) {
-    font-size: 1.15rem;
-    color: var(--gray-0);
-    margin-top: 2rem;
-    margin-bottom: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .content :global(h3) {
-    font-size: 1.09rem;
-    color: var(--gray-0);
-    margin-top: 1.5rem;
-    margin-bottom: 0.5rem;
-    font-weight: 600;
-  }
-
-  .content :global(p) {
-    color: var(--gray-200);
-    margin-bottom: 1rem;
-  }
-
-  .content :global(ul),
-  .content :global(ol) {
-    margin-bottom: 1rem;
-    padding-left: 1.5rem;
-    color: var(--gray-200);
-  }
-
-  .content :global(li) {
-    margin-bottom: 0.5rem;
-  }
-
-  .content :global(strong) {
-    color: var(--gray-0);
-    font-weight: 600;
-  }
-
-  .content :global(a) {
-    color: var(--accent-regular);
-    text-decoration: underline;
-    text-underline-offset: 0.25em;
-    transition: color var(--theme-transition);
-  }
-
-  .content :global(a:hover) {
-    color: var(--accent-light);
-  }
-
-  .content :global(code) {
-    background-color: var(--gray-900);
-    color: var(--accent-regular);
-    padding: 0.2rem 0.4rem;
-    border-radius: 0.25rem;
-    font-size: 0.9em;
-  }
-
-  .content :global(pre) {
-    background-color: var(--gray-900);
-    padding: 1rem;
-    border-radius: 0.5rem;
-    overflow-x: auto;
-    margin: 1rem 0;
-  }
-
-  .content :global(pre code) {
-    background-color: transparent;
-    padding: 0;
-    color: var(--gray-200);
-  }
-
-  .content :global(blockquote) {
-    border-left: 4px solid var(--accent-regular);
-    padding-left: 1rem;
-    margin: 1.5rem 0;
-    color: var(--gray-300);
-    font-style: italic;
-  }
-
-  @media (min-width: 50em) {
-    .title {
-      font-size: var(--text-3xl);
-    }
-
-    .description {
-      font-size: var(--text-lg);
-    }
-  }
-</style>
 
 <script>
   import { fetchGitHubStars } from '../../utils/github-stars';
@@ -537,8 +101,8 @@ const { data } = entry;
         if (!template) return;
 
         const { date, title } = template.dataset;
-        if (typeof (window as any).openJournalOverlay === 'function') {
-          (window as any).openJournalOverlay({ date: date || '', title: title || '', content: template.innerHTML });
+        if (typeof window.openJournalOverlay === 'function') {
+          window.openJournalOverlay({ date: date || '', title: title || '', content: template.innerHTML });
         }
       });
     });

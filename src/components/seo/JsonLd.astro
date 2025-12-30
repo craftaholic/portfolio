@@ -20,10 +20,10 @@ const personSchema = {
   '@type': 'Person',
   name: SITE.author,
   url: SITE.website,
-  jobTitle: 'Senior Cloud/DevOps/Platform Engineer',
+  jobTitle: SITE.jobTitle,
   worksFor: {
     '@type': 'Organization',
-    name: 'TymeX',
+    name: SITE.currentCompany,
   },
   sameAs: SITE.socialLinks.map(link => link.href),
 };

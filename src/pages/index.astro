@@ -1,5 +1,5 @@
 ---
-import { SITE } from '../config';
+import { SITE, WORK_HISTORY } from '../config';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import VimHero from '../components/sections/VimHero.astro';
 import PageContainer from '../components/layout/PageContainer.astro';
@@ -36,26 +36,9 @@ import JsonLd from '../components/seo/JsonLd.astro';
 
 		<Section title="Bio">
 			<Timeline>
-				<TimelineItem
-					year="2025"
-					text="TymeX - Started as Senior Platform Engineer at fintech unicorn"
-				/>
-				<TimelineItem
-					year="2024"
-					text="FPT Software - Promoted to Senior DevOps Engineer"
-				/>
-				<TimelineItem
-					year=""
-          text="Graduated from Hanoi University of Science and Technology (HUST) - (3.2/4.0 CPA) - Enginneer's degree"
-				/>
-				<TimelineItem
-					year="2023"
-					text="FPT Software - Received FPT Software Best Performer Award"
-				/>
-				<TimelineItem
-					year="2022"
-					text="FPT Software - Started at FPT Software as DevOps Engineer"
-				/>
+				{WORK_HISTORY.map((item) => (
+					<TimelineItem year={item.year} text={item.text} />
+				))}
 			</Timeline>
 		</Section>
 

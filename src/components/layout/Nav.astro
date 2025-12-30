@@ -11,10 +11,11 @@ interface Props {
 
 const { hideModel = false } = Astro.props;
 
-/** Icon links to social media */
-const iconLinks: { label: string; href: string; icon: keyof typeof iconPaths }[] = [
-	{ label: 'GitHub', href: SITE.socialLinks[0].href, icon: 'github-logo' },
-];
+// Filter social links that have icons (for nav display)
+const iconLinks = SITE.socialLinks
+	.filter((link): link is typeof link & { icon: keyof typeof iconPaths } =>
+		link.icon === 'github-logo'
+	);
 ---
 
 <nav>
