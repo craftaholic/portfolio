@@ -92,7 +92,7 @@ const journalData = journals.map(({ id, date, title, overview }) => ({ id, date,
   import { fetchGitHubStars } from '../../utils/github-stars';
 
   function initJournalEntries() {
-    document.querySelectorAll('.journey-entry[data-journal-id]').forEach(entry => {
+    document.querySelectorAll('.journey-card[data-journal-id]').forEach(entry => {
       entry.addEventListener('click', () => {
         const journalId = entry.getAttribute('data-journal-id');
         if (!journalId) return;
