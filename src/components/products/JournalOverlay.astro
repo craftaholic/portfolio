@@ -100,6 +100,26 @@
       if (currentIndex > 0) navigateTo(journalIds[currentIndex - 1]);
     }
 
+    let scrollY = 0;
+
+    function lockScroll() {
+      scrollY = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.left = '0';
+      document.body.style.right = '0';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function unlockScroll() {
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      document.body.style.overflow = '';
+      window.scrollTo(0, scrollY);
+    }
+
     function openOverlay(data: JournalOverlayData & { id?: string }) {
       const templates = document.querySelectorAll('template[data-journal-content]');
       journalIds = Array.from(templates).map(t => (t as HTMLTemplateElement).dataset.journalContent || '');
@@ -108,15 +128,13 @@
 
       overlay.classList.add('active');
       overlay.setAttribute('aria-hidden', 'false');
-      document.documentElement.style.overflow = 'hidden';
-      document.body.style.overflow = 'hidden';
+      lockScroll();
     }
 
     function closeOverlay() {
       overlay.classList.remove('active');
       overlay.setAttribute('aria-hidden', 'true');
-      document.documentElement.style.overflow = '';
-      document.body.style.overflow = '';
+      unlockScroll();
       currentJournalId = null;
     }
 
