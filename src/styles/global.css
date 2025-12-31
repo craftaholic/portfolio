@@ -1,9 +1,9 @@
 /* Import active theme - swap file to change theme */
-@import './themes/soft-grove.css';
+/* @import './themes/soft-grove.css'; */
 /* @import './themes/frost-terminal.css'; */
 /* @import './themes/neon-dusk.css'; */
 /* @import './themes/midnight-teal.css'; */
-/* @import './themes/gruvbox.css'; */
+@import './themes/gruvbox.css';
 /* @import './themes/cyberpunk-muted.css'; */
 /* @import './themes/original.css'; */
 /* @import './themes/nord.css'; */
