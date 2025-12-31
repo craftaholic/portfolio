@@ -343,6 +343,25 @@
     padding: 1.5rem;
     overflow-y: auto;
     line-height: 1.7;
+    scrollbar-width: thin;
+    scrollbar-color: var(--gray-600) transparent;
+  }
+
+  .journal-body::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .journal-body::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .journal-body::-webkit-scrollbar-thumb {
+    background: var(--gray-600);
+    border-radius: 3px;
+  }
+
+  .journal-body::-webkit-scrollbar-thumb:hover {
+    background: var(--gray-500);
   }
 
   /* Markdown content styles */

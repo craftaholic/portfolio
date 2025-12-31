@@ -113,6 +113,25 @@
     display: block;
     overflow-x: auto;
     max-width: 100%;
+    scrollbar-width: thin;
+    scrollbar-color: var(--gray-600) transparent;
+  }
+
+  .markdown-content :global(table)::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .markdown-content :global(table)::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .markdown-content :global(table)::-webkit-scrollbar-thumb {
+    background: var(--gray-600);
+    border-radius: 3px;
+  }
+
+  .markdown-content :global(table)::-webkit-scrollbar-thumb:hover {
+    background: var(--gray-500);
   }
 
   .markdown-content :global(th),
@@ -147,6 +166,25 @@
     border-radius: 0.5rem;
     overflow-x: auto;
     margin: 1rem 0;
+    scrollbar-width: thin;
+    scrollbar-color: var(--gray-600) transparent;
+  }
+
+  .markdown-content :global(pre)::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .markdown-content :global(pre)::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .markdown-content :global(pre)::-webkit-scrollbar-thumb {
+    background: var(--gray-600);
+    border-radius: 3px;
+  }
+
+  .markdown-content :global(pre)::-webkit-scrollbar-thumb:hover {
+    background: var(--gray-500);
   }
 
   .markdown-content :global(pre code) {
