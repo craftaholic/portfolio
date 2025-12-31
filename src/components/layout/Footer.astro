@@ -22,20 +22,25 @@ const currentYear = new Date().getFullYear();
 		margin-top: auto;
 		padding: 3rem 2rem 3rem;
 		text-align: center;
-		color: var(--gray-400);
+		color: var(--gray-200);
 		font-size: var(--text-sm);
+		background: color-mix(in srgb, var(--gray-900) 85%, transparent);
+		backdrop-filter: blur(12px);
+		-webkit-backdrop-filter: blur(12px);
+		border-top: 1px solid var(--gray-800);
 	}
 
 	footer a {
-		color: var(--gray-400);
+		color: var(--gray-200);
 		text-decoration: 1px solid underline transparent;
 		text-underline-offset: 0.25em;
-		transition: text-decoration-color var(--theme-transition);
+		transition: text-decoration-color var(--theme-transition), color var(--theme-transition);
 	}
 
 	footer a:hover,
 	footer a:focus {
 		text-decoration-color: currentColor;
+		color: var(--accent-light);
 	}
 
 	.group {
