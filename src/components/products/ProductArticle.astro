@@ -82,6 +82,24 @@ const { title, description, tags, status, icon, github, demo, opensource, featur
       {journals.length > 0 && (
         <Accordion title="Development Journal" variant="featured">
           <Icon slot="icon" icon="notebook" size="1.25em" />
+          <div class="journal-calendar" data-journals={JSON.stringify(journals.map(j => j.date))}>
+            <div class="calendar-header">
+              <span class="calendar-month"></span>
+              <div class="calendar-nav-group">
+                <button class="calendar-nav calendar-prev" type="button" aria-label="Previous month">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M15 18l-6-6 6-6"/>
+                  </svg>
+                </button>
+                <button class="calendar-nav calendar-next" type="button" aria-label="Next month">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 18l6-6-6-6"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="calendar-days"></div>
+          </div>
           <div class="journey-wrapper">
             <button class="scroll-btn scroll-btn-left" type="button" aria-label="Scroll left">
               <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
@@ -408,6 +426,81 @@ const { title, description, tags, status, icon, github, demo, opensource, featur
     overflow: hidden;
   }
 
+  /* Calendar styles */
+  .journal-calendar {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--gray-800);
+  }
+
+  .calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .calendar-month {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--gray-0);
+  }
+
+  .calendar-nav-group {
+    display: flex;
+    gap: 0.25rem;
+  }
+
+  .calendar-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    background: transparent;
+    border: 1px solid var(--gray-700);
+    border-radius: 0.25rem;
+    color: var(--gray-300);
+    cursor: pointer;
+    transition: border-color var(--transition-fast), color var(--transition-fast);
+  }
+
+  .calendar-nav:hover {
+    border-color: var(--accent-regular);
+    color: var(--accent-regular);
+  }
+
+  .calendar-days {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .calendar-day {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    font-size: 0.7rem;
+    font-family: inherit;
+    background: var(--accent-regular);
+    color: var(--accent-text-over);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background var(--transition-fast), transform var(--transition-fast);
+  }
+
+  .calendar-day:hover {
+    background: var(--accent-light);
+    transform: scale(1.15);
+  }
+
   @media (min-width: 50em) {
     .title {
       font-size: var(--text-3xl);
@@ -452,6 +545,113 @@ const { title, description, tags, status, icon, github, demo, opensource, featur
     updateScrollState();
   }
 
+  function initCalendar() {
+    const calendar = document.querySelector('.journal-calendar') as HTMLElement;
+    if (!calendar) return;
+
+    // Dates come in as DD-MM-YYYY format from the cards
+    const journalDatesRaw: string[] = JSON.parse(calendar.dataset.journals || '[]');
+    const monthLabel = calendar.querySelector('.calendar-month') as HTMLElement;
+    const daysContainer = calendar.querySelector('.calendar-days') as HTMLElement;
+    const prevBtn = calendar.querySelector('.calendar-prev') as HTMLButtonElement;
+    const nextBtn = calendar.querySelector('.calendar-next') as HTMLButtonElement;
+    const journey = document.querySelector('.journey') as HTMLElement;
+
+    if (!monthLabel || !daysContainer || !prevBtn || !nextBtn) return;
+
+    // Convert DD-MM-YYYY to YYYY-MM-DD for easier comparison
+    function toIsoDate(dateStr: string): string {
+      const [day, month, year] = dateStr.split('-');
+      return `${year}-${month}-${day}`;
+    }
+
+    // Convert YYYY-MM-DD back to DD-MM-YYYY for card matching
+    function toDisplayDate(isoDate: string): string {
+      const [year, month, day] = isoDate.split('-');
+      return `${day}-${month}-${year}`;
+    }
+
+    const journalDates = journalDatesRaw.map(toIsoDate);
+
+    // Find the most recent journal date to start with
+    const sortedDates = [...journalDates].sort().reverse();
+    const latestDate = sortedDates[0] ? new Date(sortedDates[0]) : new Date();
+    let currentMonth = latestDate.getMonth();
+    let currentYear = latestDate.getFullYear();
+
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'];
+
+    function renderCalendar() {
+      monthLabel.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+      daysContainer.innerHTML = '';
+
+      const lastDay = new Date(currentYear, currentMonth + 1, 0);
+      const totalDays = lastDay.getDate();
+
+      // Only show days that have entries
+      for (let d = 1; d <= totalDays; d++) {
+        const isoDateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        const hasEntry = journalDates.includes(isoDateStr);
+
+        if (hasEntry) {
+          const day = document.createElement('button');
+          day.type = 'button';
+          day.className = 'calendar-day has-entry';
+          day.textContent = String(d);
+          day.addEventListener('click', () => scrollToJournal(isoDateStr));
+          daysContainer.appendChild(day);
+        }
+      }
+    }
+
+    function scrollToJournal(isoDateStr: string) {
+      if (!journey) return;
+      const displayDate = toDisplayDate(isoDateStr);
+      const cards = journey.querySelectorAll('.journey-card');
+      for (const card of cards) {
+        const cardDate = card.querySelector('.journey-date')?.textContent;
+        if (cardDate === displayDate) {
+          const cardEl = card as HTMLElement;
+          journey.scrollTo({
+            left: cardEl.offsetLeft - journey.offsetLeft - 20,
+            behavior: 'smooth'
+          });
+          // Brief highlight effect
+          cardEl.style.transform = 'translateY(-4px) scale(1.02)';
+          setTimeout(() => {
+            cardEl.style.transform = '';
+          }, 300);
+          break;
+        }
+      }
+    }
+
+    prevBtn.addEventListener('click', () => {
+      currentMonth--;
+      if (currentMonth < 0) {
+        currentMonth = 11;
+        currentYear--;
+      }
+      renderCalendar();
+    });
+
+    nextBtn.addEventListener('click', () => {
+      currentMonth++;
+      if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+      }
+      renderCalendar();
+    });
+
+    renderCalendar();
+  }
+
   initJourneyScroll();
-  document.addEventListener('astro:after-swap', initJourneyScroll);
+  initCalendar();
+  document.addEventListener('astro:after-swap', () => {
+    initJourneyScroll();
+    initCalendar();
+  });
 </script>
