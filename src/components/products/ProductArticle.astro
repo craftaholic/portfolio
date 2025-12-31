@@ -360,19 +360,21 @@ const { title, description, tags, status, icon, github, demo, opensource, featur
     flex-direction: column;
     gap: 0.5rem;
     padding: 1rem 1.25rem;
-    background: var(--gray-800);
-    border: 1px solid var(--gray-700);
+    background: var(--gray-999);
+    border: 1px solid var(--gray-800);
     border-radius: 0.5rem;
     text-align: left;
     font-family: inherit;
     cursor: pointer;
-    transition: border-color var(--transition-fast), background var(--transition-fast), transform var(--transition-fast);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: border-color var(--transition-fast), background var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
   }
 
   .journey-card:hover {
     border-color: var(--accent-regular);
     background: var(--gray-900);
     transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 
   .journey-card:hover .journey-date {

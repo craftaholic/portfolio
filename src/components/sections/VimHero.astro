@@ -70,12 +70,14 @@ const {
     function openLightbox() {
       lightbox.classList.add('active');
       lightbox.setAttribute('aria-hidden', 'false');
+      document.documentElement.style.overflow = 'hidden';
       document.body.style.overflow = 'hidden';
     }
 
     function closeLightbox() {
       lightbox.classList.remove('active');
       lightbox.setAttribute('aria-hidden', 'true');
+      document.documentElement.style.overflow = '';
       document.body.style.overflow = '';
     }
 
@@ -349,8 +351,9 @@ const {
   .lightbox-backdrop {
     position: absolute;
     inset: 0;
-    background: var(--overlay-bg);
-    backdrop-filter: blur(8px);
+    background: rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
   }
 
   .lightbox-content {

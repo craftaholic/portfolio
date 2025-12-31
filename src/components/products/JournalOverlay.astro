@@ -39,12 +39,14 @@
       bodyEl.innerHTML = data.content;
       overlay.classList.add('active');
       overlay.setAttribute('aria-hidden', 'false');
+      document.documentElement.style.overflow = 'hidden';
       document.body.style.overflow = 'hidden';
     }
 
     function closeOverlay() {
       overlay.classList.remove('active');
       overlay.setAttribute('aria-hidden', 'true');
+      document.documentElement.style.overflow = '';
       document.body.style.overflow = '';
     }
 
@@ -87,8 +89,9 @@
   .overlay-backdrop {
     position: absolute;
     inset: 0;
-    background: var(--overlay-bg);
-    backdrop-filter: blur(8px);
+    background: rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
   }
 
   .overlay-content {
