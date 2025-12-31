@@ -91,45 +91,6 @@ const journalData = journals.map(({ id, date, title, overview }) => ({ id, date,
 <script>
   import { fetchGitHubStars } from '../../utils/github-stars';
 
-  function initJournalEntries() {
-    document.querySelectorAll('.journey-card[data-journal-id]').forEach(entry => {
-      entry.addEventListener('click', () => {
-        const journalId = entry.getAttribute('data-journal-id');
-        if (!journalId) return;
-
-        const template = document.querySelector(`template[data-journal-content="${journalId}"]`) as HTMLTemplateElement;
-        if (!template) return;
-
-        const { date, title } = template.dataset;
-        if (typeof window.openJournalOverlay === 'function') {
-          window.openJournalOverlay({ date: date || '', title: title || '', content: template.innerHTML });
-        }
-      });
-    });
-  }
-
-  function initScrollIndicator() {
-    const journey = document.querySelector('.journey') as HTMLElement;
-    const indicator = document.querySelector('.scroll-indicator') as HTMLElement;
-    if (!journey || !indicator) return;
-
-    function updateIndicator() {
-      const isScrollable = journey.scrollHeight > journey.clientHeight;
-      const isAtBottom = journey.scrollTop + journey.clientHeight >= journey.scrollHeight - 10;
-      indicator.classList.toggle('visible', isScrollable && !isAtBottom);
-    }
-
-    updateIndicator();
-    journey.addEventListener('scroll', updateIndicator);
-    window.addEventListener('resize', updateIndicator);
-  }
-
   fetchGitHubStars();
-  initJournalEntries();
-  initScrollIndicator();
-  document.addEventListener('astro:after-swap', () => {
-    fetchGitHubStars();
-    initJournalEntries();
-    initScrollIndicator();
-  });
+  document.addEventListener('astro:after-swap', fetchGitHubStars);
 </script>

@@ -10,4 +10,5 @@ interface JournalOverlayData {
 
 interface Window {
   openJournalOverlay?: (data: JournalOverlayData) => void;
+  openJournalTimeline?: () => void;
 }

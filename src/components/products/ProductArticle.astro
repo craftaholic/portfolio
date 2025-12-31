@@ -5,6 +5,7 @@ import PageContainer from '../layout/PageContainer.astro';
 import Accordion from '../ui/Accordion.astro';
 import Icon from '../ui/Icon.astro';
 import MarkdownContent from '../ui/MarkdownContent.astro';
+import JournalTimeline from './JournalTimeline.astro';
 import { STATUS_LABELS, STATUS_CLASSES } from '../../utils/product-status';
 import type { ProductStatus } from '../../utils/product-status';
 
@@ -80,52 +81,21 @@ const { title, description, tags, status, icon, github, demo, opensource, featur
 
     <div class="sections">
       {journals.length > 0 && (
-        <Accordion title="Development Journal" variant="featured">
-          <Icon slot="icon" icon="notebook" size="1.25em" />
-          <div class="journal-calendar" data-journals={JSON.stringify(journals.map(j => j.date))}>
-            <div class="calendar-header">
-              <span class="calendar-month"></span>
-              <div class="calendar-nav-group">
-                <button class="calendar-nav calendar-prev" type="button" aria-label="Previous month">
-                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M15 18l-6-6 6-6"/>
-                  </svg>
-                </button>
-                <button class="calendar-nav calendar-next" type="button" aria-label="Next month">
-                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M9 18l6-6-6-6"/>
-                  </svg>
-                </button>
-              </div>
-            </div>
-            <div class="calendar-days"></div>
-          </div>
-          <div class="journey-wrapper">
-            <button class="scroll-btn scroll-btn-left" type="button" aria-label="Scroll left">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M15 18l-6-6 6-6"/>
-              </svg>
-            </button>
-            <div class="journey">
-              {journals.map((journal) => (
-                <button
-                  class="journey-card"
-                  data-journal-id={journal.id}
-                  type="button"
-                >
-                  <span class="journey-date">{journal.date}</span>
-                  <span class="journey-title">{journal.title}</span>
-                  <p class="journey-overview">{journal.overview}</p>
-                </button>
-              ))}
-            </div>
-            <button class="scroll-btn scroll-btn-right" type="button" aria-label="Scroll right">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+        <>
+          <button class="journal-trigger" type="button">
+            <span class="journal-trigger-left">
+              <Icon icon="notebook" size="1.25em" />
+              <span class="journal-trigger-title">Development Journal</span>
+            </span>
+            <span class="journal-trigger-meta">
+              <span class="journal-count">{journals.length} {journals.length === 1 ? 'log' : 'logs'}</span>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M9 18l6-6-6-6"/>
               </svg>
-            </button>
-          </div>
-        </Accordion>
+            </span>
+          </button>
+          <JournalTimeline journals={journals} />
+        </>
       )}
 
       <Accordion title="Overview" defaultOpen>
@@ -293,212 +263,65 @@ const { title, description, tags, status, icon, github, demo, opensource, featur
     color: var(--gray-200);
   }
 
-  .journey-wrapper {
-    position: relative;
-  }
-
-  .scroll-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 2;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.5rem;
-    background: transparent;
-    border: none;
-    color: var(--gray-300);
-    cursor: pointer;
-    transition: color var(--transition-fast), opacity var(--transition-fast);
-  }
-
-  .scroll-btn-left {
-    left: 0;
-  }
-
-  .scroll-btn-right {
-    right: 0;
-  }
-
-  .scroll-btn:hover {
-    color: var(--accent-regular);
-  }
-
-  .scroll-btn:disabled {
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .scroll-btn svg {
-    width: 24px;
-    height: 24px;
-    animation: bounce-horizontal 1.5s infinite;
-  }
-
-  .scroll-btn-left svg {
-    animation-name: bounce-left;
-  }
-
-  .scroll-btn-right svg {
-    animation-name: bounce-right;
-  }
-
-  @keyframes bounce-left {
-    0%, 100% { transform: translateX(0); }
-    50% { transform: translateX(-3px); }
-  }
-
-  @keyframes bounce-right {
-    0%, 100% { transform: translateX(0); }
-    50% { transform: translateX(3px); }
-  }
-
-  .journey {
-    display: flex;
-    flex-direction: row;
-    gap: 1rem;
-    overflow-x: auto;
-    overflow-y: hidden;
-    padding: 0.25rem 1.5rem 0.5rem;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    scroll-behavior: smooth;
-    mask-image: linear-gradient(to right, transparent, black 3.5rem, black calc(100% - 3.5rem), transparent);
-    -webkit-mask-image: linear-gradient(to right, transparent, black 3.5rem, black calc(100% - 3.5rem), transparent);
-  }
-
-  .journey::-webkit-scrollbar {
-    display: none;
-  }
-
-  .journey-card {
-    flex: 0 0 280px;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    padding: 1rem 1.25rem;
-    background: var(--gray-999);
-    border: 1px solid var(--gray-800);
-    border-radius: 0.5rem;
-    text-align: left;
-    font-family: inherit;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    transition: border-color var(--transition-fast), background var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
-  }
-
-  .journey-card:hover {
-    border-color: var(--accent-regular);
-    background: var(--gray-900);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  }
-
-  .journey-card:hover .journey-date {
-    color: var(--accent-light);
-  }
-
-  .journey-date {
-    font-size: var(--text-xs);
-    color: var(--accent-regular);
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    transition: color var(--transition-fast);
-  }
-
-  .journey-title {
-    font-size: var(--text-base);
-    color: var(--gray-0);
-    font-weight: 600;
-    line-height: 1.3;
-  }
-
-  .journey-overview {
-    font-size: var(--text-sm);
-    color: var(--gray-300);
-    margin: 0;
-    line-height: 1.5;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  /* Calendar styles */
-  .journal-calendar {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    margin-bottom: 1.25rem;
-    padding-bottom: 1.25rem;
-    border-bottom: 1px solid var(--gray-800);
-  }
-
-  .calendar-header {
+  .journal-trigger {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 0.5rem;
+    width: 100%;
+    padding: 1rem 1.25rem;
+    background: var(--accent-overlay);
+    border: 1px solid var(--accent-regular);
+    border-radius: 0.5rem;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.15s ease, box-shadow 0.15s ease;
+    position: relative;
   }
 
-  .calendar-month {
-    font-size: var(--text-sm);
-    font-weight: 600;
-    color: var(--gray-0);
+  .journal-trigger::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: 0 0 20px var(--accent-overlay), inset 0 0 10px var(--accent-overlay);
+    pointer-events: none;
   }
 
-  .calendar-nav-group {
-    display: flex;
-    gap: 0.25rem;
+  .journal-trigger:hover {
+    background: var(--accent-dark);
+    box-shadow: 0 0 24px var(--accent-overlay);
   }
 
-  .calendar-nav {
+  .journal-trigger-left {
     display: flex;
     align-items: center;
-    justify-content: center;
-    width: 1.75rem;
-    height: 1.75rem;
-    background: transparent;
-    border: 1px solid var(--gray-700);
-    border-radius: 0.25rem;
-    color: var(--gray-300);
-    cursor: pointer;
-    transition: border-color var(--transition-fast), color var(--transition-fast);
+    gap: 0.5rem;
+    color: var(--accent-light);
   }
 
-  .calendar-nav:hover {
-    border-color: var(--accent-regular);
+  .journal-trigger-title {
+    font-size: var(--text-base);
+    font-weight: 600;
+  }
+
+  .journal-trigger-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     color: var(--accent-regular);
   }
 
-  .calendar-days {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
+  .journal-count {
+    font-size: var(--text-sm);
+    opacity: 0.8;
   }
 
-  .calendar-day {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 1.75rem;
-    height: 1.75rem;
-    font-size: 0.7rem;
-    font-family: inherit;
-    background: var(--accent-regular);
-    color: var(--accent-text-over);
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    font-weight: 600;
-    transition: background var(--transition-fast), transform var(--transition-fast);
+  .journal-trigger-meta svg {
+    transition: transform 0.15s ease;
   }
 
-  .calendar-day:hover {
-    background: var(--accent-light);
-    transform: scale(1.15);
+  .journal-trigger:hover .journal-trigger-meta svg {
+    transform: translateX(3px);
   }
 
   @media (min-width: 50em) {
@@ -513,145 +336,17 @@ const { title, description, tags, status, icon, github, demo, opensource, featur
 </style>
 
 <script>
-  function initJourneyScroll() {
-    const wrapper = document.querySelector('.journey-wrapper');
-    if (!wrapper) return;
+  function initJournalTrigger() {
+    const trigger = document.querySelector('.journal-trigger');
+    if (!trigger) return;
 
-    const journey = wrapper.querySelector('.journey') as HTMLElement;
-    const leftBtn = wrapper.querySelector('.scroll-btn-left') as HTMLButtonElement;
-    const rightBtn = wrapper.querySelector('.scroll-btn-right') as HTMLButtonElement;
-
-    if (!journey || !leftBtn || !rightBtn) return;
-
-    const scrollAmount = 300;
-
-    function updateScrollState() {
-      const canScrollLeft = journey.scrollLeft > 0;
-      const canScrollRight = journey.scrollLeft < journey.scrollWidth - journey.clientWidth - 1;
-
-      leftBtn.disabled = !canScrollLeft;
-      rightBtn.disabled = !canScrollRight;
-    }
-
-    leftBtn.addEventListener('click', () => {
-      journey.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    trigger.addEventListener('click', () => {
+      if (window.openJournalTimeline) {
+        window.openJournalTimeline();
+      }
     });
-
-    rightBtn.addEventListener('click', () => {
-      journey.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-    });
-
-    journey.addEventListener('scroll', updateScrollState);
-    updateScrollState();
   }
 
-  function initCalendar() {
-    const calendar = document.querySelector('.journal-calendar') as HTMLElement;
-    if (!calendar) return;
-
-    // Dates come in as DD-MM-YYYY format from the cards
-    const journalDatesRaw: string[] = JSON.parse(calendar.dataset.journals || '[]');
-    const monthLabel = calendar.querySelector('.calendar-month') as HTMLElement;
-    const daysContainer = calendar.querySelector('.calendar-days') as HTMLElement;
-    const prevBtn = calendar.querySelector('.calendar-prev') as HTMLButtonElement;
-    const nextBtn = calendar.querySelector('.calendar-next') as HTMLButtonElement;
-    const journey = document.querySelector('.journey') as HTMLElement;
-
-    if (!monthLabel || !daysContainer || !prevBtn || !nextBtn) return;
-
-    // Convert DD-MM-YYYY to YYYY-MM-DD for easier comparison
-    function toIsoDate(dateStr: string): string {
-      const [day, month, year] = dateStr.split('-');
-      return `${year}-${month}-${day}`;
-    }
-
-    // Convert YYYY-MM-DD back to DD-MM-YYYY for card matching
-    function toDisplayDate(isoDate: string): string {
-      const [year, month, day] = isoDate.split('-');
-      return `${day}-${month}-${year}`;
-    }
-
-    const journalDates = journalDatesRaw.map(toIsoDate);
-
-    // Find the most recent journal date to start with
-    const sortedDates = [...journalDates].sort().reverse();
-    const latestDate = sortedDates[0] ? new Date(sortedDates[0]) : new Date();
-    let currentMonth = latestDate.getMonth();
-    let currentYear = latestDate.getFullYear();
-
-    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'];
-
-    function renderCalendar() {
-      monthLabel.textContent = `${monthNames[currentMonth]} ${currentYear}`;
-      daysContainer.innerHTML = '';
-
-      const lastDay = new Date(currentYear, currentMonth + 1, 0);
-      const totalDays = lastDay.getDate();
-
-      // Only show days that have entries
-      for (let d = 1; d <= totalDays; d++) {
-        const isoDateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-        const hasEntry = journalDates.includes(isoDateStr);
-
-        if (hasEntry) {
-          const day = document.createElement('button');
-          day.type = 'button';
-          day.className = 'calendar-day has-entry';
-          day.textContent = String(d);
-          day.addEventListener('click', () => scrollToJournal(isoDateStr));
-          daysContainer.appendChild(day);
-        }
-      }
-    }
-
-    function scrollToJournal(isoDateStr: string) {
-      if (!journey) return;
-      const displayDate = toDisplayDate(isoDateStr);
-      const cards = journey.querySelectorAll('.journey-card');
-      for (const card of cards) {
-        const cardDate = card.querySelector('.journey-date')?.textContent;
-        if (cardDate === displayDate) {
-          const cardEl = card as HTMLElement;
-          journey.scrollTo({
-            left: cardEl.offsetLeft - journey.offsetLeft - 20,
-            behavior: 'smooth'
-          });
-          // Brief highlight effect
-          cardEl.style.transform = 'translateY(-4px) scale(1.02)';
-          setTimeout(() => {
-            cardEl.style.transform = '';
-          }, 300);
-          break;
-        }
-      }
-    }
-
-    prevBtn.addEventListener('click', () => {
-      currentMonth--;
-      if (currentMonth < 0) {
-        currentMonth = 11;
-        currentYear--;
-      }
-      renderCalendar();
-    });
-
-    nextBtn.addEventListener('click', () => {
-      currentMonth++;
-      if (currentMonth > 11) {
-        currentMonth = 0;
-        currentYear++;
-      }
-      renderCalendar();
-    });
-
-    renderCalendar();
-  }
-
-  initJourneyScroll();
-  initCalendar();
-  document.addEventListener('astro:after-swap', () => {
-    initJourneyScroll();
-    initCalendar();
-  });
+  initJournalTrigger();
+  document.addEventListener('astro:after-swap', initJournalTrigger);
 </script>
