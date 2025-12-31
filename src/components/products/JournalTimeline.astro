@@ -157,6 +157,51 @@ const { journals } = Astro.props;
       }
     }
 
+    // Sync calendar to visible entries on scroll
+    function setupScrollSync() {
+      const entriesSection = overlay.querySelector('.entries-section');
+      if (!entriesSection || !entriesList) return;
+
+      let scrollTimeout;
+      let isScrollListenerAttached = entriesSection.dataset.scrollSyncAttached;
+      if (isScrollListenerAttached) return;
+      entriesSection.dataset.scrollSyncAttached = 'true';
+
+      entriesSection.addEventListener('scroll', () => {
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+          const items = entriesList.querySelectorAll('.entry-item');
+          const sectionRect = entriesSection.getBoundingClientRect();
+          let firstFullyVisible = null;
+
+          for (const item of items) {
+            const rect = item.getBoundingClientRect();
+            // Check if item's top is at or below the section's top (fully visible)
+            if (rect.top >= sectionRect.top - 1) {
+              firstFullyVisible = item;
+              break;
+            }
+          }
+
+          if (firstFullyVisible) {
+            const dateStr = firstFullyVisible.dataset.journalDate;
+            if (dateStr) {
+              const [day, month, year] = dateStr.split('-');
+              const entryMonth = parseInt(month, 10) - 1;
+              const entryYear = parseInt(year, 10);
+
+              // Only update if month changed
+              if (entryMonth !== currentMonth || entryYear !== currentYear) {
+                currentMonth = entryMonth;
+                currentYear = entryYear;
+                renderCalendar();
+              }
+            }
+          }
+        }, 50); // Debounce scroll events
+      });
+    }
+
     function openTimeline() {
       overlay.classList.add('active');
       overlay.setAttribute('aria-hidden', 'false');
@@ -220,6 +265,9 @@ const { journals } = Astro.props;
         closeTimeline();
       });
     });
+
+    // Setup scroll sync for calendar
+    setupScrollSync();
 
     // Expose globally
     window.openJournalTimeline = openTimeline;
