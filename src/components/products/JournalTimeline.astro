@@ -47,7 +47,7 @@ const { journals } = Astro.props;
       </div>
 
       <div class="entries-section">
-        <h3 class="entries-title">Entries</h3>
+        <h3 class="entries-title">Logs</h3>
         <div class="entries-list">
           {journals.map((journal) => (
             <button
@@ -97,14 +97,6 @@ const { journals } = Astro.props;
     const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
       'July', 'August', 'September', 'October', 'November', 'December'];
 
-    function hasEntryOnDate(year, month, day) {
-      return journalDates.some(j =>
-        j.dateObj.getFullYear() === year &&
-        j.dateObj.getMonth() === month &&
-        j.dateObj.getDate() === day
-      );
-    }
-
     function getEntryForDate(year, month, day) {
       return journalDates.find(j =>
         j.dateObj.getFullYear() === year &&
@@ -113,7 +105,7 @@ const { journals } = Astro.props;
       );
     }
 
-    function renderCalendar() {
+    function renderCalendar(highlightDay = null) {
       monthLabel.textContent = `${monthNames[currentMonth]} ${currentYear}`;
       calGrid.innerHTML = '';
 
@@ -134,12 +126,11 @@ const { journals } = Astro.props;
         dayEl.className = 'cal-day';
         dayEl.textContent = d;
 
-        if (hasEntryOnDate(currentYear, currentMonth, d)) {
+        const entry = getEntryForDate(currentYear, currentMonth, d);
+        if (entry) {
           dayEl.classList.add('has-entry');
-          dayEl.addEventListener('click', () => {
-            const entry = getEntryForDate(currentYear, currentMonth, d);
-            if (entry) highlightEntry(entry.id);
-          });
+          if (highlightDay === d) dayEl.classList.add('active');
+          dayEl.addEventListener('click', () => highlightEntry(entry.id));
         }
 
         calGrid.appendChild(dayEl);
@@ -187,15 +178,14 @@ const { journals } = Astro.props;
             const dateStr = firstFullyVisible.dataset.journalDate;
             if (dateStr) {
               const [day, month, year] = dateStr.split('-');
+              const entryDay = parseInt(day, 10);
               const entryMonth = parseInt(month, 10) - 1;
               const entryYear = parseInt(year, 10);
 
-              // Only update if month changed
-              if (entryMonth !== currentMonth || entryYear !== currentYear) {
-                currentMonth = entryMonth;
-                currentYear = entryYear;
-                renderCalendar();
-              }
+              // Update calendar (always re-render to update highlighted day)
+              currentMonth = entryMonth;
+              currentYear = entryYear;
+              renderCalendar(entryDay);
             }
           }
         }, 50); // Debounce scroll events
@@ -220,23 +210,15 @@ const { journals } = Astro.props;
     backdrop.addEventListener('click', closeTimeline);
     closeBtn.addEventListener('click', closeTimeline);
 
-    prevBtn.addEventListener('click', () => {
-      currentMonth--;
-      if (currentMonth < 0) {
-        currentMonth = 11;
-        currentYear--;
-      }
+    function changeMonth(delta) {
+      currentMonth += delta;
+      if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+      else if (currentMonth < 0) { currentMonth = 11; currentYear--; }
       renderCalendar();
-    });
+    }
 
-    nextBtn.addEventListener('click', () => {
-      currentMonth++;
-      if (currentMonth > 11) {
-        currentMonth = 0;
-        currentYear++;
-      }
-      renderCalendar();
-    });
+    prevBtn.addEventListener('click', () => changeMonth(-1));
+    nextBtn.addEventListener('click', () => changeMonth(1));
 
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && overlay.classList.contains('active')) {
@@ -452,6 +434,11 @@ const { journals } = Astro.props;
   .calendar-grid :global(.cal-day.has-entry:hover) {
     background: var(--accent-light);
     transform: scale(1.1);
+  }
+
+  .calendar-grid :global(.cal-day.has-entry.active) {
+    background: var(--accent-light);
+    box-shadow: 0 0 0 2px var(--accent-regular);
   }
 
   /* Entries Section */

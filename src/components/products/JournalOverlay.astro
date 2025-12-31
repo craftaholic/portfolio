@@ -70,53 +70,46 @@
 
     function updateNavButtons() {
       const currentIndex = journalIds.indexOf(currentJournalId || '');
-      prevBtn.classList.toggle('hidden', currentIndex <= 0);
-      nextBtn.classList.toggle('hidden', currentIndex >= journalIds.length - 1);
+      // Prev (left) goes to older - hide when at oldest (last in array)
+      prevBtn.classList.toggle('hidden', currentIndex >= journalIds.length - 1);
+      // Next (right) goes to newer - hide when at newest (first in array)
+      nextBtn.classList.toggle('hidden', currentIndex <= 0);
     }
 
-    function showJournal(id: string) {
-      const data = getJournalData(id);
-      if (!data) return;
-
+    function displayJournal(id: string, date: string, title: string, content: string) {
       currentJournalId = id;
-      dateEl.textContent = data.date;
-      titleEl.textContent = data.title;
-      bodyEl.innerHTML = data.content;
+      dateEl.textContent = date;
+      titleEl.textContent = title;
+      bodyEl.innerHTML = content;
       bodyEl.scrollTop = 0;
       updateNavButtons();
     }
 
+    function navigateTo(id: string) {
+      const data = getJournalData(id);
+      if (data) displayJournal(data.id, data.date, data.title, data.content);
+    }
+
     function navigatePrev() {
       const currentIndex = journalIds.indexOf(currentJournalId || '');
-      if (currentIndex > 0) {
-        showJournal(journalIds[currentIndex - 1]);
-      }
+      if (currentIndex < journalIds.length - 1) navigateTo(journalIds[currentIndex + 1]);
     }
 
     function navigateNext() {
       const currentIndex = journalIds.indexOf(currentJournalId || '');
-      if (currentIndex < journalIds.length - 1) {
-        showJournal(journalIds[currentIndex + 1]);
-      }
+      if (currentIndex > 0) navigateTo(journalIds[currentIndex - 1]);
     }
 
     function openOverlay(data: JournalOverlayData & { id?: string }) {
-      // Collect all journal IDs from templates
       const templates = document.querySelectorAll('template[data-journal-content]');
       journalIds = Array.from(templates).map(t => (t as HTMLTemplateElement).dataset.journalContent || '');
 
-      currentJournalId = data.id || null;
-      dateEl.textContent = data.date;
-      titleEl.textContent = data.title;
-      bodyEl.innerHTML = data.content;
-      bodyEl.scrollTop = 0;
+      displayJournal(data.id || '', data.date, data.title, data.content);
 
       overlay.classList.add('active');
       overlay.setAttribute('aria-hidden', 'false');
       document.documentElement.style.overflow = 'hidden';
       document.body.style.overflow = 'hidden';
-
-      updateNavButtons();
     }
 
     function closeOverlay() {
@@ -136,7 +129,6 @@
 
     // Swipe handling for mobile
     let touchStartX = 0;
-    let touchEndX = 0;
     const SWIPE_THRESHOLD = 50;
 
     content.addEventListener('touchstart', (e) => {
@@ -144,15 +136,9 @@
     }, { passive: true });
 
     content.addEventListener('touchend', (e) => {
-      touchEndX = e.changedTouches[0].screenX;
-      const diff = touchStartX - touchEndX;
-
+      const diff = touchStartX - e.changedTouches[0].screenX;
       if (Math.abs(diff) > SWIPE_THRESHOLD) {
-        if (diff > 0) {
-          navigateNext(); // Swipe left -> next
-        } else {
-          navigatePrev(); // Swipe right -> prev
-        }
+        diff > 0 ? navigateNext() : navigatePrev();
       }
     }, { passive: true });
 
