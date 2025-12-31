@@ -256,6 +256,7 @@ const { journals } = Astro.props;
 
         const { date, title } = template.dataset;
         window.openJournalOverlay({
+          id: journalId,
           date: date || '',
           title: title || '',
           content: template.innerHTML

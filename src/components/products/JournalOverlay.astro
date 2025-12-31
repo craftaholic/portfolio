@@ -7,12 +7,30 @@
 
 <div class="journal-overlay" id="journal-overlay" aria-hidden="true">
   <div class="overlay-backdrop"></div>
+  <button class="nav-btn nav-prev" aria-label="Previous journal">
+    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M15 18l-6-6 6-6"/>
+    </svg>
+  </button>
+  <button class="nav-btn nav-next" aria-label="Next journal">
+    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M9 18l6-6-6-6"/>
+    </svg>
+  </button>
   <div class="overlay-content">
-    <button class="close-btn" aria-label="Close journal">
-      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M18 6L6 18M6 6l12 12"/>
-      </svg>
-    </button>
+    <div class="header-actions">
+      <button class="back-btn" aria-label="Back to calendar">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M15 18l-6-6 6-6"/>
+        </svg>
+        <span>Calendar</span>
+      </button>
+      <button class="close-btn" aria-label="Close journal">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 6L6 18M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
     <div class="journal-header">
       <span class="journal-date"></span>
       <h2 class="journal-title"></h2>
@@ -26,21 +44,79 @@
     const overlay = document.getElementById('journal-overlay');
     const backdrop = overlay?.querySelector('.overlay-backdrop');
     const closeBtn = overlay?.querySelector('.close-btn');
-    const content = overlay?.querySelector('.overlay-content');
+    const backBtn = overlay?.querySelector('.back-btn');
+    const prevBtn = overlay?.querySelector('.nav-prev');
+    const nextBtn = overlay?.querySelector('.nav-next');
+    const content = overlay?.querySelector('.overlay-content') as HTMLElement;
     const dateEl = overlay?.querySelector('.journal-date');
     const titleEl = overlay?.querySelector('.journal-title');
     const bodyEl = overlay?.querySelector('.journal-body');
 
-    if (!overlay || !backdrop || !closeBtn || !content || !dateEl || !titleEl || !bodyEl) return;
+    if (!overlay || !backdrop || !closeBtn || !backBtn || !prevBtn || !nextBtn || !content || !dateEl || !titleEl || !bodyEl) return;
 
-    function openOverlay(data: JournalOverlayData) {
+    let currentJournalId: string | null = null;
+    let journalIds: string[] = [];
+
+    function getJournalData(id: string) {
+      const template = document.querySelector(`template[data-journal-content="${id}"]`) as HTMLTemplateElement;
+      if (!template) return null;
+      return {
+        id,
+        date: template.dataset.date || '',
+        title: template.dataset.title || '',
+        content: template.innerHTML
+      };
+    }
+
+    function updateNavButtons() {
+      const currentIndex = journalIds.indexOf(currentJournalId || '');
+      prevBtn.classList.toggle('hidden', currentIndex <= 0);
+      nextBtn.classList.toggle('hidden', currentIndex >= journalIds.length - 1);
+    }
+
+    function showJournal(id: string) {
+      const data = getJournalData(id);
+      if (!data) return;
+
+      currentJournalId = id;
       dateEl.textContent = data.date;
       titleEl.textContent = data.title;
       bodyEl.innerHTML = data.content;
+      bodyEl.scrollTop = 0;
+      updateNavButtons();
+    }
+
+    function navigatePrev() {
+      const currentIndex = journalIds.indexOf(currentJournalId || '');
+      if (currentIndex > 0) {
+        showJournal(journalIds[currentIndex - 1]);
+      }
+    }
+
+    function navigateNext() {
+      const currentIndex = journalIds.indexOf(currentJournalId || '');
+      if (currentIndex < journalIds.length - 1) {
+        showJournal(journalIds[currentIndex + 1]);
+      }
+    }
+
+    function openOverlay(data: JournalOverlayData & { id?: string }) {
+      // Collect all journal IDs from templates
+      const templates = document.querySelectorAll('template[data-journal-content]');
+      journalIds = Array.from(templates).map(t => (t as HTMLTemplateElement).dataset.journalContent || '');
+
+      currentJournalId = data.id || null;
+      dateEl.textContent = data.date;
+      titleEl.textContent = data.title;
+      bodyEl.innerHTML = data.content;
+      bodyEl.scrollTop = 0;
+
       overlay.classList.add('active');
       overlay.setAttribute('aria-hidden', 'false');
       document.documentElement.style.overflow = 'hidden';
       document.body.style.overflow = 'hidden';
+
+      updateNavButtons();
     }
 
     function closeOverlay() {
@@ -48,14 +124,53 @@
       overlay.setAttribute('aria-hidden', 'true');
       document.documentElement.style.overflow = '';
       document.body.style.overflow = '';
+      currentJournalId = null;
     }
+
+    function backToTimeline() {
+      closeOverlay();
+      if (window.openJournalTimeline) {
+        window.openJournalTimeline();
+      }
+    }
+
+    // Swipe handling for mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+    const SWIPE_THRESHOLD = 50;
+
+    content.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    content.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      const diff = touchStartX - touchEndX;
+
+      if (Math.abs(diff) > SWIPE_THRESHOLD) {
+        if (diff > 0) {
+          navigateNext(); // Swipe left -> next
+        } else {
+          navigatePrev(); // Swipe right -> prev
+        }
+      }
+    }, { passive: true });
 
     backdrop.addEventListener('click', closeOverlay);
     closeBtn.addEventListener('click', closeOverlay);
+    backBtn.addEventListener('click', backToTimeline);
+    prevBtn.addEventListener('click', navigatePrev);
+    nextBtn.addEventListener('click', navigateNext);
 
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && overlay.classList.contains('active')) {
+      if (!overlay.classList.contains('active')) return;
+
+      if (e.key === 'Escape') {
         closeOverlay();
+      } else if (e.key === 'ArrowLeft') {
+        navigatePrev();
+      } else if (e.key === 'ArrowRight') {
+        navigateNext();
       }
     });
 
@@ -124,10 +239,20 @@
     }
   }
 
-  .close-btn {
+  .header-actions {
     position: absolute;
     top: 1rem;
     right: 1rem;
+    display: flex;
+    gap: 0.5rem;
+    z-index: 2;
+  }
+
+  .back-btn,
+  .close-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background: var(--gray-800);
     border: 1px solid var(--gray-700);
     border-radius: 0.5rem;
@@ -135,16 +260,66 @@
     color: var(--gray-400);
     cursor: pointer;
     transition: color var(--transition-fast), border-color var(--transition-fast);
-    z-index: 2;
   }
 
+  .back-btn {
+    gap: 0.25rem;
+    padding: 0.5rem 0.75rem;
+    font-size: var(--text-sm);
+    font-family: inherit;
+  }
+
+  .back-btn:hover,
   .close-btn:hover {
     color: var(--gray-0);
     border-color: var(--gray-600);
   }
 
+  .nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    background: var(--gray-800);
+    border: 1px solid var(--gray-700);
+    border-radius: 50%;
+    color: var(--gray-400);
+    cursor: pointer;
+    transition: color var(--transition-fast), border-color var(--transition-fast), opacity var(--transition-fast);
+  }
+
+  .nav-btn:hover {
+    color: var(--gray-0);
+    border-color: var(--gray-600);
+  }
+
+  .nav-btn.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .nav-prev {
+    left: 0.5rem;
+  }
+
+  .nav-next {
+    right: 0.5rem;
+  }
+
+  /* Hide nav buttons on mobile - use swipe instead */
+  @media (max-width: 50em) {
+    .nav-btn {
+      display: none;
+    }
+  }
+
   .journal-header {
-    padding: 1.5rem 3.5rem 1.5rem 1.5rem;
+    padding: 1.5rem 5rem 1.5rem 1.5rem;
     border-bottom: 1px solid var(--gray-800);
     flex-shrink: 0;
   }
@@ -237,7 +412,7 @@
 
   @media (min-width: 50em) {
     .journal-header {
-      padding: 2rem 4rem 2rem 2rem;
+      padding: 2rem 6rem 2rem 2rem;
     }
 
     .journal-body {
